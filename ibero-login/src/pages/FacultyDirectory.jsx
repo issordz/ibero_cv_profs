@@ -10,8 +10,8 @@ import Swal from 'sweetalert2'
 const FacultyDirectory = () => {
   const navigate = useNavigate()
   const [filterText, setFilterText] = useState('')
-  const [selectedDepartment, setSelectedDepartment] = useState('All Departments')
-  const [selectedStatus, setSelectedStatus] = useState('All Statuses')
+  const [selectedDepartment, setSelectedDepartment] = useState('Todos los departamentos')
+  const [selectedStatus, setSelectedStatus] = useState('Todos los estados')
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 5
 
@@ -23,15 +23,15 @@ const FacultyDirectory = () => {
         item.department.toLowerCase().includes(filterText.toLowerCase())
       
       const matchesDepartment = 
-        selectedDepartment === 'All Departments' || 
+        selectedDepartment === 'Todos los departamentos' || 
         item.department === selectedDepartment
 
       let matchesStatus = true
-      if (selectedStatus === 'Complete (100%)') {
+      if (selectedStatus === 'Completo (100%)') {
         matchesStatus = item.profileProgress === 100
-      } else if (selectedStatus === 'In Progress (50-99%)') {
+      } else if (selectedStatus === 'En progreso (50-99%)') {
         matchesStatus = item.profileProgress >= 50 && item.profileProgress < 100
-      } else if (selectedStatus === 'Incomplete (<50%)') {
+      } else if (selectedStatus === 'Incompleto (<50%)') {
         matchesStatus = item.profileProgress < 50
       }
 
@@ -63,11 +63,11 @@ const FacultyDirectory = () => {
 
   const getStatusBadge = (progress) => {
     if (progress === 100) {
-      return <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">Active</span>
+      return <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">Activo</span>
     } else if (progress >= 50) {
-      return <span className="inline-flex items-center rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800">Pending Review</span>
+      return <span className="inline-flex items-center rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800">En revisión</span>
     } else {
-      return <span className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800">On Leave</span>
+      return <span className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800">Incompleto</span>
     }
   }
 
@@ -91,7 +91,7 @@ const FacultyDirectory = () => {
         <div className="rounded-xl border border-[#e6dbdd] bg-white p-6 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-[#896169]">Total Faculty</p>
+              <p className="text-sm font-medium text-[#896169]">Total profesores</p>
               <p className="mt-2 text-3xl font-bold text-[#181112]">{totalFaculty}</p>
             </div>
             <div className="rounded-lg bg-green-100 p-2 text-green-600">
@@ -100,14 +100,14 @@ const FacultyDirectory = () => {
           </div>
           <div className="mt-4 flex items-center gap-1 text-sm">
             <span className="font-medium text-green-600">+12%</span>
-            <span className="text-[#896169]">from last month</span>
+            <span className="text-[#896169]">desde el mes pasado</span>
           </div>
         </div>
 
         <div className="rounded-xl border border-[#e6dbdd] bg-white p-6 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-[#896169]">Active Profiles</p>
+              <p className="text-sm font-medium text-[#896169]">Perfiles activos</p>
               <p className="mt-2 text-3xl font-bold text-[#181112]">{activeProfiles}</p>
             </div>
             <div className="rounded-lg bg-blue-100 p-2 text-blue-600">
@@ -116,14 +116,14 @@ const FacultyDirectory = () => {
           </div>
           <div className="mt-4 flex items-center gap-1 text-sm">
             <span className="font-medium text-blue-600">+5%</span>
-            <span className="text-[#896169]">newly activated</span>
+            <span className="text-[#896169]">recién activados</span>
           </div>
         </div>
 
         <div className="rounded-xl border border-[#e6dbdd] bg-white p-6 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-[#896169]">Pending Reviews</p>
+              <p className="text-sm font-medium text-[#896169]">Revisiones pendientes</p>
               <p className="mt-2 text-3xl font-bold text-[#181112]">{pendingReviews}</p>
             </div>
             <div className="rounded-lg bg-orange-100 p-2 text-orange-600">
@@ -132,14 +132,14 @@ const FacultyDirectory = () => {
           </div>
           <div className="mt-4 flex items-center gap-1 text-sm">
             <span className="font-medium text-orange-600">-2%</span>
-            <span className="text-[#896169]">since last week</span>
+            <span className="text-[#896169]">desde la semana pasada</span>
           </div>
         </div>
 
         <div className="rounded-xl bg-white p-6 shadow-sm" style={{ border: '1px solid #e6dbdd' }}>
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium" style={{ color: '#896169' }}>Completion Rate</p>
+              <p className="text-sm font-medium" style={{ color: '#896169' }}>Tasa de completitud</p>
               <p className="mt-2 text-3xl font-bold" style={{ color: '#181112' }}>{avgCompletion}%</p>
             </div>
             <div className="rounded-lg p-2" style={{ backgroundColor: 'rgba(196,14,47,0.1)', color: '#c40e2f' }}>
@@ -163,7 +163,7 @@ const FacultyDirectory = () => {
             </div>
             <input
               className="block w-full rounded-lg border-0 bg-[#f4f0f1] py-2.5 pl-10 text-sm text-[#181112] placeholder:text-[#896169] focus:ring-2 focus:ring-[#c40e2f]"
-              placeholder="Search by name, ID, or department..."
+              placeholder="Buscar por nombre, ID o departamento..."
               type="text"
               value={filterText}
               onChange={(e) => { setFilterText(e.target.value); setCurrentPage(1) }}
@@ -195,7 +195,7 @@ const FacultyDirectory = () => {
               style={{ backgroundColor: '#c40e2f' }}
             >
               <Plus size={20} />
-              <span>Add Faculty</span>
+              <span>Agregar docente</span>
             </button>
           </div>
         </div>
@@ -205,12 +205,12 @@ const FacultyDirectory = () => {
           <table className="w-full text-left text-sm">
             <thead className="bg-[#fcfafa] text-xs uppercase text-[#896169]">
               <tr>
-                <th className="px-6 py-4 font-semibold" scope="col">Employee</th>
+                <th className="px-6 py-4 font-semibold" scope="col">Colaborador</th>
                 <th className="px-6 py-4 font-semibold" scope="col">ID</th>
-                <th className="px-6 py-4 font-semibold" scope="col">Department</th>
-                <th className="px-6 py-4 font-semibold" scope="col">Status</th>
-                <th className="px-6 py-4 font-semibold w-1/5" scope="col">Profile Completion</th>
-                <th className="px-6 py-4 font-semibold text-right" scope="col">Actions</th>
+                <th className="px-6 py-4 font-semibold" scope="col">Departamento</th>
+                <th className="px-6 py-4 font-semibold" scope="col">Estado</th>
+                <th className="px-6 py-4 font-semibold w-1/5" scope="col">Completitud del perfil</th>
+                <th className="px-6 py-4 font-semibold text-right" scope="col">Acciones</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[#e6dbdd] border-t border-[#e6dbdd]">
@@ -223,7 +223,7 @@ const FacultyDirectory = () => {
                       </div>
                       <div>
                         <div className="font-semibold text-[#181112]">{row.name}</div>
-                        <div className="text-xs text-[#896169]">Updated {row.lastUpdate}</div>
+                        <div className="text-xs text-[#896169]">Actualizado {row.lastUpdate}</div>
                       </div>
                     </div>
                   </td>
@@ -270,7 +270,7 @@ const FacultyDirectory = () => {
               {paginatedData.length === 0 && (
                 <tr>
                   <td colSpan="6" className="px-6 py-12 text-center text-[#896169]">
-                    No faculty members found matching your criteria
+                    No se encontraron docentes con los criterios seleccionados
                   </td>
                 </tr>
               )}
@@ -281,9 +281,9 @@ const FacultyDirectory = () => {
         {/* Pagination */}
         <div className="flex items-center justify-between border-t border-[#e6dbdd] px-6 py-4">
           <p className="text-sm text-[#896169]">
-            Showing <span className="font-medium text-[#181112]">{((currentPage - 1) * itemsPerPage) + 1}</span> to{' '}
-            <span className="font-medium text-[#181112]">{Math.min(currentPage * itemsPerPage, filteredData.length)}</span> of{' '}
-            <span className="font-medium text-[#181112]">{filteredData.length}</span> results
+            Mostrando <span className="font-medium text-[#181112]">{((currentPage - 1) * itemsPerPage) + 1}</span> a{' '}
+            <span className="font-medium text-[#181112]">{Math.min(currentPage * itemsPerPage, filteredData.length)}</span> de{' '}
+            <span className="font-medium text-[#181112]">{filteredData.length}</span> resultados
           </p>
           <nav className="isolate inline-flex -space-x-px rounded-md shadow-sm">
             <button

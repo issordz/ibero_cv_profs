@@ -49,7 +49,7 @@ const UserManagement = () => {
       {/* Header */}
       <div className="mb-6">
         <div className="flex items-center gap-2 text-sm text-gray-500 mb-2">
-          <span>Dashboard</span>
+          <span>Inicio</span>
           <ChevronRight size={14} />
           <span className="text-red-600 font-medium">Gestión de usuarios</span>
         </div>

@@ -110,29 +110,29 @@ const Layout = () => {
           flex h-full
           ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
         `}
-        style={{ backgroundColor: '#181112' }}
+        style={{ backgroundColor: '#e00034' }}
       >
         {/* Logo Header */}
-        <div className="flex h-20 items-center gap-3 px-6" style={{ borderBottom: '1px solid #333' }}>
+        <div className="flex h-16 items-center gap-3 px-6" style={{ borderBottom: '1px solid rgba(255,255,255,0.2)' }}>
           <div
-            className="flex h-10 w-10 items-center justify-center rounded-lg text-white flex-shrink-0"
-            style={{ backgroundColor: '#c40e2f' }}
+            className="flex h-10 w-10 items-center justify-center rounded-lg text-white flex-shrink-0 overflow-hidden"
+            style={{ border: '1.5px solid rgba(255,255,255,0.3)' }}
           >
-            <GraduationCap size={22} />
+            <img src="/ibero-icon-white.svg" alt="IBERO" className="h-5 w-auto" />
           </div>
-          <div className="flex flex-col">
-            <h1 className="text-base font-bold leading-none text-white">
-              {user?.role === 'admin' ? 'IBERO Admin' : 'IBERO Portal'}
+          <div className="flex flex-col gap-0">
+            <h1 className="text-sm font-bold leading-tight text-white">
+              {user?.role === 'admin' ? 'IBERO - GDD' : 'IBERO - GDD'}
             </h1>
-            <span className="text-xs mt-1" style={{ color: '#9ca3af' }}>
-              {user?.role === 'admin' ? 'Administrador de colaboradores' : 'Currículum Docente'}
+            <span className="text-[11px] leading-tight" style={{ color: 'rgba(255,255,255,0.7)' }}>
+              {user?.role === 'admin' ? 'Administrador docente' : 'Currículum Docente'}
             </span>
           </div>
           {/* Close button for mobile */}
           <button 
             onClick={() => setSidebarOpen(false)}
             className="lg:hidden ml-auto p-1 rounded"
-            style={{ color: '#9ca3af' }}
+            style={{ color: 'rgba(255,255,255,0.7)' }}
           >
             <X size={20} />
           </button>
@@ -146,7 +146,7 @@ const Layout = () => {
                 <div key={group.label}>
                   <p
                     className="px-2 text-xs font-semibold uppercase tracking-wider mb-2"
-                    style={{ color: '#6b7280', marginTop: groupIdx > 0 ? '2rem' : '0' }}
+                    style={{ color: 'rgba(255,255,255,0.5)', marginTop: groupIdx > 0 ? '2rem' : '0' }}
                   >
                     {group.label}
                   </p>
@@ -159,8 +159,8 @@ const Layout = () => {
                         onClick={() => setSidebarOpen(false)}
                         className="flex items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium transition-colors"
                         style={{
-                          backgroundColor: active ? '#c40e2f' : 'transparent',
-                          color: active ? '#ffffff' : '#9ca3af',
+                          backgroundColor: active ? '#ffffff' : 'transparent',
+                          color: active ? '#e00034' : 'rgba(255,255,255,0.85)',
                         }}
                       >
                         <div className="flex items-center gap-3">
@@ -171,8 +171,8 @@ const Layout = () => {
                           <span
                             className="text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[20px] text-center"
                             style={{
-                              backgroundColor: active ? 'rgba(255,255,255,0.2)' : 'rgba(196,14,47,0.3)',
-                              color: active ? '#ffffff' : '#fca5a5',
+                              backgroundColor: active ? '#e00034' : 'rgba(255,255,255,0.2)',
+                              color: '#ffffff',
                             }}
                           >
                             {item.badge}
@@ -188,7 +188,7 @@ const Layout = () => {
             <>
               <p
                 className="px-2 text-xs font-semibold uppercase tracking-wider mb-2"
-                style={{ color: '#6b7280' }}
+                style={{ color: 'rgba(255,255,255,0.5)' }}
               >
                 Mi Currículum
               </p>
@@ -203,8 +203,8 @@ const Layout = () => {
                     onClick={() => setSidebarOpen(false)}
                     className="flex items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium transition-colors"
                     style={{
-                      backgroundColor: active ? '#c40e2f' : 'transparent',
-                      color: active ? '#ffffff' : '#9ca3af',
+                      backgroundColor: active ? '#ffffff' : 'transparent',
+                      color: active ? '#e00034' : 'rgba(255,255,255,0.85)',
                     }}
                   >
                     <div className="flex items-center gap-3">
@@ -212,9 +212,9 @@ const Layout = () => {
                       <span className="leading-tight">{section.label}</span>
                     </div>
                     {status === 'complete' ? (
-                      <CheckCircle2 size={15} className="flex-shrink-0" style={{ color: active ? '#86efac' : '#22c55e' }} />
+                      <CheckCircle2 size={15} className="flex-shrink-0" style={{ color: active ? '#16a34a' : 'rgba(255,255,255,0.7)' }} />
                     ) : (
-                      <Circle size={15} className="flex-shrink-0" style={{ color: active ? 'rgba(255,255,255,0.4)' : '#4b5563' }} />
+                      <Circle size={15} className="flex-shrink-0" style={{ color: active ? '#9ca3af' : 'rgba(255,255,255,0.4)' }} />
                     )}
                   </NavLink>
                 )
@@ -222,18 +222,18 @@ const Layout = () => {
 
               {/* Professor Progress */}
               <div className="mt-6 px-1">
-                <div className="rounded-lg p-3" style={{ backgroundColor: 'rgba(55,55,55,0.5)' }}>
+                <div className="rounded-lg p-3" style={{ backgroundColor: 'rgba(0,0,0,0.15)' }}>
                   <div className="flex items-center justify-between text-xs mb-2">
-                    <span style={{ color: '#9ca3af' }}>Completado</span>
-                    <span className="font-bold" style={{ color: '#c40e2f' }}>{calculateProgress()}%</span>
+                    <span style={{ color: 'rgba(255,255,255,0.8)' }}>Completado</span>
+                    <span className="font-bold" style={{ color: '#ffffff' }}>{calculateProgress()}%</span>
                   </div>
-                  <div className="w-full rounded-full h-1.5" style={{ backgroundColor: '#374151' }}>
+                  <div className="w-full rounded-full h-1.5" style={{ backgroundColor: 'rgba(0,0,0,0.2)' }}>
                     <div 
                       className="h-1.5 rounded-full transition-all duration-500"
-                      style={{ width: `${calculateProgress()}%`, backgroundColor: '#c40e2f' }}
+                      style={{ width: `${calculateProgress()}%`, backgroundColor: '#ffffff' }}
                     />
                   </div>
-                  <p className="text-[11px] mt-2" style={{ color: '#6b7280' }}>
+                  <p className="text-[11px] mt-2" style={{ color: 'rgba(255,255,255,0.6)' }}>
                     {Object.values(professorSections || {}).filter(s => s !== 'complete').length} secciones pendientes
                   </p>
                 </div>
@@ -243,14 +243,14 @@ const Layout = () => {
         </nav>
 
         {/* Log Out */}
-        <div className="p-4" style={{ borderTop: '1px solid #333' }}>
+        <div className="p-4" style={{ borderTop: '1px solid rgba(255,255,255,0.2)' }}>
           <button 
             onClick={handleLogout}
             className="flex items-center gap-3 rounded-lg px-3 py-2 transition-colors w-full"
-            style={{ color: '#9ca3af' }}
+            style={{ color: 'rgba(255,255,255,0.8)' }}
           >
             <LogOut size={20} />
-            <span className="text-sm font-medium">Log Out</span>
+            <span className="text-sm font-medium">Cerrar sesión</span>
           </button>
         </div>
       </aside>
@@ -279,7 +279,7 @@ const Layout = () => {
             <div className="hidden lg:flex flex-col">
               <h2 className="text-xl font-bold" style={{ color: '#181112' }}>{getBreadcrumb()}</h2>
               <div className="flex items-center text-sm gap-1" style={{ color: '#896169' }}>
-                <span>Dashboard</span>
+                <span>Inicio</span>
                 <ChevronRight size={12} />
                 <span className="font-medium" style={{ color: '#c40e2f' }}>{getBreadcrumb()}</span>
               </div>
@@ -303,9 +303,9 @@ const Layout = () => {
                   onClick={() => setUserMenuOpen(!userMenuOpen)}
                   className="flex items-center gap-3 hover:opacity-80 transition-opacity"
                 >
-                  <div className="text-right hidden sm:block">
-                    <p className="text-sm font-semibold" style={{ color: '#181112' }}>{user?.name}</p>
-                    <p className="text-xs" style={{ color: '#896169' }}>{user?.roleDisplay}</p>
+                  <div className="text-right hidden sm:flex flex-col justify-center" style={{ gap: '1px' }}>
+                    <p className="text-sm font-semibold" style={{ color: '#181112', lineHeight: '1.1', margin: 0 }}>{user?.name}</p>
+                    <p className="text-[11px]" style={{ color: '#896169', lineHeight: '1.1', margin: 0 }}>{user?.roleDisplay}</p>
                   </div>
                   <div className="h-10 w-10 overflow-hidden rounded-full bg-gray-200 flex items-center justify-center font-bold text-sm" style={{ color: '#4b5563' }}>
                     {user?.avatar || 'U'}

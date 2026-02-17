@@ -37,13 +37,13 @@ const AcademicDegreesSection = ({ degrees: initialDegrees, onSave }) => {
   const handleDelete = async (degreeId) => {
     const result = await Swal.fire({
       icon: 'warning',
-      title: 'Delete Degree?',
-      text: 'This action cannot be undone.',
+      title: '¿Eliminar grado?',
+      text: 'Esta acción no se puede deshacer.',
       showCancelButton: true,
       confirmButtonColor: '#C41E3A',
       cancelButtonColor: '#6B7280',
-      confirmButtonText: 'Yes, delete',
-      cancelButtonText: 'Cancel',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
       customClass: { popup: 'rounded-lg' }
     })
 
@@ -51,7 +51,7 @@ const AcademicDegreesSection = ({ degrees: initialDegrees, onSave }) => {
       setDegrees(prev => prev.filter(d => d.id !== degreeId))
       Swal.fire({
         icon: 'success',
-        title: 'Deleted',
+        title: 'Eliminado',
         timer: 1500,
         showConfirmButton: false
       })
@@ -62,8 +62,8 @@ const AcademicDegreesSection = ({ degrees: initialDegrees, onSave }) => {
     if (!formData.degree || !formData.institution || !formData.year) {
       Swal.fire({
         icon: 'warning',
-        title: 'Required Fields',
-        text: 'Please fill in all required fields',
+        title: 'Campos requeridos',
+        text: 'Por favor completa todos los campos obligatorios',
         confirmButtonColor: '#C41E3A'
       })
       return
@@ -87,7 +87,7 @@ const AcademicDegreesSection = ({ degrees: initialDegrees, onSave }) => {
     setIsPanelOpen(false)
     Swal.fire({
       icon: 'success',
-      title: editingDegree ? 'Updated' : 'Added',
+      title: editingDegree ? 'Actualizado' : 'Agregado',
       timer: 1500,
       showConfirmButton: false
     })
@@ -98,7 +98,7 @@ const AcademicDegreesSection = ({ degrees: initialDegrees, onSave }) => {
       <div className="flex items-center gap-3 mb-6">
         <GraduationCap className="text-slate-400" size={24} />
         <p className="text-slate-500">
-          List all your academic degrees, starting with the highest level.
+          Lista todos tus grados académicos, comenzando por el más alto.
         </p>
       </div>
 
@@ -118,7 +118,7 @@ const AcademicDegreesSection = ({ degrees: initialDegrees, onSave }) => {
 
       {/* Add Button */}
       <AddItemButton 
-        label="Add New Degree" 
+        label="Agregar grado académico" 
         onClick={handleAdd}
       />
 
@@ -126,33 +126,33 @@ const AcademicDegreesSection = ({ degrees: initialDegrees, onSave }) => {
       <SlideOverPanel
         isOpen={isPanelOpen}
         onClose={() => setIsPanelOpen(false)}
-        title={editingDegree ? 'Edit Degree' : 'Add New Degree'}
+        title={editingDegree ? 'Editar grado' : 'Agregar grado académico'}
       >
         <div className="space-y-4">
           <EditableField
-            label="Degree Title *"
+            label="Título del grado *"
             value={formData.degree}
             onChange={(val) => setFormData(prev => ({ ...prev, degree: val }))}
-            placeholder="e.g., PhD in Engineering"
+            placeholder="Ej., Doctorado en Ingeniería"
           />
           <EditableField
-            label="Institution *"
+            label="Institución *"
             value={formData.institution}
             onChange={(val) => setFormData(prev => ({ ...prev, institution: val }))}
-            placeholder="e.g., MIT"
+            placeholder="Ej., UNAM"
           />
           <EditableField
-            label="Year *"
+            label="Año *"
             value={formData.year}
             onChange={(val) => setFormData(prev => ({ ...prev, year: val }))}
             type="number"
-            placeholder="e.g., 2020"
+            placeholder="Ej., 2020"
           />
           <EditableField
-            label="Country"
+            label="País"
             value={formData.country}
             onChange={(val) => setFormData(prev => ({ ...prev, country: val }))}
-            placeholder="e.g., USA"
+            placeholder="Ej., México"
           />
 
           <div className="pt-4 flex gap-3">
@@ -160,13 +160,13 @@ const AcademicDegreesSection = ({ degrees: initialDegrees, onSave }) => {
               onClick={() => setIsPanelOpen(false)}
               className="flex-1 px-4 py-3 border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
             >
-              Cancel
+              Cancelar
             </button>
             <button
               onClick={handleSaveForm}
               className="flex-1 px-4 py-3 bg-red-700 hover:bg-red-800 text-white rounded-lg transition-colors"
             >
-              {editingDegree ? 'Update' : 'Add'} Degree
+              {editingDegree ? 'Actualizar' : 'Agregar'} grado
             </button>
           </div>
         </div>

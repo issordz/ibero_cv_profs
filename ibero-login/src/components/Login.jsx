@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Form, Button, InputGroup } from 'react-bootstrap'
-import { User, Lock, Eye, EyeOff, HelpCircle, Facebook, Twitter, Instagram } from 'lucide-react'
+import { User, Lock, Eye, EyeOff, HelpCircle, Facebook, Twitter, Instagram, GraduationCap } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import Swal from 'sweetalert2'
 
@@ -53,24 +53,21 @@ const Login = () => {
         <div className="relative z-10 text-white max-w-md">
           {/* Logo */}
           <div className="flex items-center gap-3 mb-8">
-            <div className="w-10 h-10 flex items-center justify-center">
-              <svg viewBox="0 0 40 40" className="w-10 h-10">
-                <polygon points="20,5 35,35 5,35" fill="white" />
-              </svg>
+            <div className="w-10 h-10 flex items-center justify-center rounded-lg" style={{ backgroundColor: 'rgba(255,255,255,0.2)' }}>
+              <GraduationCap size={24} className="text-white" />
             </div>
-            <span className="text-2xl font-bold tracking-wider">IBERO</span>
+            <span className="text-2xl font-bold tracking-wider">IBERO - GDD</span>
           </div>
 
           {/* Title */}
           <h1 className="text-3xl lg:text-4xl font-bold mb-4 leading-tight">
-            Advancing Research &<br />
-            Academic Excellence
+            GESTOR DE DATOS<br />
+            DEL DOCENTE
           </h1>
 
           {/* Description */}
           <p className="text-white/80 mb-8 text-sm lg:text-base">
-            Access your institutional academic profile and<br />
-            manage your professional trajectory with ease.
+            El gestor de datos del docente <br />es un portal que permite visualizar <br /> y gestionar los datos del colaborador.
           </p>
 
           {/* User Avatars */}
@@ -86,7 +83,7 @@ const Login = () => {
                 AS
               </div>
             </div>
-            <span className="text-white/80 text-sm">+1,000 Academics Online</span>
+            <span className="text-white/80 text-sm">+1,000 Docentes Activos </span>
           </div>
         </div>
       </div>
@@ -96,8 +93,8 @@ const Login = () => {
         <div className="w-full max-w-md">
           {/* Welcome Header */}
           <div className="text-center mb-8">
-            <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">IBERO</h2>
-            <p className="text-gray-500 text-sm">Inicia sesión en tu portal</p>
+            <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">UNIVERSIDAD IBEROAMERICANA</h2>
+            <p className="text-gray-500 text-sm">CIUDAD DE MÉXICO</p>
           </div>
 
           {/* Login Form */}
@@ -105,7 +102,7 @@ const Login = () => {
             {/* Email Field */}
             <Form.Group className="mb-4">
               <Form.Label className="text-xs font-semibold text-red-700 uppercase tracking-wider mb-2">
-                Institutional Email or ID
+                cuenta o correo institucional
               </Form.Label>
               <InputGroup>
                 <InputGroup.Text className="bg-gray-50 border-gray-200">
@@ -113,7 +110,7 @@ const Login = () => {
                 </InputGroup.Text>
                 <Form.Control
                   type="email"
-                  placeholder="e.g. j.doe@ibero.mx or 103-0527"
+                  placeholder="e.g. j.doe@ibero.mx o 103-0527"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="border-gray-200 py-3 focus:border-red-500 focus:ring-red-500"
@@ -125,10 +122,10 @@ const Login = () => {
             <Form.Group className="mb-4">
               <div className="flex justify-between items-center mb-2">
                 <Form.Label className="text-xs font-semibold text-gray-600 uppercase tracking-wider mb-0">
-                  Password
+                  Contraseña
                 </Form.Label>
                 <a href="#" className="text-xs text-red-600 hover:text-red-700 font-medium no-underline">
-                  Forgot Password?
+                  ¿Olvidaste tu contraseña?
                 </a>
               </div>
               <InputGroup>
@@ -172,7 +169,7 @@ const Login = () => {
               type="submit"
               className="w-full py-3 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 border-0 font-semibold text-white rounded-lg shadow-lg shadow-red-500/30 transition-all duration-300"
             >
-              {isLoading ? 'Iniciando sesión...' : 'Sign In →'}
+              {isLoading ? 'Iniciando sesión...' : 'Iniciar sesión →'}
             </Button>
           </Form>
 
@@ -180,7 +177,7 @@ const Login = () => {
           <div className="text-center mt-6">
             <a href="#" className="text-sm text-gray-500 hover:text-gray-700 flex items-center justify-center gap-2 no-underline">
               <HelpCircle size={16} />
-              Institutional Access Help
+              Apoyo al acceso 
             </a>
           </div>
 
@@ -199,11 +196,11 @@ const Login = () => {
 
           {/* Footer */}
           <div className="text-center mt-8 text-xs text-gray-400">
-            <p>© 2024 Universidad Iberoamericana. All academic data is protected by the</p>
+            <p>© 2026 Universidad Iberoamericana. Todos los datos son protegidos por las </p>
             <p>
-              <a href="#" className="text-gray-500 hover:text-gray-700 no-underline">Institutional Privacy Policy</a>
-              {' '}and{' '}
-              <a href="#" className="text-gray-500 hover:text-gray-700 no-underline">Research Recognition Protocols</a>
+              <a href="#" className="text-gray-500 hover:text-gray-700 no-underline">Políticas institucionales de privacidad</a>
+              {' '}y{' '}
+              <a href="#" className="text-gray-500 hover:text-gray-700 no-underline">Protocolos de reconocimiento de investigación</a>
             </p>
           </div>
         </div>

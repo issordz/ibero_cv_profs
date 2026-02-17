@@ -26,18 +26,18 @@ const GeneralDataSection = ({ faculty, onChanges }) => {
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
             <Building2 className="text-slate-400" size={20} />
-            <h2 className="text-lg font-semibold text-gray-900">Institutional Information</h2>
+            <h2 className="text-lg font-semibold text-gray-900">Información Institucional</h2>
           </div>
-          <span className="text-xs text-slate-400 uppercase tracking-wider">READ-ONLY</span>
+          <span className="text-xs text-slate-400 uppercase tracking-wider">SOLO LECTURA</span>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          <ReadOnlyField label="Employee ID" value={faculty?.employeeId} />
-          <ReadOnlyField label="Full Legal Name" value={faculty?.name} />
-          <ReadOnlyField label="University Email" value={faculty?.email} />
-          <ReadOnlyField label="Department" value={faculty?.department} />
-          <ReadOnlyField label="Academic Rank" value={faculty?.role} />
-          <ReadOnlyField label="Hire Date" value="Aug 15, 2010" />
+          <ReadOnlyField label="Número de empleado" value={faculty?.employeeId} />
+          <ReadOnlyField label="Nombre completo" value={faculty?.name} />
+          <ReadOnlyField label="Correo institucional" value={faculty?.email} />
+          <ReadOnlyField label="Departamento" value={faculty?.department} />
+          <ReadOnlyField label="Rango académico" value={faculty?.role} />
+          <ReadOnlyField label="Fecha de ingreso" value="15 Ago, 2010" />
         </div>
       </div>
 
@@ -46,30 +46,30 @@ const GeneralDataSection = ({ faculty, onChanges }) => {
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
             <Edit3 className="text-slate-400" size={20} />
-            <h2 className="text-lg font-semibold text-gray-900">Contact & Profile</h2>
+            <h2 className="text-lg font-semibold text-gray-900">Contacto y Perfil</h2>
           </div>
           <span className="px-3 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full uppercase">EDITABLE</span>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <EditableField
-            label="Personal Phone"
+            label="Teléfono personal"
             value={formData.phone}
             onChange={(val) => handleChange('phone', val)}
             placeholder="+52 (555) 000-0000"
           />
           <EditableField
-            label="Alternate Email"
+            label="Correo alternativo"
             value={formData.alternateEmail}
             onChange={(val) => handleChange('alternateEmail', val)}
             type="email"
             placeholder="personal@email.com"
           />
           <EditableField
-            label="Office Location"
+            label="Ubicación de oficina"
             value={formData.officeLocation}
             onChange={(val) => handleChange('officeLocation', val)}
-            placeholder="Building, Room #"
+            placeholder="Edificio, Sala #"
           />
           <EditableField
             label="ORCID ID"
@@ -78,16 +78,16 @@ const GeneralDataSection = ({ faculty, onChanges }) => {
             placeholder="0000-0000-0000-0000"
           />
           <EditableField
-            label="LinkedIn Profile"
+            label="Perfil de LinkedIn"
             value={formData.linkedIn}
             onChange={(val) => handleChange('linkedIn', val)}
             placeholder="linkedin.com/in/username"
           />
           <EditableField
-            label="Office Hours"
+            label="Horario de oficina"
             value={formData.officeHours}
             onChange={(val) => handleChange('officeHours', val)}
-            placeholder="Mon & Wed 10:00 - 12:00"
+            placeholder="Lun y Mié 10:00 - 12:00"
           />
         </div>
       </div>
@@ -95,11 +95,11 @@ const GeneralDataSection = ({ faculty, onChanges }) => {
       {/* Professional Summary */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6">
         <EditableField
-          label="Professional Summary"
+          label="Resumen profesional"
           value={formData.summary}
           onChange={(val) => handleChange('summary', val)}
           rows={4}
-          placeholder="Write a brief professional summary..."
+          placeholder="Escribe un breve resumen profesional..."
         />
       </div>
     </div>

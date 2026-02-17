@@ -26,14 +26,14 @@ const SummaryCard = ({ title, subtitle, details, onEdit, onDelete, readOnly = fa
             <button
               onClick={onEdit}
               className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-              title="Edit"
+              title="Editar"
             >
               <Edit2 size={16} />
             </button>
             <button
               onClick={onDelete}
               className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-              title="Delete"
+              title="Eliminar"
             >
               <Trash2 size={16} />
             </button>

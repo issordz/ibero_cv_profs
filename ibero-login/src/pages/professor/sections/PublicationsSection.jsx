@@ -37,18 +37,18 @@ const PublicationsSection = ({ publications: initialPubs, onSave }) => {
   const handleDelete = async (pubId) => {
     const result = await Swal.fire({
       icon: 'warning',
-      title: 'Delete Publication?',
-      text: 'This action cannot be undone.',
+      title: '¿Eliminar publicación?',
+      text: 'Esta acción no se puede deshacer.',
       showCancelButton: true,
       confirmButtonColor: '#C41E3A',
       cancelButtonColor: '#6B7280',
-      confirmButtonText: 'Yes, delete',
-      cancelButtonText: 'Cancel'
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
     })
 
     if (result.isConfirmed) {
       setPublications(prev => prev.filter(p => p.id !== pubId))
-      Swal.fire({ icon: 'success', title: 'Deleted', timer: 1500, showConfirmButton: false })
+      Swal.fire({ icon: 'success', title: 'Eliminado', timer: 1500, showConfirmButton: false })
     }
   }
 
@@ -56,8 +56,8 @@ const PublicationsSection = ({ publications: initialPubs, onSave }) => {
     if (!formData.title || !formData.journal || !formData.year) {
       Swal.fire({
         icon: 'warning',
-        title: 'Required Fields',
-        text: 'Please fill in all required fields',
+        title: 'Campos requeridos',
+        text: 'Por favor completa todos los campos obligatorios',
         confirmButtonColor: '#C41E3A'
       })
       return
@@ -72,14 +72,14 @@ const PublicationsSection = ({ publications: initialPubs, onSave }) => {
     }
 
     setIsPanelOpen(false)
-    Swal.fire({ icon: 'success', title: editingPub ? 'Updated' : 'Added', timer: 1500, showConfirmButton: false })
+    Swal.fire({ icon: 'success', title: editingPub ? 'Actualizado' : 'Agregado', timer: 1500, showConfirmButton: false })
   }
 
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-3 mb-6">
         <BookOpen className="text-slate-400" size={24} />
-        <p className="text-slate-500">Add your published articles, books, and other academic publications.</p>
+        <p className="text-slate-500">Agrega tus artículos publicados, libros y otras publicaciones académicas.</p>
       </div>
 
       <div className="space-y-3">
@@ -95,22 +95,22 @@ const PublicationsSection = ({ publications: initialPubs, onSave }) => {
         ))}
       </div>
 
-      <AddItemButton label="Add New Publication" onClick={handleAdd} />
+      <AddItemButton label="Agregar publicación" onClick={handleAdd} />
 
       <SlideOverPanel
         isOpen={isPanelOpen}
         onClose={() => setIsPanelOpen(false)}
-        title={editingPub ? 'Edit Publication' : 'Add New Publication'}
+        title={editingPub ? 'Editar publicación' : 'Agregar publicación'}
       >
         <div className="space-y-4">
-          <EditableField label="Title *" value={formData.title} onChange={(val) => setFormData(prev => ({ ...prev, title: val }))} placeholder="Publication title" />
-          <EditableField label="Journal/Publisher *" value={formData.journal} onChange={(val) => setFormData(prev => ({ ...prev, journal: val }))} placeholder="Journal name" />
-          <EditableField label="Year *" value={formData.year} onChange={(val) => setFormData(prev => ({ ...prev, year: val }))} type="number" placeholder="2023" />
-          <EditableField label="DOI" value={formData.doi} onChange={(val) => setFormData(prev => ({ ...prev, doi: val }))} placeholder="10.1234/example" />
+          <EditableField label="Título *" value={formData.title} onChange={(val) => setFormData(prev => ({ ...prev, title: val }))} placeholder="Título de la publicación" />
+          <EditableField label="Revista/Editorial *" value={formData.journal} onChange={(val) => setFormData(prev => ({ ...prev, journal: val }))} placeholder="Nombre de la revista" />
+          <EditableField label="Año *" value={formData.year} onChange={(val) => setFormData(prev => ({ ...prev, year: val }))} type="number" placeholder="2023" />
+          <EditableField label="DOI" value={formData.doi} onChange={(val) => setFormData(prev => ({ ...prev, doi: val }))} placeholder="10.1234/ejemplo" />
 
           <div className="pt-4 flex gap-3">
-            <button onClick={() => setIsPanelOpen(false)} className="flex-1 px-4 py-3 border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50">Cancel</button>
-            <button onClick={handleSaveForm} className="flex-1 px-4 py-3 bg-red-700 hover:bg-red-800 text-white rounded-lg">{editingPub ? 'Update' : 'Add'}</button>
+            <button onClick={() => setIsPanelOpen(false)} className="flex-1 px-4 py-3 border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50">Cancelar</button>
+            <button onClick={handleSaveForm} className="flex-1 px-4 py-3 bg-red-700 hover:bg-red-800 text-white rounded-lg">{editingPub ? 'Actualizar' : 'Agregar'}</button>
           </div>
         </div>
       </SlideOverPanel>

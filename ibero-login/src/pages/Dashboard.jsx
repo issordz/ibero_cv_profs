@@ -17,37 +17,37 @@ const Dashboard = () => {
 
   const stats = [
     { 
-      label: 'Total Faculty', 
+      label: 'Total profesores', 
       value: totalFaculty, 
       icon: Users, 
       iconBg: '#dcfce7', 
       iconColor: '#16a34a',
       change: '+12%',
       changeColor: '#16a34a',
-      changeText: 'from last month'
+      changeText: 'desde el mes pasado'
     },
     { 
-      label: 'Complete Profiles', 
+      label: 'Perfiles completos', 
       value: completeProfiles, 
       icon: UserCheck, 
       iconBg: '#dbeafe', 
       iconColor: '#2563eb',
       change: '+5%',
       changeColor: '#2563eb',
-      changeText: 'newly completed'
+      changeText: 'completados recientemente'
     },
     { 
-      label: 'Pending Reviews', 
+      label: 'Revisiones pendientes', 
       value: pendingReviews, 
       icon: Clock, 
       iconBg: '#ffedd5', 
       iconColor: '#ea580c',
       change: '-2%',
       changeColor: '#ea580c',
-      changeText: 'since last week'
+      changeText: 'desde la semana pasada'
     },
     { 
-      label: 'Completion Rate', 
+      label: 'Tasa de completitud', 
       value: `${avgCompletion}%`, 
       icon: CheckCircle, 
       iconBg: 'rgba(196,14,47,0.1)', 
@@ -61,22 +61,22 @@ const Dashboard = () => {
     {
       icon: UserPlus,
       iconColor: '#c40e2f',
-      title: 'Add New Faculty',
-      description: 'Register a new faculty member to the system',
+      title: 'Agregar docente',
+      description: 'Registrar un nuevo docente en el sistema',
       action: () => navigate('/faculty')
     },
     {
       icon: BarChart3,
       iconColor: '#2563eb',
-      title: 'Generate Report',
-      description: 'Create faculty status and analytics report',
+      title: 'Generar reporte',
+      description: 'Crear reporte de estado y análisis de docentes',
       action: () => navigate('/reports')
     },
     {
       icon: ClipboardCheck,
       iconColor: '#16a34a',
-      title: 'Review Profiles',
-      description: 'Check pending profile updates and validations',
+      title: 'Revisar perfiles',
+      description: 'Verificar actualizaciones y validaciones pendientes',
       action: () => navigate('/validaciones-pendientes')
     }
   ]
@@ -86,7 +86,7 @@ const Dashboard = () => {
     name: f.name,
     avatar: f.avatar,
     avatarColor: f.avatarColor,
-    action: f.profileProgress === 100 ? 'completed their profile' : `updated profile (${f.profileProgress}%)`,
+    action: f.profileProgress === 100 ? 'completó su perfil' : `actualizó perfil (${f.profileProgress}%)`,
     time: f.lastUpdate
   }))
 
@@ -94,8 +94,8 @@ const Dashboard = () => {
     <div>
       {/* Page Title */}
       <div className="mb-8">
-        <h1 className="text-2xl lg:text-3xl font-bold" style={{ color: '#181112' }}>Dashboard</h1>
-        <p className="mt-1" style={{ color: '#896169' }}>Bienvenido {user?.name || 'User'}</p>
+        <h1 className="text-2xl lg:text-3xl font-bold" style={{ color: '#181112' }}>Panel de Control</h1>
+        <p className="mt-1" style={{ color: '#896169' }}>Bienvenido {user?.name || 'Usuario'}</p>
       </div>
 
       {/* Stats Grid */}
@@ -130,7 +130,7 @@ const Dashboard = () => {
         {/* Quick Actions */}
         <div className="lg:col-span-2 rounded-xl bg-white shadow-sm" style={{ border: '1px solid #e6dbdd' }}>
           <div className="p-6" style={{ borderBottom: '1px solid #e6dbdd' }}>
-            <h2 className="text-lg font-bold" style={{ color: '#181112' }}>Quick Actions</h2>
+            <h2 className="text-lg font-bold" style={{ color: '#181112' }}>Acciones rápidas</h2>
           </div>
           <div className="p-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
             {quickActions.map((action, index) => (
@@ -144,7 +144,7 @@ const Dashboard = () => {
                 <p className="font-semibold mb-1" style={{ color: '#181112' }}>{action.title}</p>
                 <p className="text-xs" style={{ color: '#896169' }}>{action.description}</p>
                 <div className="flex items-center gap-1 mt-3 text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: '#c40e2f' }}>
-                  <span>Go</span>
+                  <span>Ir</span>
                   <ArrowRight size={12} />
                 </div>
               </button>
@@ -155,7 +155,7 @@ const Dashboard = () => {
         {/* Recent Activity */}
         <div className="rounded-xl bg-white shadow-sm" style={{ border: '1px solid #e6dbdd' }}>
           <div className="p-6" style={{ borderBottom: '1px solid #e6dbdd' }}>
-            <h2 className="text-lg font-bold" style={{ color: '#181112' }}>Recent Activity</h2>
+            <h2 className="text-lg font-bold" style={{ color: '#181112' }}>Actividad reciente</h2>
           </div>
           <div className="p-4">
             {recentActivity.map((item, index) => (

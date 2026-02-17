@@ -16,12 +16,12 @@ const ProjectsSection = ({ projects: initialProjects, onSave }) => {
     startDate: '',
     endDate: '',
     funding: '',
-    status: 'Active'
+    status: 'Activo'
   })
 
   const handleAdd = () => {
     setEditingProject(null)
-    setFormData({ title: '', role: '', startDate: '', endDate: '', funding: '', status: 'Active' })
+    setFormData({ title: '', role: '', startDate: '', endDate: '', funding: '', status: 'Activo' })
     setIsPanelOpen(true)
   }
 
@@ -34,18 +34,18 @@ const ProjectsSection = ({ projects: initialProjects, onSave }) => {
   const handleDelete = async (projectId) => {
     const result = await Swal.fire({
       icon: 'warning',
-      title: 'Delete Project?',
-      text: 'This action cannot be undone.',
+      title: '¿Eliminar proyecto?',
+      text: 'Esta acción no se puede deshacer.',
       showCancelButton: true,
       confirmButtonColor: '#C41E3A',
       cancelButtonColor: '#6B7280',
-      confirmButtonText: 'Yes, delete',
-      cancelButtonText: 'Cancel'
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
     })
 
     if (result.isConfirmed) {
       setProjects(prev => prev.filter(p => p.id !== projectId))
-      Swal.fire({ icon: 'success', title: 'Deleted', timer: 1500, showConfirmButton: false })
+      Swal.fire({ icon: 'success', title: 'Eliminado', timer: 1500, showConfirmButton: false })
     }
   }
 
@@ -53,8 +53,8 @@ const ProjectsSection = ({ projects: initialProjects, onSave }) => {
     if (!formData.title || !formData.role) {
       Swal.fire({
         icon: 'warning',
-        title: 'Required Fields',
-        text: 'Please fill in all required fields',
+        title: 'Campos requeridos',
+        text: 'Por favor completa todos los campos obligatorios',
         confirmButtonColor: '#C41E3A'
       })
       return
@@ -67,14 +67,14 @@ const ProjectsSection = ({ projects: initialProjects, onSave }) => {
     }
 
     setIsPanelOpen(false)
-    Swal.fire({ icon: 'success', title: editingProject ? 'Updated' : 'Added', timer: 1500, showConfirmButton: false })
+    Swal.fire({ icon: 'success', title: editingProject ? 'Actualizado' : 'Agregado', timer: 1500, showConfirmButton: false })
   }
 
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-3 mb-6">
         <Briefcase className="text-slate-400" size={24} />
-        <p className="text-slate-500">List your research projects and grants.</p>
+        <p className="text-slate-500">Lista tus proyectos de investigación y financiamientos.</p>
       </div>
 
       <div className="space-y-3">
@@ -90,23 +90,23 @@ const ProjectsSection = ({ projects: initialProjects, onSave }) => {
         ))}
       </div>
 
-      <AddItemButton label="Add New Project" onClick={handleAdd} />
+      <AddItemButton label="Agregar proyecto" onClick={handleAdd} />
 
       <SlideOverPanel
         isOpen={isPanelOpen}
         onClose={() => setIsPanelOpen(false)}
-        title={editingProject ? 'Edit Project' : 'Add New Project'}
+        title={editingProject ? 'Editar proyecto' : 'Agregar proyecto'}
       >
         <div className="space-y-4">
-          <EditableField label="Project Title *" value={formData.title} onChange={(val) => setFormData(prev => ({ ...prev, title: val }))} placeholder="Project name" />
-          <EditableField label="Your Role *" value={formData.role} onChange={(val) => setFormData(prev => ({ ...prev, role: val }))} placeholder="e.g., Principal Investigator" />
-          <EditableField label="Start Date" value={formData.startDate} onChange={(val) => setFormData(prev => ({ ...prev, startDate: val }))} placeholder="YYYY-MM" />
-          <EditableField label="End Date" value={formData.endDate} onChange={(val) => setFormData(prev => ({ ...prev, endDate: val }))} placeholder="YYYY-MM" />
-          <EditableField label="Funding Amount" value={formData.funding} onChange={(val) => setFormData(prev => ({ ...prev, funding: val }))} placeholder="$100,000 USD" />
+          <EditableField label="Título del proyecto *" value={formData.title} onChange={(val) => setFormData(prev => ({ ...prev, title: val }))} placeholder="Nombre del proyecto" />
+          <EditableField label="Tu rol *" value={formData.role} onChange={(val) => setFormData(prev => ({ ...prev, role: val }))} placeholder="Ej., Investigador Principal" />
+          <EditableField label="Fecha de inicio" value={formData.startDate} onChange={(val) => setFormData(prev => ({ ...prev, startDate: val }))} placeholder="AAAA-MM" />
+          <EditableField label="Fecha de fin" value={formData.endDate} onChange={(val) => setFormData(prev => ({ ...prev, endDate: val }))} placeholder="AAAA-MM" />
+          <EditableField label="Monto de financiamiento" value={formData.funding} onChange={(val) => setFormData(prev => ({ ...prev, funding: val }))} placeholder="$100,000 USD" />
 
           <div className="pt-4 flex gap-3">
-            <button onClick={() => setIsPanelOpen(false)} className="flex-1 px-4 py-3 border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50">Cancel</button>
-            <button onClick={handleSaveForm} className="flex-1 px-4 py-3 bg-red-700 hover:bg-red-800 text-white rounded-lg">{editingProject ? 'Update' : 'Add'}</button>
+            <button onClick={() => setIsPanelOpen(false)} className="flex-1 px-4 py-3 border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50">Cancelar</button>
+            <button onClick={handleSaveForm} className="flex-1 px-4 py-3 bg-red-700 hover:bg-red-800 text-white rounded-lg">{editingProject ? 'Actualizar' : 'Agregar'}</button>
           </div>
         </div>
       </SlideOverPanel>

@@ -34,16 +34,16 @@ const FacultyProfile = () => {
   const [hasChanges, setHasChanges] = useState(false)
 
   const navItems = [
-    { id: 'general', label: 'General Data', icon: User, completed: true },
-    { id: 'degrees', label: 'Academic Degrees', icon: GraduationCap, completed: true },
-    { id: 'research', label: 'Research', icon: FlaskConical, completed: false },
-    { id: 'publications', label: 'Publications', icon: BookOpen, completed: true },
-    { id: 'projects', label: 'Projects', icon: Briefcase, completed: true },
-    { id: 'teaching', label: 'Teaching', icon: FileText, completed: false },
-    { id: 'awards', label: 'Awards', icon: Award, completed: false },
-    { id: 'certifications', label: 'Certifications', icon: BadgeCheck, completed: false },
-    { id: 'languages', label: 'Languages', icon: Languages, completed: false },
-    { id: 'committees', label: 'Committees', icon: Users, completed: false }
+    { id: 'general', label: 'Datos Generales', icon: User, completed: true },
+    { id: 'degrees', label: 'Grados Académicos', icon: GraduationCap, completed: true },
+    { id: 'research', label: 'Investigación', icon: FlaskConical, completed: false },
+    { id: 'publications', label: 'Publicaciones', icon: BookOpen, completed: true },
+    { id: 'projects', label: 'Proyectos', icon: Briefcase, completed: true },
+    { id: 'teaching', label: 'Docencia', icon: FileText, completed: false },
+    { id: 'awards', label: 'Premios', icon: Award, completed: false },
+    { id: 'certifications', label: 'Certificaciones', icon: BadgeCheck, completed: false },
+    { id: 'languages', label: 'Idiomas', icon: Languages, completed: false },
+    { id: 'committees', label: 'Comités', icon: Users, completed: false }
   ]
 
   useEffect(() => {
@@ -101,9 +101,9 @@ const FacultyProfile = () => {
             <ArrowLeft size={20} />
           </button>
           <div>
-            <h1 className="text-2xl lg:text-3xl font-bold text-gray-900">General Data</h1>
+            <h1 className="text-2xl lg:text-3xl font-bold text-gray-900">Datos Generales</h1>
             <p className="text-gray-500 mt-1">
-              Manage your personal and institutional information. Elements marked with a lock icon are synchronized with the HR system and cannot be modified here.
+              Administra tu información personal e institucional. Los elementos con ícono de candado están sincronizados con el sistema de RH y no pueden modificarse aquí.
             </p>
           </div>
         </div>
@@ -114,7 +114,7 @@ const FacultyProfile = () => {
               className="flex items-center gap-2 bg-red-600 hover:bg-red-700 border-0"
             >
               <Save size={18} />
-              Save Changes
+              Guardar cambios
             </Button>
           )}
           <div className="flex items-center gap-3">
@@ -133,7 +133,7 @@ const FacultyProfile = () => {
         {/* Sidebar Navigation */}
         <div className="w-full lg:w-64 shrink-0">
           <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
-            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4">NAVIGATION</p>
+            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4">NAVEGACIÓN</p>
             <nav className="space-y-1">
               {navItems.map((item) => (
                 <button
@@ -162,7 +162,7 @@ const FacultyProfile = () => {
           {/* Profile Completion */}
           <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 mt-4">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm text-red-600 font-medium">Profile Completion</span>
+              <span className="text-sm text-red-600 font-medium">Completitud del perfil</span>
               <span className="text-sm font-bold text-gray-900">{faculty.profileProgress}%</span>
             </div>
             <div className="w-full bg-gray-200 rounded-full h-2">
@@ -173,8 +173,8 @@ const FacultyProfile = () => {
             </div>
             <p className="text-xs text-gray-500 mt-2">
               {100 - faculty.profileProgress > 0 
-                ? `${Math.ceil((100 - faculty.profileProgress) / 10)} sections left to complete`
-                : 'Profile complete!'
+                ? `${Math.ceil((100 - faculty.profileProgress) / 10)} secciones por completar`
+                : '¡Perfil completo!'
               }
             </p>
           </div>
@@ -187,16 +187,16 @@ const FacultyProfile = () => {
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-3">
                 <Building2 className="text-gray-400" size={20} />
-                <h2 className="text-lg font-semibold text-gray-900">Institutional Information</h2>
+                <h2 className="text-lg font-semibold text-gray-900">Información Institucional</h2>
               </div>
-              <span className="text-xs text-gray-400 uppercase tracking-wider">READ-ONLY</span>
+              <span className="text-xs text-gray-400 uppercase tracking-wider">SOLO LECTURA</span>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="bg-gray-50 rounded-lg p-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">EMPLOYEE ID</p>
+                    <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">NÚMERO DE EMPLEADO</p>
                     <p className="font-medium text-gray-900">{faculty.employeeId}</p>
                   </div>
                   <Lock size={16} className="text-gray-400" />
@@ -206,7 +206,7 @@ const FacultyProfile = () => {
               <div className="bg-gray-50 rounded-lg p-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">FULL LEGAL NAME</p>
+                    <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">NOMBRE COMPLETO</p>
                     <p className="font-medium text-gray-900">{faculty.name}</p>
                   </div>
                   <Lock size={16} className="text-gray-400" />
@@ -216,7 +216,7 @@ const FacultyProfile = () => {
               <div className="bg-gray-50 rounded-lg p-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">UNIVERSITY EMAIL</p>
+                    <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">CORREO INSTITUCIONAL</p>
                     <p className="font-medium text-gray-900">{faculty.email}</p>
                   </div>
                   <Lock size={16} className="text-gray-400" />
@@ -226,7 +226,7 @@ const FacultyProfile = () => {
               <div className="bg-gray-50 rounded-lg p-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">DEPARTMENT</p>
+                    <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">DEPARTAMENTO</p>
                     <p className="font-medium text-gray-900">{faculty.department}</p>
                   </div>
                   <Lock size={16} className="text-gray-400" />
@@ -236,7 +236,7 @@ const FacultyProfile = () => {
               <div className="bg-gray-50 rounded-lg p-4 md:col-span-2">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">ACADEMIC RANK</p>
+                    <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">RANGO ACADÉMICO</p>
                     <p className="font-medium text-gray-900">{faculty.role}</p>
                   </div>
                   <Lock size={16} className="text-gray-400" />
@@ -250,14 +250,14 @@ const FacultyProfile = () => {
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-3">
                 <Edit3 className="text-gray-400" size={20} />
-                <h2 className="text-lg font-semibold text-gray-900">Contact & Profile</h2>
+                <h2 className="text-lg font-semibold text-gray-900">Contacto y Perfil</h2>
               </div>
               <span className="px-3 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full uppercase">EDITABLE</span>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="bg-gray-50 rounded-lg p-4">
-                <p className="text-xs text-gray-500 uppercase tracking-wider mb-2">PERSONAL PHONE</p>
+                <p className="text-xs text-gray-500 uppercase tracking-wider mb-2">TELÉFONO PERSONAL</p>
                 <Form.Control
                   type="text"
                   value={formData.phone || ''}
@@ -267,7 +267,7 @@ const FacultyProfile = () => {
               </div>
 
               <div className="bg-gray-50 rounded-lg p-4">
-                <p className="text-xs text-gray-500 uppercase tracking-wider mb-2">ALTERNATE EMAIL</p>
+                <p className="text-xs text-gray-500 uppercase tracking-wider mb-2">CORREO ALTERNATIVO</p>
                 <Form.Control
                   type="email"
                   value={formData.alternateEmail || ''}
@@ -277,7 +277,7 @@ const FacultyProfile = () => {
               </div>
 
               <div className="bg-gray-50 rounded-lg p-4">
-                <p className="text-xs text-gray-500 uppercase tracking-wider mb-2">OFFICE LOCATION</p>
+                <p className="text-xs text-gray-500 uppercase tracking-wider mb-2">UBICACIÓN DE OFICINA</p>
                 <Form.Control
                   type="text"
                   value={formData.officeLocation || ''}
@@ -304,7 +304,7 @@ const FacultyProfile = () => {
               <div className="bg-gray-50 rounded-lg p-4">
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
-                    <p className="text-xs text-gray-500 uppercase tracking-wider mb-2">LINKEDIN PROFILE</p>
+                    <p className="text-xs text-gray-500 uppercase tracking-wider mb-2">PERFIL DE LINKEDIN</p>
                     <Form.Control
                       type="text"
                       value={formData.linkedIn || ''}
@@ -317,7 +317,7 @@ const FacultyProfile = () => {
               </div>
 
               <div className="bg-gray-50 rounded-lg p-4">
-                <p className="text-xs text-gray-500 uppercase tracking-wider mb-2">OFFICE HOURS</p>
+                <p className="text-xs text-gray-500 uppercase tracking-wider mb-2">HORARIO DE OFICINA</p>
                 <Form.Control
                   type="text"
                   value={formData.officeHours || ''}
@@ -330,7 +330,7 @@ const FacultyProfile = () => {
 
           {/* Professional Summary */}
           <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-            <p className="text-xs text-gray-500 uppercase tracking-wider mb-2">PROFESSIONAL SUMMARY</p>
+            <p className="text-xs text-gray-500 uppercase tracking-wider mb-2">RESUMEN PROFESIONAL</p>
             <Form.Control
               as="textarea"
               rows={4}
@@ -345,14 +345,14 @@ const FacultyProfile = () => {
             <div className="flex items-center gap-3">
               <Clock size={18} className="text-gray-400" />
               <div>
-                <p className="font-medium text-gray-900">Last updated</p>
-                <p className="text-sm text-gray-500">{faculty.lastUpdate} at 11:42 AM</p>
+                <p className="font-medium text-gray-900">Última actualización</p>
+                <p className="text-sm text-gray-500">{faculty.lastUpdate} a las 11:42 AM</p>
               </div>
             </div>
             {hasChanges && (
               <div className="flex items-center gap-2 px-4 py-2 bg-green-100 text-green-700 rounded-lg">
                 <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-                Auto-save active - Your changes are being saved locally
+                Autoguardado activo - Tus cambios se están guardando localmente
               </div>
             )}
           </div>

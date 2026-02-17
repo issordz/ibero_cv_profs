@@ -2,21 +2,21 @@ import { FileText, Download, Calendar } from 'lucide-react'
 
 const Reports = () => {
   const reports = [
-    { name: 'Faculty Completion Status', date: 'Dec 2023', type: 'PDF' },
-    { name: 'Department Summary', date: 'Nov 2023', type: 'Excel' },
-    { name: 'Annual Review Report', date: 'Oct 2023', type: 'PDF' }
+    { name: 'Estado de completitud de docentes', date: 'Dic 2023', type: 'PDF' },
+    { name: 'Resumen por departamento', date: 'Nov 2023', type: 'Excel' },
+    { name: 'Reporte de revisión anual', date: 'Oct 2023', type: 'PDF' }
   ]
 
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-2xl lg:text-3xl font-bold text-gray-900">Reports</h1>
-        <p className="text-gray-500 mt-1">Generate and download faculty reports</p>
+        <h1 className="text-2xl lg:text-3xl font-bold text-gray-900">Reportes</h1>
+        <p className="text-gray-500 mt-1">Genera y descarga reportes de docentes</p>
       </div>
 
       <div className="bg-white rounded-xl shadow-sm border border-gray-100">
         <div className="p-6 border-b border-gray-100">
-          <h2 className="font-semibold text-gray-900">Available Reports</h2>
+          <h2 className="font-semibold text-gray-900">Reportes disponibles</h2>
         </div>
         <div className="divide-y divide-gray-100">
           {reports.map((report, index) => (

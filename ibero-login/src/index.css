@@ -54,25 +54,29 @@ body {
   }
 }
 
-/* Dark scrollbar for sidebar */
+/* Sidebar scrollbar matching red theme */
 aside::-webkit-scrollbar,
 aside *::-webkit-scrollbar {
-  width: 4px;
+  width: 5px;
 }
 aside::-webkit-scrollbar-track,
 aside *::-webkit-scrollbar-track {
-  background: #181112;
+  background: rgba(0,0,0,0.1);
 }
 aside::-webkit-scrollbar-thumb,
 aside *::-webkit-scrollbar-thumb {
-  background: #333;
+  background: rgba(255,255,255,0.35);
   border-radius: 4px;
 }
+aside::-webkit-scrollbar-thumb:hover,
+aside *::-webkit-scrollbar-thumb:hover {
+  background: rgba(255,255,255,0.55);
+}
 aside {
-  scrollbar-color: #333 #181112;
+  scrollbar-color: rgba(255,255,255,0.35) rgba(0,0,0,0.1);
   scrollbar-width: thin;
 }
 aside nav {
-  scrollbar-color: #333 #181112;
+  scrollbar-color: rgba(255,255,255,0.35) rgba(0,0,0,0.1);
   scrollbar-width: thin;
 }

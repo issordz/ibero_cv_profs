@@ -37,8 +37,8 @@ const ProfileSection = () => {
   const handleSave = async () => {
     await Swal.fire({
       icon: 'success',
-      title: 'Changes Saved',
-      text: 'Your profile has been updated successfully',
+      title: 'Cambios guardados',
+      text: 'Tu perfil ha sido actualizado correctamente',
       timer: 2000,
       showConfirmButton: false,
       customClass: {
@@ -139,7 +139,7 @@ const ProfileSection = () => {
             onClick={handleSave}
             className="px-6 py-3 bg-red-700 hover:bg-red-800 text-white font-semibold rounded-lg shadow-lg transition-colors flex items-center gap-2"
           >
-            Save Changes
+            Guardar cambios
           </button>
         </div>
       )}

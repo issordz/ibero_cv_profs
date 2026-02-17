@@ -6,7 +6,7 @@ const PlaceholderSection = ({ sectionName }) => {
       <Construction className="mx-auto text-slate-300 mb-4" size={48} />
       <h3 className="text-lg font-semibold text-gray-900 mb-2">{sectionName}</h3>
       <p className="text-slate-500">
-        This section is under development and will be available soon.
+        Esta sección está en desarrollo y estará disponible próximamente.
       </p>
     </div>
   )

@@ -30,18 +30,18 @@ const LanguagesSection = ({ languages: initialLanguages, onSave }) => {
   const handleDelete = async (langId) => {
     const result = await Swal.fire({
       icon: 'warning',
-      title: 'Delete Language?',
-      text: 'This action cannot be undone.',
+      title: '¿Eliminar idioma?',
+      text: 'Esta acción no se puede deshacer.',
       showCancelButton: true,
       confirmButtonColor: '#C41E3A',
       cancelButtonColor: '#6B7280',
-      confirmButtonText: 'Yes, delete',
-      cancelButtonText: 'Cancel'
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
     })
 
     if (result.isConfirmed) {
       setLanguagesList(prev => prev.filter(l => l.id !== langId))
-      Swal.fire({ icon: 'success', title: 'Deleted', timer: 1500, showConfirmButton: false })
+      Swal.fire({ icon: 'success', title: 'Eliminado', timer: 1500, showConfirmButton: false })
     }
   }
 
@@ -49,8 +49,8 @@ const LanguagesSection = ({ languages: initialLanguages, onSave }) => {
     if (!formData.language || !formData.level) {
       Swal.fire({
         icon: 'warning',
-        title: 'Required Fields',
-        text: 'Please fill in all required fields',
+        title: 'Campos requeridos',
+        text: 'Por favor completa todos los campos obligatorios',
         confirmButtonColor: '#C41E3A'
       })
       return
@@ -63,14 +63,14 @@ const LanguagesSection = ({ languages: initialLanguages, onSave }) => {
     }
 
     setIsPanelOpen(false)
-    Swal.fire({ icon: 'success', title: editingLang ? 'Updated' : 'Added', timer: 1500, showConfirmButton: false })
+    Swal.fire({ icon: 'success', title: editingLang ? 'Actualizado' : 'Agregado', timer: 1500, showConfirmButton: false })
   }
 
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-3 mb-6">
         <Languages className="text-slate-400" size={24} />
-        <p className="text-slate-500">List the languages you speak and your proficiency level.</p>
+        <p className="text-slate-500">Lista los idiomas que hablas y tu nivel de dominio.</p>
       </div>
 
       <div className="space-y-3">
@@ -85,20 +85,20 @@ const LanguagesSection = ({ languages: initialLanguages, onSave }) => {
         ))}
       </div>
 
-      <AddItemButton label="Add New Language" onClick={handleAdd} />
+      <AddItemButton label="Agregar idioma" onClick={handleAdd} />
 
       <SlideOverPanel
         isOpen={isPanelOpen}
         onClose={() => setIsPanelOpen(false)}
-        title={editingLang ? 'Edit Language' : 'Add New Language'}
+        title={editingLang ? 'Editar idioma' : 'Agregar idioma'}
       >
         <div className="space-y-4">
-          <EditableField label="Language *" value={formData.language} onChange={(val) => setFormData(prev => ({ ...prev, language: val }))} placeholder="e.g., English" />
-          <EditableField label="Proficiency Level *" value={formData.level} onChange={(val) => setFormData(prev => ({ ...prev, level: val }))} placeholder="e.g., Fluent (C2)" />
+          <EditableField label="Idioma *" value={formData.language} onChange={(val) => setFormData(prev => ({ ...prev, language: val }))} placeholder="Ej., Inglés" />
+          <EditableField label="Nivel de dominio *" value={formData.level} onChange={(val) => setFormData(prev => ({ ...prev, level: val }))} placeholder="Ej., Fluido (C2)" />
 
           <div className="pt-4 flex gap-3">
-            <button onClick={() => setIsPanelOpen(false)} className="flex-1 px-4 py-3 border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50">Cancel</button>
-            <button onClick={handleSaveForm} className="flex-1 px-4 py-3 bg-red-700 hover:bg-red-800 text-white rounded-lg">{editingLang ? 'Update' : 'Add'}</button>
+            <button onClick={() => setIsPanelOpen(false)} className="flex-1 px-4 py-3 border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50">Cancelar</button>
+            <button onClick={handleSaveForm} className="flex-1 px-4 py-3 bg-red-700 hover:bg-red-800 text-white rounded-lg">{editingLang ? 'Actualizar' : 'Agregar'}</button>
           </div>
         </div>
       </SlideOverPanel>

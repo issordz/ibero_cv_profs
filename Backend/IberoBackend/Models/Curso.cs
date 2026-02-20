@@ -21,6 +21,12 @@ namespace IberoBackend.Models
         [Column("desc_logro")]
         public string DescLogro { get; set; } = string.Empty;
 
+        [Column("institucion")]
+        public string? Institucion { get; set; }
+
+        [Column("anio_obtencion")]
+        public int? AnioObtencion { get; set; }
+
         [Column("activo")]
         public bool Activo { get; set; } = true;
 

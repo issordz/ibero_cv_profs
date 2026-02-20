@@ -3,22 +3,26 @@ import { useParams } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { 
   facultyMembers, 
-  academicDegrees, 
-  publications, 
-  projects, 
-  awards, 
-  teachingCourses, 
-  languages 
+  estudiosAcademicos, 
+  experienciaLaboral, 
+  capacitaciones, 
+  logrosProfesionales, 
+  organismos, 
+  premiosDistinciones, 
+  productosAcademicos, 
+  actualizaciones 
 } from '../../data/users'
 import Swal from 'sweetalert2'
 
 import GeneralDataSection from './sections/GeneralDataSection'
 import AcademicDegreesSection from './sections/AcademicDegreesSection'
-import PublicationsSection from './sections/PublicationsSection'
-import ProjectsSection from './sections/ProjectsSection'
-import AwardsSection from './sections/AwardsSection'
-import TeachingSection from './sections/TeachingSection'
-import LanguagesSection from './sections/LanguagesSection'
+import ExperienciaLaboralSection from './sections/ProjectsSection'
+import CapacitacionSection from './sections/TeachingSection'
+import LogrosProfesionalesSection from './sections/LogrosProfesionalesSection'
+import OrganismosSection from './sections/LanguagesSection'
+import PremiosDistincionesSection from './sections/AwardsSection'
+import ProductosAcademicosSection from './sections/PublicationsSection'
+import ActualizacionSection from './sections/ActualizacionSection'
 import PlaceholderSection from './sections/PlaceholderSection'
 
 const ProfileSection = () => {
@@ -50,24 +54,26 @@ const ProfileSection = () => {
 
   const sectionTitles = {
     'datos-generales': 'Datos Generales',
-    'informacion-academica': 'Información Académica',
+    'informacion-academica': 'Estudios Académicos',
     'experiencia-laboral': 'Experiencia Laboral',
-    'capacitaciones': 'Capacitaciones y Actualizaciones',
-    'productos-academicos': 'Productos Académicos',
+    'capacitaciones': 'Capacitación',
     'logros-profesionales': 'Logros Profesionales',
     'organismos': 'Organismos',
-    'premios-distinciones': 'Premios y Distinciones'
+    'premios-distinciones': 'Premios y Distinciones',
+    'productos-academicos': 'Productos Académicos',
+    'actualizacion': 'Actualización'
   }
 
   const sectionDescriptions = {
     'datos-generales': 'Administra tu información personal e institucional.',
-    'informacion-academica': 'Registra tus grados académicos y formación.',
+    'informacion-academica': 'Registra tus estudios académicos y formación.',
     'experiencia-laboral': 'Detalla tu trayectoria profesional y laboral.',
-    'capacitaciones': 'Agrega cursos, talleres y actualizaciones profesionales.',
-    'productos-academicos': 'Registra tus publicaciones, investigaciones y proyectos.',
+    'capacitaciones': 'Agrega cursos, talleres, diplomados y certificaciones.',
     'logros-profesionales': 'Documenta tus logros y reconocimientos profesionales.',
     'organismos': 'Membresías y participación en organismos.',
-    'premios-distinciones': 'Registra tus premios, distinciones y reconocimientos.'
+    'premios-distinciones': 'Registra tus premios, distinciones y reconocimientos.',
+    'productos-academicos': 'Registra tus publicaciones, investigaciones y proyectos.',
+    'actualizacion': 'Registra tus cursos de actualización profesional.'
   }
 
   const renderSection = () => {
@@ -87,28 +93,56 @@ const ProfileSection = () => {
       case 'informacion-academica':
         return (
           <AcademicDegreesSection 
-            degrees={academicDegrees[facultyId] || []}
+            degrees={estudiosAcademicos[facultyId] || []}
             onSave={handleSave}
           />
         )
-      case 'productos-academicos':
+      case 'experiencia-laboral':
         return (
-          <PublicationsSection 
-            publications={publications[facultyId] || []}
+          <ExperienciaLaboralSection 
+            items={experienciaLaboral[facultyId] || []}
+            onSave={handleSave}
+          />
+        )
+      case 'capacitaciones':
+        return (
+          <CapacitacionSection 
+            items={capacitaciones[facultyId] || []}
             onSave={handleSave}
           />
         )
       case 'logros-profesionales':
         return (
-          <AwardsSection 
-            awards={awards[facultyId] || []}
+          <LogrosProfesionalesSection 
+            items={logrosProfesionales[facultyId] || []}
+            onSave={handleSave}
+          />
+        )
+      case 'organismos':
+        return (
+          <OrganismosSection 
+            items={organismos[facultyId] || []}
             onSave={handleSave}
           />
         )
       case 'premios-distinciones':
         return (
-          <AwardsSection 
-            awards={awards[facultyId] || []}
+          <PremiosDistincionesSection 
+            items={premiosDistinciones[facultyId] || []}
+            onSave={handleSave}
+          />
+        )
+      case 'productos-academicos':
+        return (
+          <ProductosAcademicosSection 
+            items={productosAcademicos[facultyId] || []}
+            onSave={handleSave}
+          />
+        )
+      case 'actualizacion':
+        return (
+          <ActualizacionSection 
+            items={actualizaciones[facultyId] || []}
             onSave={handleSave}
           />
         )

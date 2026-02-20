@@ -1,17 +1,16 @@
 import { useState } from 'react'
 import { ClipboardList, Search, AlertTriangle, Mail, ChevronRight } from 'lucide-react'
-import { facultyMembers } from '../data/users'
+import { facultyMembers, getFullName } from '../data/users'
 
 const ValidacionesPendientes = () => {
   const [searchTerm, setSearchTerm] = useState('')
 
-  // Simular profesores con validaciones pendientes (progreso < 100%)
+  // Simular profesores con validaciones pendientes (inactivos o filtro de búsqueda)
   const pendingFaculty = facultyMembers
-    .filter(f => f.profileProgress < 100)
     .filter(f => 
-      f.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      f.department.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      f.employeeId.toLowerCase().includes(searchTerm.toLowerCase())
+      getFullName(f).toLowerCase().includes(searchTerm.toLowerCase()) ||
+      f.puestoInstitucion.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      f.correoElectronico.toLowerCase().includes(searchTerm.toLowerCase())
     )
 
   return (
@@ -28,11 +27,11 @@ const ValidacionesPendientes = () => {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <div className="bg-white rounded-xl border border-gray-200 p-5">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-500">Total Pendientes</p>
+              <p className="text-sm text-gray-500">Total Profesores</p>
               <p className="text-3xl font-bold text-gray-900 mt-1">{pendingFaculty.length}</p>
             </div>
             <div className="w-12 h-12 bg-red-50 rounded-xl flex items-center justify-center">
@@ -43,11 +42,9 @@ const ValidacionesPendientes = () => {
         <div className="bg-white rounded-xl border border-gray-200 p-5">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-500">Progreso Promedio</p>
+              <p className="text-sm text-gray-500">Activos</p>
               <p className="text-3xl font-bold text-gray-900 mt-1">
-                {pendingFaculty.length > 0 
-                  ? Math.round(pendingFaculty.reduce((acc, f) => acc + f.profileProgress, 0) / pendingFaculty.length)
-                  : 0}%
+                {pendingFaculty.filter(f => f.activo).length}
               </p>
             </div>
             <div className="w-12 h-12 bg-orange-50 rounded-xl flex items-center justify-center">
@@ -58,11 +55,11 @@ const ValidacionesPendientes = () => {
         <div className="bg-white rounded-xl border border-gray-200 p-5">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-500">Requieren Atención</p>
+              <p className="text-sm text-gray-500">Inactivos</p>
               <p className="text-3xl font-bold text-gray-900 mt-1">
-                {pendingFaculty.filter(f => f.profileProgress < 50).length}
+                {pendingFaculty.filter(f => !f.activo).length}
               </p>
-              <p className="text-xs text-red-500 mt-1">Menos del 50% completado</p>
+              <p className="text-xs text-red-500 mt-1">Requieren atención</p>
             </div>
             <div className="w-12 h-12 bg-yellow-50 rounded-xl flex items-center justify-center">
               <AlertTriangle className="text-yellow-500" size={24} />
@@ -79,7 +76,7 @@ const ValidacionesPendientes = () => {
             <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
             <input
               type="text"
-              placeholder="Buscar por nombre, ID o departamento..."
+              placeholder="Buscar por nombre, correo o puesto..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
@@ -93,9 +90,9 @@ const ValidacionesPendientes = () => {
             <thead>
               <tr className="border-b border-gray-100">
                 <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider pb-3 pr-4">Profesor</th>
-                <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider pb-3 pr-4">ID</th>
-                <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider pb-3 pr-4">Departamento</th>
-                <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider pb-3 pr-4">Progreso</th>
+                <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider pb-3 pr-4">Puesto</th>
+                <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider pb-3 pr-4">Últ. Actualización</th>
+                <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider pb-3 pr-4">Estado</th>
                 <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider pb-3">Acciones</th>
               </tr>
             </thead>
@@ -108,32 +105,21 @@ const ValidacionesPendientes = () => {
                         {faculty.avatar}
                       </div>
                       <div>
-                        <p className="text-sm font-medium text-gray-900">{faculty.name}</p>
-                        <p className="text-xs text-gray-400">{faculty.email}</p>
+                        <p className="text-sm font-medium text-gray-900">{getFullName(faculty)}</p>
+                        <p className="text-xs text-gray-400">{faculty.correoElectronico}</p>
                       </div>
                     </div>
                   </td>
                   <td className="py-4 pr-4">
-                    <span className="text-sm text-gray-600 font-mono">{faculty.employeeId}</span>
+                    <span className="text-sm text-gray-600">{faculty.puestoInstitucion}</span>
                   </td>
                   <td className="py-4 pr-4">
-                    <span className={`text-xs font-medium px-2.5 py-1 rounded-full ${faculty.departmentColor}`}>
-                      {faculty.department}
+                    <span className="text-sm text-gray-600">{faculty.fechaActualizacion}</span>
+                  </td>
+                  <td className="py-4 pr-4">
+                    <span className={`text-xs font-medium px-2.5 py-1 rounded-full ${faculty.activo ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-600'}`}>
+                      {faculty.activo ? 'Activo' : 'Inactivo'}
                     </span>
-                  </td>
-                  <td className="py-4 pr-4">
-                    <div className="flex items-center gap-3 min-w-[140px]">
-                      <div className="flex-1 bg-gray-200 rounded-full h-2">
-                        <div 
-                          className={`h-2 rounded-full transition-all ${
-                            faculty.profileProgress < 50 ? 'bg-red-500' : 
-                            faculty.profileProgress < 80 ? 'bg-yellow-500' : 'bg-green-500'
-                          }`}
-                          style={{ width: `${faculty.profileProgress}%` }}
-                        />
-                      </div>
-                      <span className="text-sm font-semibold text-gray-700 w-10 text-right">{faculty.profileProgress}%</span>
-                    </div>
                   </td>
                   <td className="py-4">
                     <button 

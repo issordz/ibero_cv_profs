@@ -21,7 +21,8 @@ import {
   Circle,
   Bell,
   ChevronRight,
-  X
+  X,
+  RefreshCw
 } from 'lucide-react'
 import { formSections, sectionStatus } from '../data/users'
 
@@ -42,7 +43,7 @@ const Layout = () => {
   // Iconos para las secciones del formulario del profesor
   const sectionIcons = {
     User, GraduationCap, BookOpen, Briefcase, 
-    FileText, Award, Users, Trophy
+    FileText, Award, Users, Trophy, RefreshCw
   }
 
   // Navegación para Admin - 5 paneles
@@ -304,8 +305,8 @@ const Layout = () => {
                   className="flex items-center gap-3 hover:opacity-80 transition-opacity"
                 >
                   <div className="text-right hidden sm:flex flex-col justify-center" style={{ gap: '1px' }}>
-                    <p className="text-sm font-semibold" style={{ color: '#181112', lineHeight: '1.1', margin: 0 }}>{user?.name}</p>
-                    <p className="text-[11px]" style={{ color: '#896169', lineHeight: '1.1', margin: 0 }}>{user?.roleDisplay}</p>
+                    <p className="text-sm font-semibold" style={{ color: '#181112', lineHeight: '1.1', margin: 0 }}>{user?.nombres} {user?.apellidoPaterno}</p>
+                    <p className="text-[11px]" style={{ color: '#896169', lineHeight: '1.1', margin: 0 }}>{user?.puestoInstitucion}</p>
                   </div>
                   <div className="h-10 w-10 overflow-hidden rounded-full bg-gray-200 flex items-center justify-center font-bold text-sm" style={{ color: '#4b5563' }}>
                     {user?.avatar || 'U'}
@@ -321,8 +322,8 @@ const Layout = () => {
                     />
                     <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-1.5 z-50" style={{ border: '1px solid #e5e7eb' }}>
                       <div className="px-4 py-2 sm:hidden" style={{ borderBottom: '1px solid #e5e7eb' }}>
-                        <p className="text-sm font-semibold" style={{ color: '#181112' }}>{user?.name}</p>
-                        <p className="text-xs" style={{ color: '#896169' }}>{user?.roleDisplay}</p>
+                        <p className="text-sm font-semibold" style={{ color: '#181112' }}>{user?.nombres} {user?.apellidoPaterno}</p>
+                        <p className="text-xs" style={{ color: '#896169' }}>{user?.puestoInstitucion}</p>
                       </div>
                       <button
                         onClick={() => { handleLogout(); setUserMenuOpen(false); }}

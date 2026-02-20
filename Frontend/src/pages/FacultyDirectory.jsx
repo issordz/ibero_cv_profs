@@ -4,40 +4,34 @@ import {
   Search, Plus, Eye, Edit, TrendingUp, UserCheck, Clock, CheckCircle,
   ChevronLeft, ChevronRight
 } from 'lucide-react'
-import { facultyMembers, departments, statuses } from '../data/users'
+import { facultyMembers, statuses, getFullName } from '../data/users'
 import Swal from 'sweetalert2'
 
 const FacultyDirectory = () => {
   const navigate = useNavigate()
   const [filterText, setFilterText] = useState('')
-  const [selectedDepartment, setSelectedDepartment] = useState('Todos los departamentos')
   const [selectedStatus, setSelectedStatus] = useState('Todos los estados')
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 5
 
   const filteredData = useMemo(() => {
     return facultyMembers.filter((item) => {
+      const fullName = getFullName(item)
       const matchesText = 
-        item.name.toLowerCase().includes(filterText.toLowerCase()) ||
-        item.employeeId.toLowerCase().includes(filterText.toLowerCase()) ||
-        item.department.toLowerCase().includes(filterText.toLowerCase())
-      
-      const matchesDepartment = 
-        selectedDepartment === 'Todos los departamentos' || 
-        item.department === selectedDepartment
+        fullName.toLowerCase().includes(filterText.toLowerCase()) ||
+        item.correoElectronico.toLowerCase().includes(filterText.toLowerCase()) ||
+        item.puestoInstitucion.toLowerCase().includes(filterText.toLowerCase())
 
       let matchesStatus = true
-      if (selectedStatus === 'Completo (100%)') {
-        matchesStatus = item.profileProgress === 100
-      } else if (selectedStatus === 'En progreso (50-99%)') {
-        matchesStatus = item.profileProgress >= 50 && item.profileProgress < 100
-      } else if (selectedStatus === 'Incompleto (<50%)') {
-        matchesStatus = item.profileProgress < 50
+      if (selectedStatus === 'Activo') {
+        matchesStatus = item.activo === true
+      } else if (selectedStatus === 'Inactivo') {
+        matchesStatus = item.activo === false
       }
 
-      return matchesText && matchesDepartment && matchesStatus
+      return matchesText && matchesStatus
     })
-  }, [filterText, selectedDepartment, selectedStatus])
+  }, [filterText, selectedStatus])
 
   const totalPages = Math.ceil(filteredData.length / itemsPerPage)
   const paginatedData = filteredData.slice(
@@ -61,28 +55,17 @@ const FacultyDirectory = () => {
     })
   }
 
-  const getStatusBadge = (progress) => {
-    if (progress === 100) {
+  const getStatusBadge = (activo) => {
+    if (activo) {
       return <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">Activo</span>
-    } else if (progress >= 50) {
-      return <span className="inline-flex items-center rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800">En revisión</span>
-    } else {
-      return <span className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800">Incompleto</span>
     }
-  }
-
-  const getProgressColorHex = (progress) => {
-    if (progress === 100) return '#22c55e'
-    if (progress >= 75) return '#c40e2f'
-    if (progress >= 50) return '#eab308'
-    return '#f97316'
+    return <span className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800">Inactivo</span>
   }
 
   // Stats
   const totalFaculty = facultyMembers.length
-  const activeProfiles = facultyMembers.filter(f => f.profileProgress >= 75).length
-  const pendingReviews = facultyMembers.filter(f => f.profileProgress < 75 && f.profileProgress >= 25).length
-  const avgCompletion = Math.round(facultyMembers.reduce((sum, f) => sum + f.profileProgress, 0) / totalFaculty)
+  const activeProfiles = facultyMembers.filter(f => f.activo).length
+  const inactiveProfiles = totalFaculty - activeProfiles
 
   return (
     <div>
@@ -99,8 +82,8 @@ const FacultyDirectory = () => {
             </div>
           </div>
           <div className="mt-4 flex items-center gap-1 text-sm">
-            <span className="font-medium text-green-600">+12%</span>
-            <span className="text-[#896169]">desde el mes pasado</span>
+            <span className="font-medium text-green-600">registrados</span>
+            <span className="text-[#896169]">en el sistema</span>
           </div>
         </div>
 
@@ -115,39 +98,38 @@ const FacultyDirectory = () => {
             </div>
           </div>
           <div className="mt-4 flex items-center gap-1 text-sm">
-            <span className="font-medium text-blue-600">+5%</span>
-            <span className="text-[#896169]">recién activados</span>
+            <span className="font-medium text-blue-600">{Math.round((activeProfiles / totalFaculty) * 100)}%</span>
+            <span className="text-[#896169]">del total</span>
           </div>
         </div>
 
         <div className="rounded-xl border border-[#e6dbdd] bg-white p-6 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-[#896169]">Revisiones pendientes</p>
-              <p className="mt-2 text-3xl font-bold text-[#181112]">{pendingReviews}</p>
+              <p className="text-sm font-medium text-[#896169]">Perfiles inactivos</p>
+              <p className="mt-2 text-3xl font-bold text-[#181112]">{inactiveProfiles}</p>
             </div>
             <div className="rounded-lg bg-orange-100 p-2 text-orange-600">
               <Clock size={22} />
             </div>
           </div>
           <div className="mt-4 flex items-center gap-1 text-sm">
-            <span className="font-medium text-orange-600">-2%</span>
-            <span className="text-[#896169]">desde la semana pasada</span>
+            <span className="text-[#896169]">sin actividad reciente</span>
           </div>
         </div>
 
         <div className="rounded-xl bg-white p-6 shadow-sm" style={{ border: '1px solid #e6dbdd' }}>
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium" style={{ color: '#896169' }}>Tasa de completitud</p>
-              <p className="mt-2 text-3xl font-bold" style={{ color: '#181112' }}>{avgCompletion}%</p>
+              <p className="text-sm font-medium" style={{ color: '#896169' }}>Tasa de actividad</p>
+              <p className="mt-2 text-3xl font-bold" style={{ color: '#181112' }}>{Math.round((activeProfiles / totalFaculty) * 100)}%</p>
             </div>
             <div className="rounded-lg p-2" style={{ backgroundColor: 'rgba(196,14,47,0.1)', color: '#c40e2f' }}>
               <CheckCircle size={22} />
             </div>
           </div>
           <div className="mt-4 w-full bg-gray-100 rounded-full h-1.5">
-            <div className="h-1.5 rounded-full" style={{ width: `${avgCompletion}%`, backgroundColor: '#c40e2f' }}></div>
+            <div className="h-1.5 rounded-full" style={{ width: `${Math.round((activeProfiles / totalFaculty) * 100)}%`, backgroundColor: '#c40e2f' }}></div>
           </div>
         </div>
       </div>
@@ -163,7 +145,7 @@ const FacultyDirectory = () => {
             </div>
             <input
               className="block w-full rounded-lg border-0 bg-[#f4f0f1] py-2.5 pl-10 text-sm text-[#181112] placeholder:text-[#896169] focus:ring-2 focus:ring-[#c40e2f]"
-              placeholder="Buscar por nombre, ID o departamento..."
+              placeholder="Buscar por nombre, correo o puesto..."
               type="text"
               value={filterText}
               onChange={(e) => { setFilterText(e.target.value); setCurrentPage(1) }}
@@ -171,15 +153,6 @@ const FacultyDirectory = () => {
           </div>
           {/* Filters & Action */}
           <div className="flex flex-wrap items-center gap-3">
-            <select
-              value={selectedDepartment}
-              onChange={(e) => { setSelectedDepartment(e.target.value); setCurrentPage(1) }}
-              className="rounded-lg border-0 bg-[#f4f0f1] py-2.5 pl-4 pr-10 text-sm font-medium text-[#181112] focus:ring-2 focus:ring-[#c40e2f]"
-            >
-              {departments.map((dept) => (
-                <option key={dept} value={dept}>{dept}</option>
-              ))}
-            </select>
             <select
               value={selectedStatus}
               onChange={(e) => { setSelectedStatus(e.target.value); setCurrentPage(1) }}
@@ -205,11 +178,11 @@ const FacultyDirectory = () => {
           <table className="w-full text-left text-sm">
             <thead className="bg-[#fcfafa] text-xs uppercase text-[#896169]">
               <tr>
-                <th className="px-6 py-4 font-semibold" scope="col">Colaborador</th>
-                <th className="px-6 py-4 font-semibold" scope="col">ID</th>
-                <th className="px-6 py-4 font-semibold" scope="col">Departamento</th>
+                <th className="px-6 py-4 font-semibold" scope="col">Profesor</th>
+                <th className="px-6 py-4 font-semibold" scope="col">Correo</th>
+                <th className="px-6 py-4 font-semibold" scope="col">Puesto</th>
+                <th className="px-6 py-4 font-semibold" scope="col">Edad</th>
                 <th className="px-6 py-4 font-semibold" scope="col">Estado</th>
-                <th className="px-6 py-4 font-semibold w-1/5" scope="col">Completitud del perfil</th>
                 <th className="px-6 py-4 font-semibold text-right" scope="col">Acciones</th>
               </tr>
             </thead>
@@ -222,30 +195,20 @@ const FacultyDirectory = () => {
                         {row.avatar}
                       </div>
                       <div>
-                        <div className="font-semibold text-[#181112]">{row.name}</div>
-                        <div className="text-xs text-[#896169]">Actualizado {row.lastUpdate}</div>
+                        <div className="font-semibold text-[#181112]">{getFullName(row)}</div>
+                        <div className="text-xs text-[#896169]">Actualizado {row.fechaActualizacion}</div>
                       </div>
                     </div>
                   </td>
-                  <td className="px-6 py-4 font-medium text-[#181112] tabular-nums">{row.employeeId}</td>
+                  <td className="px-6 py-4 text-sm text-[#181112]">{row.correoElectronico}</td>
                   <td className="px-6 py-4">
-                    <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${row.departmentColor}`}>
-                      {row.department}
+                    <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-gray-50 text-gray-700">
+                      {row.puestoInstitucion}
                     </span>
                   </td>
+                  <td className="px-6 py-4 text-sm text-[#181112] tabular-nums">{row.edad}</td>
                   <td className="px-6 py-4">
-                    {getStatusBadge(row.profileProgress)}
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-3">
-                      <div className="flex-1 overflow-hidden rounded-full bg-gray-200 h-2">
-                        <div
-                          className="h-2 rounded-full"
-                          style={{ width: `${row.profileProgress}%`, backgroundColor: getProgressColorHex(row.profileProgress) }}
-                        ></div>
-                      </div>
-                      <span className="text-xs font-medium text-[#181112] tabular-nums">{row.profileProgress}%</span>
-                    </div>
+                    {getStatusBadge(row.activo)}
                   </td>
                   <td className="px-6 py-4 text-right">
                     <div className="flex justify-end gap-2">

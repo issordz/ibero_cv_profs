@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { UserCog, Search, Plus, Eye, Pencil, Trash2, ChevronRight, Shield, GraduationCap } from 'lucide-react'
-import { loginUsers, facultyMembers } from '../data/users'
+import { loginUsers, facultyMembers, getFullName } from '../data/users'
 
 const UserManagement = () => {
   const [searchTerm, setSearchTerm] = useState('')
@@ -10,26 +10,24 @@ const UserManagement = () => {
   const allUsers = [
     ...loginUsers.map(u => ({
       id: u.id,
-      name: u.name,
-      email: u.email,
+      name: `${u.nombres} ${u.apellidoPaterno}${u.apellidoMaterno ? ' ' + u.apellidoMaterno : ''}`,
+      email: u.correo,
       role: u.role,
-      roleDisplay: u.roleDisplay,
+      puestoInstitucion: u.puestoInstitucion,
       avatar: u.avatar,
-      department: u.department,
-      status: 'active'
+      activo: u.activo
     })),
     // Agregar faculty members que no están en loginUsers
     ...facultyMembers
-      .filter(f => !loginUsers.find(u => u.email === f.email))
+      .filter(f => !loginUsers.find(u => u.correo === f.correoElectronico))
       .map(f => ({
         id: f.id + 100,
-        name: f.name,
-        email: f.email,
+        name: getFullName(f),
+        email: f.correoElectronico,
         role: 'professor',
-        roleDisplay: f.role,
+        puestoInstitucion: f.puestoInstitucion,
         avatar: f.avatar,
-        department: f.department,
-        status: 'active'
+        activo: f.activo
       }))
   ]
 
@@ -38,7 +36,7 @@ const UserManagement = () => {
     .filter(u => 
       u.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       u.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      u.department.toLowerCase().includes(searchTerm.toLowerCase())
+      u.puestoInstitucion.toLowerCase().includes(searchTerm.toLowerCase())
     )
 
   const adminCount = allUsers.filter(u => u.role === 'admin').length
@@ -145,7 +143,7 @@ const UserManagement = () => {
               <tr className="border-b border-gray-100">
                 <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider pb-3 pr-4">Usuario</th>
                 <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider pb-3 pr-4">Rol</th>
-                <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider pb-3 pr-4">Departamento</th>
+                <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider pb-3 pr-4">Puesto</th>
                 <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider pb-3 pr-4">Estado</th>
                 <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider pb-3">Acciones</th>
               </tr>
@@ -174,12 +172,12 @@ const UserManagement = () => {
                     </span>
                   </td>
                   <td className="py-4 pr-4">
-                    <span className="text-sm text-gray-600">{user.department}</span>
+                    <span className="text-sm text-gray-600">{user.puestoInstitucion}</span>
                   </td>
                   <td className="py-4 pr-4">
-                    <span className="flex items-center gap-1.5 text-xs font-medium text-green-600">
-                      <span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
-                      Activo
+                    <span className={`flex items-center gap-1.5 text-xs font-medium ${user.activo ? 'text-green-600' : 'text-gray-500'}`}>
+                      <span className={`w-1.5 h-1.5 rounded-full ${user.activo ? 'bg-green-500' : 'bg-gray-400'}`}></span>
+                      {user.activo ? 'Activo' : 'Inactivo'}
                     </span>
                   </td>
                   <td className="py-4">

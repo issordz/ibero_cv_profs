@@ -18,17 +18,18 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     const foundUser = loginUsers.find(
-      (u) => u.email === email && u.password === password
+      (u) => u.correo === email && u.password === password
     )
 
     if (foundUser) {
       setUser(foundUser)
       setIsAuthenticated(true)
       
+      const fullName = `${foundUser.nombres} ${foundUser.apellidoPaterno}`
       await Swal.fire({
         icon: 'success',
         title: '¡Bienvenido!',
-        text: `Hola ${foundUser.name}`,
+        text: `Hola ${fullName}`,
         timer: 1500,
         showConfirmButton: false,
         customClass: {

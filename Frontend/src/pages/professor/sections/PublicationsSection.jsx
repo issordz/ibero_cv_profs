@@ -1,116 +1,81 @@
 import { useState } from 'react'
-import { BookOpen } from 'lucide-react'
+import { FileText } from 'lucide-react'
 import SummaryCard from '../../../components/SummaryCard'
 import AddItemButton from '../../../components/AddItemButton'
 import SlideOverPanel from '../../../components/SlideOverPanel'
 import EditableField from '../../../components/EditableField'
 import Swal from 'sweetalert2'
 
-const PublicationsSection = ({ publications: initialPubs, onSave }) => {
-  const [publications, setPublications] = useState(initialPubs)
+const ProductosAcademicosSection = ({ items: initialItems, onSave }) => {
+  const [items, setItems] = useState(initialItems)
   const [isPanelOpen, setIsPanelOpen] = useState(false)
-  const [editingPub, setEditingPub] = useState(null)
+  const [editing, setEditing] = useState(null)
   const [formData, setFormData] = useState({
-    title: '',
-    journal: '',
-    year: '',
-    doi: ''
+    idPublicacion: '', descripcionPublicacion: ''
   })
 
   const handleAdd = () => {
-    setEditingPub(null)
-    setFormData({ title: '', journal: '', year: '', doi: '' })
+    setEditing(null)
+    setFormData({ idPublicacion: '', descripcionPublicacion: '' })
     setIsPanelOpen(true)
   }
 
-  const handleEdit = (pub) => {
-    setEditingPub(pub)
-    setFormData({
-      title: pub.title,
-      journal: pub.journal,
-      year: pub.year.toString(),
-      doi: pub.doi
-    })
+  const handleEdit = (item) => {
+    setEditing(item)
+    setFormData({ idPublicacion: item.idPublicacion || '', descripcionPublicacion: item.descripcionPublicacion || '' })
     setIsPanelOpen(true)
   }
 
-  const handleDelete = async (pubId) => {
-    const result = await Swal.fire({
-      icon: 'warning',
-      title: '¿Eliminar publicación?',
-      text: 'Esta acción no se puede deshacer.',
-      showCancelButton: true,
-      confirmButtonColor: '#C41E3A',
-      cancelButtonColor: '#6B7280',
-      confirmButtonText: 'Sí, eliminar',
-      cancelButtonText: 'Cancelar'
-    })
-
+  const handleDelete = async (id) => {
+    const result = await Swal.fire({ icon: 'warning', title: '¿Eliminar producto?', text: 'Esta acción no se puede deshacer.', showCancelButton: true, confirmButtonColor: '#C41E3A', cancelButtonColor: '#6B7280', confirmButtonText: 'Sí, eliminar', cancelButtonText: 'Cancelar' })
     if (result.isConfirmed) {
-      setPublications(prev => prev.filter(p => p.id !== pubId))
+      setItems(prev => prev.filter(i => i.id !== id))
       Swal.fire({ icon: 'success', title: 'Eliminado', timer: 1500, showConfirmButton: false })
     }
   }
 
   const handleSaveForm = () => {
-    if (!formData.title || !formData.journal || !formData.year) {
-      Swal.fire({
-        icon: 'warning',
-        title: 'Campos requeridos',
-        text: 'Por favor completa todos los campos obligatorios',
-        confirmButtonColor: '#C41E3A'
-      })
+    if (!formData.descripcionPublicacion) {
+      Swal.fire({ icon: 'warning', title: 'Campos requeridos', text: 'La descripción es obligatoria', confirmButtonColor: '#C41E3A' })
       return
     }
-
-    if (editingPub) {
-      setPublications(prev => prev.map(p => 
-        p.id === editingPub.id ? { ...p, ...formData, year: parseInt(formData.year) } : p
-      ))
+    if (editing) {
+      setItems(prev => prev.map(i => i.id === editing.id ? { ...i, ...formData } : i))
     } else {
-      setPublications(prev => [...prev, { id: Date.now(), ...formData, year: parseInt(formData.year) }])
+      setItems(prev => [...prev, { id: Date.now(), ...formData }])
     }
-
     setIsPanelOpen(false)
-    Swal.fire({ icon: 'success', title: editingPub ? 'Actualizado' : 'Agregado', timer: 1500, showConfirmButton: false })
+    Swal.fire({ icon: 'success', title: editing ? 'Actualizado' : 'Agregado', timer: 1500, showConfirmButton: false })
   }
 
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-3 mb-6">
-        <BookOpen className="text-slate-400" size={24} />
-        <p className="text-slate-500">Agrega tus artículos publicados, libros y otras publicaciones académicas.</p>
+        <FileText className="text-slate-400" size={24} />
+        <p className="text-slate-500">Registra tus publicaciones, investigaciones y productos académicos.</p>
       </div>
 
       <div className="space-y-3">
-        {publications.map((pub) => (
+        {items.map((item) => (
           <SummaryCard
-            key={pub.id}
-            title={pub.title}
-            subtitle={pub.journal}
-            details={[pub.year.toString(), pub.doi]}
-            onEdit={() => handleEdit(pub)}
-            onDelete={() => handleDelete(pub.id)}
+            key={item.id}
+            title={item.idPublicacion || 'Sin ID'}
+            subtitle={item.descripcionPublicacion}
+            onEdit={() => handleEdit(item)}
+            onDelete={() => handleDelete(item.id)}
           />
         ))}
       </div>
 
-      <AddItemButton label="Agregar publicación" onClick={handleAdd} />
+      <AddItemButton label="Agregar producto académico" onClick={handleAdd} />
 
-      <SlideOverPanel
-        isOpen={isPanelOpen}
-        onClose={() => setIsPanelOpen(false)}
-        title={editingPub ? 'Editar publicación' : 'Agregar publicación'}
-      >
+      <SlideOverPanel isOpen={isPanelOpen} onClose={() => setIsPanelOpen(false)} title={editing ? 'Editar producto' : 'Agregar producto académico'}>
         <div className="space-y-4">
-          <EditableField label="Título *" value={formData.title} onChange={(val) => setFormData(prev => ({ ...prev, title: val }))} placeholder="Título de la publicación" />
-          <EditableField label="Revista/Editorial *" value={formData.journal} onChange={(val) => setFormData(prev => ({ ...prev, journal: val }))} placeholder="Nombre de la revista" />
-          <EditableField label="Año *" value={formData.year} onChange={(val) => setFormData(prev => ({ ...prev, year: val }))} type="number" placeholder="2023" />
-          <EditableField label="DOI" value={formData.doi} onChange={(val) => setFormData(prev => ({ ...prev, doi: val }))} placeholder="10.1234/ejemplo" />
-
+          <EditableField label="ID de publicación" value={formData.idPublicacion} onChange={(val) => setFormData(prev => ({ ...prev, idPublicacion: val }))} placeholder="Ej., DOI-2023-001 o ISBN" />
+          <EditableField label="Descripción *" value={formData.descripcionPublicacion} onChange={(val) => setFormData(prev => ({ ...prev, descripcionPublicacion: val }))} rows={3} placeholder="Descripción completa del producto académico" />
           <div className="pt-4 flex gap-3">
             <button onClick={() => setIsPanelOpen(false)} className="flex-1 px-4 py-3 border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50">Cancelar</button>
-            <button onClick={handleSaveForm} className="flex-1 px-4 py-3 bg-red-700 hover:bg-red-800 text-white rounded-lg">{editingPub ? 'Actualizar' : 'Agregar'}</button>
+            <button onClick={handleSaveForm} className="flex-1 px-4 py-3 bg-red-700 hover:bg-red-800 text-white rounded-lg">{editing ? 'Actualizar' : 'Agregar'}</button>
           </div>
         </div>
       </SlideOverPanel>
@@ -118,4 +83,4 @@ const PublicationsSection = ({ publications: initialPubs, onSave }) => {
   )
 }
 
-export default PublicationsSection
+export default ProductosAcademicosSection

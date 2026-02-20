@@ -1,318 +1,331 @@
-// Usuarios ficticios para el sistema de login y gestión de docentes
+// ===========================================
+// Datos dummy alineados al schema de BD
+// ===========================================
 
+// Helper: nombre completo desde datos_generales
+export const getFullName = (f) =>
+  `${f.nombres} ${f.apellidoPaterno}${f.apellidoMaterno ? ' ' + f.apellidoMaterno : ''}`
+
+// Helper: iniciales para avatar
+export const getInitials = (f) =>
+  `${f.nombres.charAt(0)}${f.apellidoPaterno.charAt(0)}`
+
+// ---- usuarios_portal ----
 export const loginUsers = [
   {
     id: 1,
-    email: 'admin@ibero.mx',
+    correo: 'admin@ibero.mx',
     password: 'admin123',
-    name: 'Dr. Roberto García',
-    role: 'admin',
-    roleDisplay: 'Administrador del Sistema',
-    avatar: 'RG',
-    department: 'Administración'
+    role: 'admin',          // campo UI (no existe en schema)
+    activo: true,
+    // datos de presentación UI
+    nombres: 'Roberto',
+    apellidoPaterno: 'García',
+    apellidoMaterno: 'Luna',
+    puestoInstitucion: 'Administrador del Sistema',
+    avatar: 'RG'
   },
   {
     id: 2,
-    email: 'a.martinez@ibero.mx',
+    correo: 'a.martinez@ibero.mx',
     password: 'docente123',
-    name: 'Dr. Alejandro Martínez',
     role: 'professor',
-    roleDisplay: 'Profesor Titular',
-    avatar: 'AM',
-    department: 'Ingeniería',
-    facultyId: 1
+    activo: true,
+    facultyId: 1,
+    nombres: 'Ana',
+    apellidoPaterno: 'Martínez',
+    apellidoMaterno: 'López',
+    puestoInstitucion: 'Profesora de Tiempo Completo',
+    avatar: 'AM'
   },
   {
     id: 3,
-    email: 's.rodriguez@ibero.mx',
+    correo: 's.rodriguez@ibero.mx',
     password: 'docente123',
-    name: 'Sofía Rodríguez',
     role: 'professor',
-    roleDisplay: 'Jefa de Departamento',
-    avatar: 'SR',
-    department: 'Artes y Humanidades',
-    facultyId: 2
+    activo: true,
+    facultyId: 2,
+    nombres: 'Sergio',
+    apellidoPaterno: 'Rodríguez',
+    apellidoMaterno: 'Hernández',
+    puestoInstitucion: 'Coordinador Académico',
+    avatar: 'SR'
   },
   {
     id: 4,
-    email: 'j.ramos@ibero.mx',
+    correo: 'j.ramos@ibero.mx',
     password: 'docente123',
-    name: 'Juan Ramos',
     role: 'professor',
-    roleDisplay: 'Profesor Asociado',
-    avatar: 'JR',
-    department: 'Negocios',
-    facultyId: 3
+    activo: true,
+    facultyId: 3,
+    nombres: 'Juan',
+    apellidoPaterno: 'Ramos',
+    apellidoMaterno: 'García',
+    puestoInstitucion: 'Profesor de Asignatura',
+    avatar: 'JR'
   }
 ]
 
+// ---- datos_generales ----
 export const facultyMembers = [
   {
     id: 1,
-    employeeId: 'IB-2024-001',
-    name: 'Dr. Alejandro Martínez',
-    role: 'Profesor Titular',
+    nombres: 'Ana',
+    apellidoPaterno: 'Martínez',
+    apellidoMaterno: 'López',
+    fechaNacimiento: '1980-03-15',
+    edad: 45,
+    correoElectronico: 'a.martinez@ibero.mx',
+    puestoInstitucion: 'Profesora de Tiempo Completo',
+    resumenProfesional: 'Doctora en Ingeniería con más de 15 años de experiencia en docencia e investigación en el área de estructuras y construcción sostenible.',
+    activo: true,
+    fechaCarga: '2023-08-15',
+    fechaActualizacion: '2024-10-12',
     avatar: 'AM',
-    avatarColor: 'bg-red-100 text-red-600',
-    department: 'Ingeniería',
-    departmentColor: 'bg-red-50 text-red-600',
-    lastUpdate: '12 Oct, 2023',
-    profileProgress: 85,
-    email: 'a.martinez@ibero.mx',
-    phone: '+52 (555) 123-4567',
-    officeLocation: 'Edif. Ingeniería, Sala 301',
-    orcidId: '0000-0001-2345-6789',
-    linkedIn: 'linkedin.com/in/a-martinez',
-    officeHours: 'Lun y Mié 10:00 - 12:00',
-    summary: 'El Dr. Alejandro Martínez es Profesor Titular de Ingeniería con más de 20 años de experiencia en ingeniería estructural y construcción sostenible. Su investigación se centra en materiales de construcción innovadores y estructuras resistentes a sismos.'
+    avatarColor: 'bg-red-100 text-red-600'
   },
   {
     id: 2,
-    employeeId: 'IB-2024-042',
-    name: 'Sofía Rodríguez',
-    role: 'Jefa de Departamento',
+    nombres: 'Sergio',
+    apellidoPaterno: 'Rodríguez',
+    apellidoMaterno: 'Hernández',
+    fechaNacimiento: '1975-07-22',
+    edad: 50,
+    correoElectronico: 's.rodriguez@ibero.mx',
+    puestoInstitucion: 'Coordinador Académico',
+    resumenProfesional: 'Maestro en Administración con experiencia en gestión académica y proyectos de vinculación interinstitucional.',
+    activo: true,
+    fechaCarga: '2022-01-10',
+    fechaActualizacion: '2024-11-04',
     avatar: 'SR',
-    avatarColor: 'bg-purple-100 text-purple-600',
-    department: 'Artes y Humanidades',
-    departmentColor: 'bg-cyan-50 text-cyan-600',
-    lastUpdate: '04 Nov, 2023',
-    profileProgress: 100,
-    email: 's.rodriguez@ibero.mx',
-    phone: '+52 (555) 234-5678',
-    officeLocation: 'Edif. Humanidades, Sala 205',
-    orcidId: '0000-0002-3456-7890',
-    linkedIn: 'linkedin.com/in/s-rodriguez',
-    officeHours: 'Mar y Jue 14:00 - 16:00',
-    summary: 'Sofía Rodríguez es Jefa del Departamento de Artes y Humanidades con experiencia en literatura latinoamericana contemporánea y estudios culturales.'
+    avatarColor: 'bg-purple-100 text-purple-600'
   },
   {
     id: 3,
-    employeeId: 'IB-2024-089',
-    name: 'Juan Ramos',
-    role: 'Profesor Asociado',
+    nombres: 'Juan',
+    apellidoPaterno: 'Ramos',
+    apellidoMaterno: 'García',
+    fechaNacimiento: '1985-11-10',
+    edad: 40,
+    correoElectronico: 'j.ramos@ibero.mx',
+    puestoInstitucion: 'Profesor de Asignatura',
+    resumenProfesional: 'Ingeniero en Sistemas con especialidad en desarrollo de software y bases de datos.',
+    activo: true,
+    fechaCarga: '2023-03-20',
+    fechaActualizacion: '2024-10-29',
     avatar: 'JR',
-    avatarColor: 'bg-green-100 text-green-600',
-    department: 'Negocios',
-    departmentColor: 'bg-orange-50 text-orange-600',
-    lastUpdate: '29 Oct, 2023',
-    profileProgress: 45,
-    email: 'j.ramos@ibero.mx',
-    phone: '+52 (555) 345-6789',
-    officeLocation: 'Escuela de Negocios, Sala 412',
-    orcidId: '0000-0003-4567-8901',
-    linkedIn: 'linkedin.com/in/j-ramos',
-    officeHours: 'Mié y Vie 09:00 - 11:00',
-    summary: 'Juan Ramos es Profesor Asociado especializado en negocios internacionales y estrategia corporativa con enfoque en mercados emergentes.'
+    avatarColor: 'bg-green-100 text-green-600'
   },
   {
     id: 4,
-    employeeId: 'IB-2024-112',
-    name: 'Carlos Slim V.',
-    role: 'Profesor Visitante',
-    avatar: 'CS',
-    avatarColor: 'bg-blue-100 text-blue-600',
-    department: 'Ciencias de la Salud',
-    departmentColor: 'bg-emerald-50 text-emerald-600',
-    lastUpdate: '15 Nov, 2023',
-    profileProgress: 92,
-    email: 'c.slim@ibero.mx',
-    phone: '+52 (555) 456-7890',
-    officeLocation: 'Edif. Ciencias de la Salud, Sala 108',
-    orcidId: '0000-0004-5678-9012',
-    linkedIn: 'linkedin.com/in/c-slim',
-    officeHours: 'Lun y Jue 11:00 - 13:00',
-    summary: 'Carlos Slim V. es Profesor Visitante en Ciencias de la Salud con experiencia en políticas de salud pública y gestión hospitalaria.'
+    nombres: 'María Elena',
+    apellidoPaterno: 'Torres',
+    apellidoMaterno: 'Vega',
+    fechaNacimiento: '1978-06-05',
+    edad: 47,
+    correoElectronico: 'm.torres@ibero.mx',
+    puestoInstitucion: 'Profesora Titular',
+    resumenProfesional: 'Especialista en derecho constitucional y derechos humanos con amplia experiencia en tribunales internacionales.',
+    activo: true,
+    fechaCarga: '2021-09-01',
+    fechaActualizacion: '2024-11-15',
+    avatar: 'MT',
+    avatarColor: 'bg-pink-100 text-pink-600'
   },
   {
     id: 5,
-    employeeId: 'IB-2024-156',
-    name: 'María Elena Torres',
-    role: 'Profesora Titular',
-    avatar: 'MT',
-    avatarColor: 'bg-pink-100 text-pink-600',
-    department: 'Derecho',
-    departmentColor: 'bg-indigo-50 text-indigo-600',
-    lastUpdate: '20 Nov, 2023',
-    profileProgress: 78,
-    email: 'm.torres@ibero.mx',
-    phone: '+52 (555) 567-8901',
-    officeLocation: 'Escuela de Derecho, Sala 215',
-    orcidId: '0000-0005-6789-0123',
-    linkedIn: 'linkedin.com/in/m-torres',
-    officeHours: 'Mar y Vie 15:00 - 17:00',
-    summary: 'María Elena Torres es Profesora Titular de Derecho especializada en derecho constitucional y derechos humanos con amplia experiencia en tribunales internacionales.'
+    nombres: 'Fernando',
+    apellidoPaterno: 'Vega',
+    apellidoMaterno: 'Ruiz',
+    fechaNacimiento: '1982-02-18',
+    edad: 43,
+    correoElectronico: 'f.vega@ibero.mx',
+    puestoInstitucion: 'Profesor Investigador',
+    resumenProfesional: 'Profesor Investigador enfocado en biología molecular e ingeniería genética con múltiples patentes.',
+    activo: true,
+    fechaCarga: '2020-06-15',
+    fechaActualizacion: '2024-12-01',
+    avatar: 'FV',
+    avatarColor: 'bg-yellow-100 text-yellow-600'
   },
   {
     id: 6,
-    employeeId: 'IB-2024-178',
-    name: 'Dr. Fernando Vega',
-    role: 'Profesor Investigador',
-    avatar: 'FV',
-    avatarColor: 'bg-yellow-100 text-yellow-600',
-    department: 'Ciencias',
-    departmentColor: 'bg-violet-50 text-violet-600',
-    lastUpdate: '01 Dic, 2023',
-    profileProgress: 67,
-    email: 'f.vega@ibero.mx',
-    phone: '+52 (555) 678-9012',
-    officeLocation: 'Centro de Ciencias, Lab 302',
-    orcidId: '0000-0006-7890-1234',
-    linkedIn: 'linkedin.com/in/f-vega',
-    officeHours: 'Lun y Mié 14:00 - 16:00',
-    summary: 'El Dr. Fernando Vega es Profesor Investigador en Ciencias enfocado en biología molecular e ingeniería genética con múltiples patentes en biotecnología.'
+    nombres: 'Ana Patricia',
+    apellidoPaterno: 'Mendoza',
+    apellidoMaterno: 'Flores',
+    fechaNacimiento: '1990-09-25',
+    edad: 35,
+    correoElectronico: 'a.mendoza@ibero.mx',
+    puestoInstitucion: 'Profesora Asistente',
+    resumenProfesional: 'Especializada en terapia cognitivo-conductual y salud mental adolescente.',
+    activo: true,
+    fechaCarga: '2023-01-15',
+    fechaActualizacion: '2024-11-28',
+    avatar: 'AP',
+    avatarColor: 'bg-teal-100 text-teal-600'
   },
   {
     id: 7,
-    employeeId: 'IB-2024-201',
-    name: 'Ana Patricia Mendoza',
-    role: 'Profesora Asistente',
-    avatar: 'AM',
-    avatarColor: 'bg-teal-100 text-teal-600',
-    department: 'Psicología',
-    departmentColor: 'bg-rose-50 text-rose-600',
-    lastUpdate: '28 Nov, 2023',
-    profileProgress: 55,
-    email: 'a.mendoza@ibero.mx',
-    phone: '+52 (555) 789-0123',
-    officeLocation: 'Edif. Psicología, Sala 118',
-    orcidId: '0000-0007-8901-2345',
-    linkedIn: 'linkedin.com/in/a-mendoza',
-    officeHours: 'Jue y Vie 10:00 - 12:00',
-    summary: 'Ana Patricia Mendoza es Profesora Asistente de Psicología especializada en terapia cognitivo-conductual y salud mental adolescente.'
+    nombres: 'Ricardo',
+    apellidoPaterno: 'Fuentes',
+    apellidoMaterno: 'Morales',
+    fechaNacimiento: '1976-12-03',
+    edad: 49,
+    correoElectronico: 'r.fuentes@ibero.mx',
+    puestoInstitucion: 'Profesor Titular',
+    resumenProfesional: 'Profesor de Arquitectura con experiencia en diseño urbano sostenible y preservación histórica.',
+    activo: true,
+    fechaCarga: '2019-08-20',
+    fechaActualizacion: '2024-12-05',
+    avatar: 'RF',
+    avatarColor: 'bg-orange-100 text-orange-600'
   },
   {
     id: 8,
-    employeeId: 'IB-2024-234',
-    name: 'Dr. Ricardo Fuentes',
-    role: 'Profesor Titular',
-    avatar: 'RF',
-    avatarColor: 'bg-orange-100 text-orange-600',
-    department: 'Arquitectura',
-    departmentColor: 'bg-amber-50 text-amber-600',
-    lastUpdate: '05 Dic, 2023',
-    profileProgress: 88,
-    email: 'r.fuentes@ibero.mx',
-    phone: '+52 (555) 890-1234',
-    officeLocation: 'Edif. Arquitectura, Estudio 405',
-    orcidId: '0000-0008-9012-3456',
-    linkedIn: 'linkedin.com/in/r-fuentes',
-    officeHours: 'Mar y Mié 13:00 - 15:00',
-    summary: 'El Dr. Ricardo Fuentes es Profesor Titular de Arquitectura con experiencia en diseño urbano sostenible y preservación histórica.'
+    nombres: 'Carlos',
+    apellidoPaterno: 'Slim',
+    apellidoMaterno: 'Velázquez',
+    fechaNacimiento: '1970-04-12',
+    edad: 55,
+    correoElectronico: 'c.slim@ibero.mx',
+    puestoInstitucion: 'Profesor Visitante',
+    resumenProfesional: 'Profesor Visitante con experiencia en políticas de salud pública y gestión hospitalaria.',
+    activo: true,
+    fechaCarga: '2023-06-01',
+    fechaActualizacion: '2024-11-15',
+    avatar: 'CS',
+    avatarColor: 'bg-blue-100 text-blue-600'
   }
 ]
 
-export const departments = [
-  'Todos los departamentos',
-  'Ingeniería',
-  'Artes y Humanidades',
-  'Negocios',
-  'Ciencias de la Salud',
-  'Derecho',
-  'Ciencias',
-  'Psicología',
-  'Arquitectura'
-]
-
+// Filtros de estado para directorio
 export const statuses = [
   'Todos los estados',
-  'Completo (100%)',
-  'En progreso (50-99%)',
-  'Incompleto (<50%)'
+  'Activo',
+  'Inactivo'
 ]
 
-// Secciones del formulario de profesor con estado de completitud
+// Secciones del formulario de profesor
 export const formSections = [
   { id: 'datos-generales', label: 'Datos Generales', icon: 'User' },
-  { id: 'informacion-academica', label: 'Información Académica', icon: 'GraduationCap' },
+  { id: 'informacion-academica', label: 'Estudios Académicos', icon: 'GraduationCap' },
   { id: 'experiencia-laboral', label: 'Experiencia Laboral', icon: 'Briefcase' },
-  { id: 'capacitaciones', label: 'Capacitaciones y Actualizaciones', icon: 'BookOpen' },
-  { id: 'productos-academicos', label: 'Productos Académicos', icon: 'FileText' },
+  { id: 'capacitaciones', label: 'Capacitación', icon: 'BookOpen' },
   { id: 'logros-profesionales', label: 'Logros Profesionales', icon: 'Award' },
   { id: 'organismos', label: 'Organismos', icon: 'Users' },
-  { id: 'premios-distinciones', label: 'Premios y Distinciones', icon: 'Trophy' }
+  { id: 'premios-distinciones', label: 'Premios y Distinciones', icon: 'Trophy' },
+  { id: 'productos-academicos', label: 'Productos Académicos', icon: 'FileText' },
+  { id: 'actualizacion', label: 'Actualización', icon: 'RefreshCw' }
 ]
 
-// Datos de ejemplo para relaciones one-to-many por facultyId
-export const academicDegrees = {
+// ---- estudios_academicos ----
+export const estudiosAcademicos = {
   1: [
-    { id: 1, degree: 'PhD in Structural Engineering', institution: 'MIT', year: 2005, country: 'USA' },
-    { id: 2, degree: 'MSc in Civil Engineering', institution: 'UNAM', year: 2000, country: 'Mexico' },
-    { id: 3, degree: 'BSc in Civil Engineering', institution: 'ITESM', year: 1998, country: 'Mexico' }
+    { id: 1, tituloEstudio: 'Doctorado en Ingeniería Estructural', nivelEstudios: 'Doctorado', institucion: 'MIT', pais: 'EUA', anioObtencion: 2005, cedula: '12345678' },
+    { id: 2, tituloEstudio: 'Maestría en Ingeniería Civil', nivelEstudios: 'Maestría', institucion: 'UNAM', pais: 'México', anioObtencion: 2000, cedula: '87654321' },
+    { id: 3, tituloEstudio: 'Licenciatura en Ingeniería Civil', nivelEstudios: 'Licenciatura', institucion: 'ITESM', pais: 'México', anioObtencion: 1998, cedula: '11223344' }
   ],
   2: [
-    { id: 1, degree: 'PhD in Latin American Literature', institution: 'Universidad Complutense', year: 2010, country: 'Spain' },
-    { id: 2, degree: 'MA in Cultural Studies', institution: 'UNAM', year: 2006, country: 'Mexico' }
+    { id: 1, tituloEstudio: 'Maestría en Administración', nivelEstudios: 'Maestría', institucion: 'Universidad Complutense', pais: 'España', anioObtencion: 2010, cedula: '55667788' },
+    { id: 2, tituloEstudio: 'Licenciatura en Administración', nivelEstudios: 'Licenciatura', institucion: 'UNAM', pais: 'México', anioObtencion: 2006, cedula: '99001122' }
   ],
   3: [
-    { id: 1, degree: 'MBA', institution: 'Harvard Business School', year: 2015, country: 'USA' },
-    { id: 2, degree: 'BSc in Business Administration', institution: 'IBERO', year: 2010, country: 'Mexico' }
+    { id: 1, tituloEstudio: 'Maestría en Sistemas Computacionales', nivelEstudios: 'Maestría', institucion: 'IBERO', pais: 'México', anioObtencion: 2015, cedula: '33445566' },
+    { id: 2, tituloEstudio: 'Ingeniería en Sistemas', nivelEstudios: 'Licenciatura', institucion: 'IBERO', pais: 'México', anioObtencion: 2010, cedula: '77889900' }
   ]
 }
 
-export const publications = {
+// ---- experiencia_laboral ----
+export const experienciaLaboral = {
   1: [
-    { id: 1, title: 'Earthquake-Resistant Building Materials: A Comprehensive Review', journal: 'Journal of Structural Engineering', year: 2023, doi: '10.1234/jse.2023.001' },
-    { id: 2, title: 'Sustainable Construction Practices in Latin America', journal: 'Construction and Building Materials', year: 2022, doi: '10.1234/cbm.2022.045' },
-    { id: 3, title: 'Innovative Approaches to Seismic Design', journal: 'Engineering Structures', year: 2021, doi: '10.1234/es.2021.112' }
+    { id: 1, actividadPuesto: 'Profesora de Tiempo Completo', organizacionEmpresa: 'Universidad Iberoamericana', inicioMesAnio: 'Ago 2010', finMesAnio: 'Actual', escolar: true, disenoIngenieril: true, nivelExperiencia: 'Senior' },
+    { id: 2, actividadPuesto: 'Investigadora Asociada', organizacionEmpresa: 'MIT', inicioMesAnio: 'Ene 2005', finMesAnio: 'Jul 2010', escolar: true, disenoIngenieril: false, nivelExperiencia: 'Intermedio' }
   ],
   2: [
-    { id: 1, title: 'Contemporary Mexican Literature: Trends and Perspectives', journal: 'Latin American Literary Review', year: 2023, doi: '10.1234/lalr.2023.015' },
-    { id: 2, title: 'Cultural Identity in Post-Modern Fiction', journal: 'Hispanic Studies Quarterly', year: 2022, doi: '10.1234/hsq.2022.089' }
-  ],
-  3: []
-}
-
-export const projects = {
-  1: [
-    { id: 1, title: 'Smart Building Materials Research', role: 'Principal Investigator', startDate: '2022-01', endDate: '2025-12', funding: '$500,000 USD', status: 'Active' },
-    { id: 2, title: 'Urban Resilience Initiative', role: 'Co-Investigator', startDate: '2021-06', endDate: '2024-06', funding: '$250,000 USD', status: 'Active' }
-  ],
-  2: [
-    { id: 1, title: 'Digital Humanities Archive', role: 'Director', startDate: '2023-01', endDate: '2026-12', funding: '$150,000 USD', status: 'Active' }
-  ],
-  3: []
-}
-
-export const awards = {
-  1: [
-    { id: 1, title: 'Excellence in Engineering Research', organization: 'Mexican Academy of Engineering', year: 2022 },
-    { id: 2, title: 'Best Paper Award', organization: 'International Conference on Structural Engineering', year: 2021 }
-  ],
-  2: [
-    { id: 1, title: 'National Literature Prize', organization: 'CONACULTA', year: 2020 }
-  ],
-  3: []
-}
-
-export const teachingCourses = {
-  1: [
-    { id: 1, code: 'ING-501', name: 'Advanced Structural Analysis', semester: 'Fall 2023', students: 25 },
-    { id: 2, code: 'ING-302', name: 'Materials Science', semester: 'Fall 2023', students: 40 },
-    { id: 3, code: 'ING-601', name: 'Earthquake Engineering Seminar', semester: 'Spring 2024', students: 15 }
-  ],
-  2: [
-    { id: 1, code: 'HUM-401', name: 'Contemporary Latin American Literature', semester: 'Fall 2023', students: 30 },
-    { id: 2, code: 'HUM-502', name: 'Cultural Studies Methodology', semester: 'Spring 2024', students: 20 }
+    { id: 1, actividadPuesto: 'Coordinador Académico', organizacionEmpresa: 'Universidad Iberoamericana', inicioMesAnio: 'Ene 2015', finMesAnio: 'Actual', escolar: true, disenoIngenieril: false, nivelExperiencia: 'Senior' },
+    { id: 2, actividadPuesto: 'Consultor de Gestión', organizacionEmpresa: 'Deloitte México', inicioMesAnio: 'Mar 2010', finMesAnio: 'Dic 2014', escolar: false, disenoIngenieril: false, nivelExperiencia: 'Intermedio' }
   ],
   3: [
-    { id: 1, code: 'BUS-301', name: 'International Business Strategy', semester: 'Fall 2023', students: 45 }
+    { id: 1, actividadPuesto: 'Profesor de Asignatura', organizacionEmpresa: 'Universidad Iberoamericana', inicioMesAnio: 'Ago 2018', finMesAnio: 'Actual', escolar: true, disenoIngenieril: false, nivelExperiencia: 'Junior' },
+    { id: 2, actividadPuesto: 'Desarrollador de Software Sr.', organizacionEmpresa: 'IBM México', inicioMesAnio: 'Feb 2012', finMesAnio: 'Jul 2018', escolar: false, disenoIngenieril: true, nivelExperiencia: 'Senior' }
   ]
 }
 
-export const languages = {
+// ---- capacitacion ----
+export const capacitaciones = {
   1: [
-    { id: 1, language: 'Spanish', level: 'Native' },
-    { id: 2, language: 'English', level: 'Fluent (C2)' },
-    { id: 3, language: 'German', level: 'Intermediate (B1)' }
+    { id: 1, tipoCapacitacion: 'Diplomado', institucion: 'UNAM', pais: 'México', anioObtencion: 2022, horas: 120, vigencia: 'Permanente' },
+    { id: 2, tipoCapacitacion: 'Certificación PMP', institucion: 'PMI', pais: 'EUA', anioObtencion: 2020, horas: 80, vigencia: '2025' }
   ],
   2: [
-    { id: 1, language: 'Spanish', level: 'Native' },
-    { id: 2, language: 'English', level: 'Fluent (C1)' },
-    { id: 3, language: 'French', level: 'Advanced (B2)' }
+    { id: 1, tipoCapacitacion: 'Taller de Liderazgo Académico', institucion: 'Harvard Extension', pais: 'EUA', anioObtencion: 2021, horas: 40, vigencia: 'Permanente' }
+  ],
+  3: []
+}
+
+// ---- logros_profesionales ----
+export const logrosProfesionales = {
+  1: [
+    { id: 1, descLogro: 'Publicación de 15 artículos en revistas indexadas JCR en el área de ingeniería estructural.', institucion: 'Universidad Iberoamericana', anioObtencion: 2022 },
+    { id: 2, descLogro: 'Dirección de 8 tesis doctorales concluidas exitosamente.', institucion: 'Universidad Iberoamericana', anioObtencion: 2023 }
+  ],
+  2: [
+    { id: 1, descLogro: 'Implementación del programa de vinculación interinstitucional con 5 universidades internacionales.', institucion: 'Universidad Iberoamericana', anioObtencion: 2021 }
   ],
   3: [
-    { id: 1, language: 'Spanish', level: 'Native' },
-    { id: 2, language: 'English', level: 'Fluent (C2)' }
+    { id: 1, descLogro: 'Implementación del sistema de gestión académica integral.', institucion: 'Universidad Iberoamericana', anioObtencion: 2020 },
+    { id: 2, descLogro: 'Coordinación de la acreditación de 5 programas académicos.', institucion: 'CACEI', anioObtencion: 2023 }
+  ]
+}
+
+// ---- organismos ----
+export const organismos = {
+  1: [
+    { id: 1, organismo: 'Academia Mexicana de Ingeniería', anioInicio: 2015, anioFin: null, nivelExperiencia: 'Miembro Titular' },
+    { id: 2, organismo: 'American Society of Civil Engineers', anioInicio: 2008, anioFin: null, nivelExperiencia: 'Fellow' }
+  ],
+  2: [
+    { id: 1, organismo: 'Asociación Nacional de Universidades (ANUIES)', anioInicio: 2018, anioFin: null, nivelExperiencia: 'Representante Institucional' }
+  ],
+  3: []
+}
+
+// ---- premios_distinciones ----
+export const premiosDistinciones = {
+  1: [
+    { id: 1, descPremio: 'Premio de Innovación Tecnológica Educativa.', institucion: 'CONACYT', anioObtencion: 2023 },
+    { id: 2, descPremio: 'Best Paper Award - International Conference on Structural Engineering.', institucion: 'ICSE', anioObtencion: 2021 }
+  ],
+  2: [
+    { id: 1, descPremio: 'Reconocimiento a la Gestión Académica de Excelencia.', institucion: 'ANUIES', anioObtencion: 2023 }
+  ],
+  3: []
+}
+
+// ---- productos_academicos ----
+export const productosAcademicos = {
+  1: [
+    { id: 1, idPublicacion: 'DOI-2023-001', descripcionPublicacion: 'Materiales de construcción resistentes a sismos: Revisión exhaustiva. Journal of Structural Engineering, 2023.' },
+    { id: 2, idPublicacion: 'DOI-2022-045', descripcionPublicacion: 'Prácticas de construcción sostenible en América Latina. Construction and Building Materials, 2022.' },
+    { id: 3, idPublicacion: 'ISBN-2021-112', descripcionPublicacion: 'Enfoques innovadores para diseño sísmico. Engineering Structures, 2021.' }
+  ],
+  2: [
+    { id: 1, idPublicacion: 'DOI-2023-015', descripcionPublicacion: 'Gestión académica en universidades iberoamericanas. Revista de Educación Superior, 2023.' }
+  ],
+  3: []
+}
+
+// ---- actualizacion ----
+export const actualizaciones = {
+  1: [
+    { id: 1, nombreActualizacion: 'Seminario de Nuevas Tecnologías en Ingeniería', tipoActualizacion: 'Seminario', institucion: 'Colegio de Ingenieros', pais: 'México', horas: 20 },
+    { id: 2, nombreActualizacion: 'Curso de BIM Avanzado', tipoActualizacion: 'Curso', institucion: 'Autodesk University', pais: 'EUA', horas: 40 }
+  ],
+  2: [
+    { id: 1, nombreActualizacion: 'Workshop en Gestión del Cambio Organizacional', tipoActualizacion: 'Taller', institucion: 'IPADE', pais: 'México', horas: 16 }
+  ],
+  3: [
+    { id: 1, nombreActualizacion: 'Certificación AWS Cloud Practitioner', tipoActualizacion: 'Certificación', institucion: 'Amazon Web Services', pais: 'EUA', horas: 60 }
   ]
 }
 
@@ -321,31 +334,34 @@ export const sectionStatus = {
   1: {
     'datos-generales': 'complete',
     'informacion-academica': 'complete',
-    'experiencia-laboral': 'pending',
+    'experiencia-laboral': 'complete',
     'capacitaciones': 'complete',
-    'productos-academicos': 'complete',
     'logros-profesionales': 'complete',
-    'organismos': 'pending',
-    'premios-distinciones': 'pending'
+    'organismos': 'complete',
+    'premios-distinciones': 'complete',
+    'productos-academicos': 'complete',
+    'actualizacion': 'complete'
   },
   2: {
     'datos-generales': 'complete',
     'informacion-academica': 'complete',
     'experiencia-laboral': 'complete',
     'capacitaciones': 'complete',
-    'productos-academicos': 'complete',
     'logros-profesionales': 'complete',
     'organismos': 'complete',
-    'premios-distinciones': 'complete'
+    'premios-distinciones': 'complete',
+    'productos-academicos': 'complete',
+    'actualizacion': 'pending'
   },
   3: {
     'datos-generales': 'complete',
     'informacion-academica': 'complete',
-    'experiencia-laboral': 'pending',
+    'experiencia-laboral': 'complete',
     'capacitaciones': 'pending',
-    'productos-academicos': 'pending',
-    'logros-profesionales': 'pending',
+    'logros-profesionales': 'complete',
     'organismos': 'pending',
-    'premios-distinciones': 'pending'
+    'premios-distinciones': 'pending',
+    'productos-academicos': 'pending',
+    'actualizacion': 'complete'
   }
 }

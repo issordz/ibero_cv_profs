@@ -4,16 +4,15 @@ import {
   Users, FileText, Award, TrendingUp, UserCheck, Clock, CheckCircle,
   UserPlus, BarChart3, ClipboardCheck, ArrowRight
 } from 'lucide-react'
-import { facultyMembers } from '../data/users'
+import { facultyMembers, getFullName } from '../data/users'
 
 const Dashboard = () => {
   const { user } = useAuth()
   const navigate = useNavigate()
 
   const totalFaculty = facultyMembers.length
-  const completeProfiles = facultyMembers.filter(f => f.profileProgress === 100).length
-  const pendingReviews = facultyMembers.filter(f => f.profileProgress < 100 && f.profileProgress >= 50).length
-  const avgCompletion = Math.round(facultyMembers.reduce((sum, f) => sum + f.profileProgress, 0) / totalFaculty)
+  const activeProfiles = facultyMembers.filter(f => f.activo).length
+  const inactiveProfiles = facultyMembers.filter(f => !f.activo).length
 
   const stats = [
     { 
@@ -27,33 +26,33 @@ const Dashboard = () => {
       changeText: 'desde el mes pasado'
     },
     { 
-      label: 'Perfiles completos', 
-      value: completeProfiles, 
+      label: 'Perfiles activos', 
+      value: activeProfiles, 
       icon: UserCheck, 
       iconBg: '#dbeafe', 
       iconColor: '#2563eb',
       change: '+5%',
       changeColor: '#2563eb',
-      changeText: 'completados recientemente'
+      changeText: 'activados recientemente'
     },
     { 
-      label: 'Revisiones pendientes', 
-      value: pendingReviews, 
+      label: 'Perfiles inactivos', 
+      value: inactiveProfiles, 
       icon: Clock, 
       iconBg: '#ffedd5', 
       iconColor: '#ea580c',
-      change: '-2%',
+      change: '0',
       changeColor: '#ea580c',
-      changeText: 'desde la semana pasada'
+      changeText: 'sin cambios'
     },
     { 
-      label: 'Tasa de completitud', 
-      value: `${avgCompletion}%`, 
+      label: 'Tasa de actividad', 
+      value: `${Math.round((activeProfiles / totalFaculty) * 100)}%`, 
       icon: CheckCircle, 
       iconBg: 'rgba(196,14,47,0.1)', 
       iconColor: '#c40e2f',
       isProgress: true,
-      progressValue: avgCompletion
+      progressValue: Math.round((activeProfiles / totalFaculty) * 100)
     }
   ]
 
@@ -83,11 +82,11 @@ const Dashboard = () => {
 
   // Recent activity from faculty data
   const recentActivity = facultyMembers.slice(0, 5).map(f => ({
-    name: f.name,
+    name: getFullName(f),
     avatar: f.avatar,
     avatarColor: f.avatarColor,
-    action: f.profileProgress === 100 ? 'completó su perfil' : `actualizó perfil (${f.profileProgress}%)`,
-    time: f.lastUpdate
+    action: f.activo ? 'perfil activo' : 'perfil inactivo',
+    time: f.fechaActualizacion
   }))
 
   return (
@@ -95,7 +94,7 @@ const Dashboard = () => {
       {/* Page Title */}
       <div className="mb-8">
         <h1 className="text-2xl lg:text-3xl font-bold" style={{ color: '#181112' }}>Panel de Control</h1>
-        <p className="mt-1" style={{ color: '#896169' }}>Bienvenido {user?.name || 'Usuario'}</p>
+        <p className="mt-1" style={{ color: '#896169' }}>Bienvenido {user ? `${user.nombres} ${user.apellidoPaterno}` : 'Usuario'}</p>
       </div>
 
       {/* Stats Grid */}

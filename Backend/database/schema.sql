@@ -99,6 +99,8 @@ CREATE TABLE logros_profesionales (
     id                      INT IDENTITY(1,1) PRIMARY KEY,
     id_profesor             INT NOT NULL REFERENCES datos_generales(id_profesor) ON DELETE CASCADE,
     desc_logro              NVARCHAR(MAX) NOT NULL,
+    institucion             NVARCHAR(300),
+    anio_obtencion          INT,
     activo                  BIT DEFAULT 1,
     fecha_carga             DATETIME2 DEFAULT GETDATE(),
     fecha_actualizacion     DATETIME2 DEFAULT GETDATE()
@@ -126,6 +128,8 @@ CREATE TABLE premios_distinciones (
     id                      INT IDENTITY(1,1) PRIMARY KEY,
     id_profesor             INT NOT NULL REFERENCES datos_generales(id_profesor) ON DELETE CASCADE,
     desc_premio             NVARCHAR(MAX) NOT NULL,
+    institucion             NVARCHAR(300),
+    anio_obtencion          INT,
     activo                  BIT DEFAULT 1,
     fecha_carga             DATETIME2 DEFAULT GETDATE(),
     fecha_actualizacion     DATETIME2 DEFAULT GETDATE()

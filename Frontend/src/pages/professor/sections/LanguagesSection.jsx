@@ -1,104 +1,88 @@
 import { useState } from 'react'
-import { Languages } from 'lucide-react'
+import { Users } from 'lucide-react'
 import SummaryCard from '../../../components/SummaryCard'
 import AddItemButton from '../../../components/AddItemButton'
 import SlideOverPanel from '../../../components/SlideOverPanel'
 import EditableField from '../../../components/EditableField'
 import Swal from 'sweetalert2'
 
-const LanguagesSection = ({ languages: initialLanguages, onSave }) => {
-  const [languagesList, setLanguagesList] = useState(initialLanguages)
+const OrganismosSection = ({ items: initialItems, onSave }) => {
+  const [items, setItems] = useState(initialItems)
   const [isPanelOpen, setIsPanelOpen] = useState(false)
-  const [editingLang, setEditingLang] = useState(null)
+  const [editing, setEditing] = useState(null)
   const [formData, setFormData] = useState({
-    language: '',
-    level: ''
+    organismo: '', anioInicio: '', anioFin: '', nivelExperiencia: ''
   })
 
   const handleAdd = () => {
-    setEditingLang(null)
-    setFormData({ language: '', level: '' })
+    setEditing(null)
+    setFormData({ organismo: '', anioInicio: '', anioFin: '', nivelExperiencia: '' })
     setIsPanelOpen(true)
   }
 
-  const handleEdit = (lang) => {
-    setEditingLang(lang)
-    setFormData({ language: lang.language, level: lang.level })
-    setIsPanelOpen(true)
-  }
-
-  const handleDelete = async (langId) => {
-    const result = await Swal.fire({
-      icon: 'warning',
-      title: '¿Eliminar idioma?',
-      text: 'Esta acción no se puede deshacer.',
-      showCancelButton: true,
-      confirmButtonColor: '#C41E3A',
-      cancelButtonColor: '#6B7280',
-      confirmButtonText: 'Sí, eliminar',
-      cancelButtonText: 'Cancelar'
+  const handleEdit = (item) => {
+    setEditing(item)
+    setFormData({
+      organismo: item.organismo || '', anioInicio: item.anioInicio?.toString() || '',
+      anioFin: item.anioFin?.toString() || '', nivelExperiencia: item.nivelExperiencia || ''
     })
+    setIsPanelOpen(true)
+  }
 
+  const handleDelete = async (id) => {
+    const result = await Swal.fire({ icon: 'warning', title: '¿Eliminar organismo?', text: 'Esta acción no se puede deshacer.', showCancelButton: true, confirmButtonColor: '#C41E3A', cancelButtonColor: '#6B7280', confirmButtonText: 'Sí, eliminar', cancelButtonText: 'Cancelar' })
     if (result.isConfirmed) {
-      setLanguagesList(prev => prev.filter(l => l.id !== langId))
+      setItems(prev => prev.filter(i => i.id !== id))
       Swal.fire({ icon: 'success', title: 'Eliminado', timer: 1500, showConfirmButton: false })
     }
   }
 
   const handleSaveForm = () => {
-    if (!formData.language || !formData.level) {
-      Swal.fire({
-        icon: 'warning',
-        title: 'Campos requeridos',
-        text: 'Por favor completa todos los campos obligatorios',
-        confirmButtonColor: '#C41E3A'
-      })
+    if (!formData.organismo) {
+      Swal.fire({ icon: 'warning', title: 'Campos requeridos', text: 'El nombre del organismo es obligatorio', confirmButtonColor: '#C41E3A' })
       return
     }
-
-    if (editingLang) {
-      setLanguagesList(prev => prev.map(l => l.id === editingLang.id ? { ...l, ...formData } : l))
+    const parsed = { ...formData, anioInicio: parseInt(formData.anioInicio) || null, anioFin: formData.anioFin ? parseInt(formData.anioFin) : null }
+    if (editing) {
+      setItems(prev => prev.map(i => i.id === editing.id ? { ...i, ...parsed } : i))
     } else {
-      setLanguagesList(prev => [...prev, { id: Date.now(), ...formData }])
+      setItems(prev => [...prev, { id: Date.now(), ...parsed }])
     }
-
     setIsPanelOpen(false)
-    Swal.fire({ icon: 'success', title: editingLang ? 'Actualizado' : 'Agregado', timer: 1500, showConfirmButton: false })
+    Swal.fire({ icon: 'success', title: editing ? 'Actualizado' : 'Agregado', timer: 1500, showConfirmButton: false })
   }
 
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-3 mb-6">
-        <Languages className="text-slate-400" size={24} />
-        <p className="text-slate-500">Lista los idiomas que hablas y tu nivel de dominio.</p>
+        <Users className="text-slate-400" size={24} />
+        <p className="text-slate-500">Membresías y participación en organismos profesionales.</p>
       </div>
 
       <div className="space-y-3">
-        {languagesList.map((lang) => (
+        {items.map((item) => (
           <SummaryCard
-            key={lang.id}
-            title={lang.language}
-            subtitle={lang.level}
-            onEdit={() => handleEdit(lang)}
-            onDelete={() => handleDelete(lang.id)}
+            key={item.id}
+            title={item.organismo}
+            subtitle={item.nivelExperiencia}
+            details={[`${item.anioInicio || '?'} - ${item.anioFin || 'Actual'}`]}
+            onEdit={() => handleEdit(item)}
+            onDelete={() => handleDelete(item.id)}
           />
         ))}
       </div>
 
-      <AddItemButton label="Agregar idioma" onClick={handleAdd} />
+      <AddItemButton label="Agregar organismo" onClick={handleAdd} />
 
-      <SlideOverPanel
-        isOpen={isPanelOpen}
-        onClose={() => setIsPanelOpen(false)}
-        title={editingLang ? 'Editar idioma' : 'Agregar idioma'}
-      >
+      <SlideOverPanel isOpen={isPanelOpen} onClose={() => setIsPanelOpen(false)} title={editing ? 'Editar organismo' : 'Agregar organismo'}>
         <div className="space-y-4">
-          <EditableField label="Idioma *" value={formData.language} onChange={(val) => setFormData(prev => ({ ...prev, language: val }))} placeholder="Ej., Inglés" />
-          <EditableField label="Nivel de dominio *" value={formData.level} onChange={(val) => setFormData(prev => ({ ...prev, level: val }))} placeholder="Ej., Fluido (C2)" />
-
+          <EditableField label="Nombre del organismo *" value={formData.organismo} onChange={(val) => setFormData(prev => ({ ...prev, organismo: val }))} placeholder="Ej., Academia Mexicana de Ingeniería" />
+          <EditableField label="Año de inicio" value={formData.anioInicio} onChange={(val) => setFormData(prev => ({ ...prev, anioInicio: val }))} type="number" placeholder="Ej., 2015" />
+          <EditableField label="Año de fin" value={formData.anioFin} onChange={(val) => setFormData(prev => ({ ...prev, anioFin: val }))} type="number" placeholder="Dejar vacío si es actual" />
+          <EditableField label="Nivel de experiencia / Rol" value={formData.nivelExperiencia} onChange={(val) => setFormData(prev => ({ ...prev, nivelExperiencia: val }))} placeholder="Ej., Miembro Titular, Fellow" />
           <div className="pt-4 flex gap-3">
             <button onClick={() => setIsPanelOpen(false)} className="flex-1 px-4 py-3 border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50">Cancelar</button>
-            <button onClick={handleSaveForm} className="flex-1 px-4 py-3 bg-red-700 hover:bg-red-800 text-white rounded-lg">{editingLang ? 'Actualizar' : 'Agregar'}</button>
+            <button onClick={handleSaveForm} className="flex-1 px-4 py-3 bg-red-700 hover:bg-red-800 text-white rounded-lg">{editing ? 'Actualizar' : 'Agregar'}</button>
           </div>
         </div>
       </SlideOverPanel>
@@ -106,4 +90,4 @@ const LanguagesSection = ({ languages: initialLanguages, onSave }) => {
   )
 }
 
-export default LanguagesSection
+export default OrganismosSection

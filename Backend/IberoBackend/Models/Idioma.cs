@@ -3,25 +3,41 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace IberoBackend.Models
 {
-    [Table("Idiomas")]
-    public class Idioma
+    [Table("organismos")]
+    public class Organismo
     {
         [Key]
+        [Column("id")]
         public int Id { get; set; }
 
         [Required]
-        public int DocenteId { get; set; }
+        [Column("id_profesor")]
+        public int IdProfesor { get; set; }
 
-        [ForeignKey("DocenteId")]
-        public Docente? Docente { get; set; }
+        [ForeignKey("IdProfesor")]
+        public DatosGenerales? Profesor { get; set; }
 
-        [Required, MaxLength(100)]
-        public string IdiomaName { get; set; } = string.Empty;
+        [Required, MaxLength(300)]
+        [Column("organismo")]
+        public string OrganismoNombre { get; set; } = string.Empty;
 
-        [MaxLength(50)]
-        public string? Nivel { get; set; }
+        [Column("anio_inicio")]
+        public int? AnioInicio { get; set; }
 
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
-        public DateTime UpdatedAt { get; set; } = DateTime.Now;
+        [Column("anio_fin")]
+        public int? AnioFin { get; set; }
+
+        [MaxLength(100)]
+        [Column("nivel_experiencia")]
+        public string? NivelExperiencia { get; set; }
+
+        [Column("activo")]
+        public bool Activo { get; set; } = true;
+
+        [Column("fecha_carga")]
+        public DateTime FechaCarga { get; set; } = DateTime.Now;
+
+        [Column("fecha_actualizacion")]
+        public DateTime FechaActualizacion { get; set; } = DateTime.Now;
     }
 }

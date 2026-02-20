@@ -3,21 +3,34 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace IberoBackend.Models
 {
-    [Table("Departamentos")]
-    public class Departamento
+    [Table("productos_academicos")]
+    public class ProductoAcademico
     {
         [Key]
+        [Column("id")]
         public int Id { get; set; }
 
-        [Required, MaxLength(100)]
-        public string Nombre { get; set; } = string.Empty;
+        [Required]
+        [Column("id_profesor")]
+        public int IdProfesor { get; set; }
 
+        [ForeignKey("IdProfesor")]
+        public DatosGenerales? Profesor { get; set; }
+
+        [MaxLength(100)]
+        [Column("id_publicacion")]
+        public string? IdPublicacion { get; set; }
+
+        [Column("descripcion_publicacion")]
+        public string? DescripcionPublicacion { get; set; }
+
+        [Column("activo")]
         public bool Activo { get; set; } = true;
 
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
-        public DateTime UpdatedAt { get; set; } = DateTime.Now;
+        [Column("fecha_carga")]
+        public DateTime FechaCarga { get; set; } = DateTime.Now;
 
-        public ICollection<Usuario> Usuarios { get; set; } = new List<Usuario>();
-        public ICollection<Docente> Docentes { get; set; } = new List<Docente>();
+        [Column("fecha_actualizacion")]
+        public DateTime FechaActualizacion { get; set; } = DateTime.Now;
     }
 }

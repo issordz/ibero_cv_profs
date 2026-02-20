@@ -11,165 +11,163 @@
 -- GO
 
 -- ===========================================
--- TABLA: Departamentos (Catálogo)
+-- TABLA: Datos Generales (registro único por profesor)
 -- ===========================================
-CREATE TABLE Departamentos (
-    id          INT IDENTITY(1,1) PRIMARY KEY,
-    nombre      NVARCHAR(100) NOT NULL UNIQUE,
-    activo      BIT DEFAULT 1,
-    created_at  DATETIME2 DEFAULT GETDATE(),
-    updated_at  DATETIME2 DEFAULT GETDATE()
+CREATE TABLE datos_generales (
+    id_profesor             INT IDENTITY(1,1) PRIMARY KEY,
+    nombres                 NVARCHAR(200) NOT NULL,
+    apellido_paterno        NVARCHAR(200) NOT NULL,
+    apellido_materno        NVARCHAR(200),
+    fecha_nacimiento        DATE,
+    edad                    INT,
+    correo_electronico      NVARCHAR(150) NOT NULL UNIQUE,
+    puesto_institucion      NVARCHAR(200),
+    resumen_profesional     NVARCHAR(MAX),
+    activo                  BIT DEFAULT 1,
+    fecha_carga             DATETIME2 DEFAULT GETDATE(),
+    fecha_actualizacion     DATETIME2 DEFAULT GETDATE()
 );
 
 -- ===========================================
--- TABLA: Usuarios (Login del sistema)
+-- TABLA: Usuarios Portal (login del sistema)
 -- ===========================================
-CREATE TABLE Usuarios (
-    id              INT IDENTITY(1,1) PRIMARY KEY,
-    email           NVARCHAR(150) NOT NULL UNIQUE,
-    password_hash   NVARCHAR(255) NOT NULL,
-    nombre          NVARCHAR(200) NOT NULL,
-    rol             NVARCHAR(20) NOT NULL CHECK (rol IN ('admin', 'professor')),
-    rol_display     NVARCHAR(100) NOT NULL,
-    avatar          NVARCHAR(10),
-    departamento_id INT NULL REFERENCES Departamentos(id),
-    activo          BIT DEFAULT 1,
-    created_at      DATETIME2 DEFAULT GETDATE(),
-    updated_at      DATETIME2 DEFAULT GETDATE()
+CREATE TABLE usuarios_portal (
+    id                      INT IDENTITY(1,1) PRIMARY KEY,
+    correo                  NVARCHAR(150) NOT NULL UNIQUE,
+    password                NVARCHAR(255) NOT NULL,
+    activo                  BIT DEFAULT 1,
+    fecha_carga             DATETIME2 DEFAULT GETDATE(),
+    fecha_actualizacion     DATETIME2 DEFAULT GETDATE()
 );
 
 -- ===========================================
--- TABLA: Docentes (Perfil completo del profesor)
+-- TABLA: Estudios Académicos Docentes (N por profesor)
 -- ===========================================
-CREATE TABLE Docentes (
-    id                  INT IDENTITY(1,1) PRIMARY KEY,
-    usuario_id          INT NOT NULL UNIQUE REFERENCES Usuarios(id),
-    employee_id         NVARCHAR(20) NOT NULL UNIQUE,
-    nombre              NVARCHAR(200) NOT NULL,
-    rol_academico       NVARCHAR(100),
-    avatar              NVARCHAR(10),
-    avatar_color        NVARCHAR(50),
-    departamento_id     INT REFERENCES Departamentos(id),
-    departamento_color  NVARCHAR(50),
-    ultima_actualizacion NVARCHAR(50),
-    progreso_perfil     INT DEFAULT 0 CHECK (progreso_perfil BETWEEN 0 AND 100),
-    email               NVARCHAR(150),
-    telefono            NVARCHAR(30),
-    ubicacion_oficina   NVARCHAR(200),
-    orcid_id            NVARCHAR(50),
-    linkedin            NVARCHAR(200),
-    horario_oficina     NVARCHAR(200),
-    resumen             NVARCHAR(MAX),
-    activo              BIT DEFAULT 1,
-    created_at          DATETIME2 DEFAULT GETDATE(),
-    updated_at          DATETIME2 DEFAULT GETDATE()
+CREATE TABLE estudios_academicos (
+    id                      INT IDENTITY(1,1) PRIMARY KEY,
+    id_profesor             INT NOT NULL REFERENCES datos_generales(id_profesor) ON DELETE CASCADE,
+    titulo_estudio          NVARCHAR(300) NOT NULL,
+    nivel_estudios          NVARCHAR(100),
+    institucion             NVARCHAR(300),
+    pais                    NVARCHAR(100),
+    anio_obtencion          INT,
+    cedula                  NVARCHAR(100),
+    activo                  BIT DEFAULT 1,
+    fecha_carga             DATETIME2 DEFAULT GETDATE(),
+    fecha_actualizacion     DATETIME2 DEFAULT GETDATE()
 );
 
 -- ===========================================
--- TABLA: Grados Académicos
+-- TABLA: Experiencia Laboral (N por profesor)
 -- ===========================================
-CREATE TABLE GradosAcademicos (
-    id              INT IDENTITY(1,1) PRIMARY KEY,
-    docente_id      INT NOT NULL REFERENCES Docentes(id) ON DELETE CASCADE,
-    titulo          NVARCHAR(200) NOT NULL,
-    institucion     NVARCHAR(200) NOT NULL,
-    anio            INT,
-    pais            NVARCHAR(100),
-    created_at      DATETIME2 DEFAULT GETDATE(),
-    updated_at      DATETIME2 DEFAULT GETDATE()
+CREATE TABLE experiencia_laboral (
+    id                      INT IDENTITY(1,1) PRIMARY KEY,
+    id_profesor             INT NOT NULL REFERENCES datos_generales(id_profesor) ON DELETE CASCADE,
+    actividad_puesto        NVARCHAR(300) NOT NULL,
+    organizacion_empresa    NVARCHAR(300),
+    inicio_mes_anio         NVARCHAR(50),
+    fin_mes_anio            NVARCHAR(50),
+    escolar                 BIT DEFAULT 0,
+    diseno_ingenieril       BIT DEFAULT 0,
+    nivel_experiencia       NVARCHAR(100),
+    activo                  BIT DEFAULT 1,
+    fecha_carga             DATETIME2 DEFAULT GETDATE(),
+    fecha_actualizacion     DATETIME2 DEFAULT GETDATE()
 );
 
 -- ===========================================
--- TABLA: Publicaciones
+-- TABLA: Capacitación (N por profesor)
 -- ===========================================
-CREATE TABLE Publicaciones (
-    id              INT IDENTITY(1,1) PRIMARY KEY,
-    docente_id      INT NOT NULL REFERENCES Docentes(id) ON DELETE CASCADE,
-    titulo          NVARCHAR(500) NOT NULL,
-    revista         NVARCHAR(300),
-    anio            INT,
-    doi             NVARCHAR(100),
-    created_at      DATETIME2 DEFAULT GETDATE(),
-    updated_at      DATETIME2 DEFAULT GETDATE()
+CREATE TABLE capacitacion (
+    id                      INT IDENTITY(1,1) PRIMARY KEY,
+    id_profesor             INT NOT NULL REFERENCES datos_generales(id_profesor) ON DELETE CASCADE,
+    tipo_capacitacion       NVARCHAR(200),
+    institucion             NVARCHAR(300),
+    pais                    NVARCHAR(100),
+    anio_obtencion          INT,
+    horas                   INT,
+    vigencia                NVARCHAR(100),
+    activo                  BIT DEFAULT 1,
+    fecha_carga             DATETIME2 DEFAULT GETDATE(),
+    fecha_actualizacion     DATETIME2 DEFAULT GETDATE()
 );
 
 -- ===========================================
--- TABLA: Proyectos
+-- TABLA: Logros Profesionales (N por profesor)
 -- ===========================================
-CREATE TABLE Proyectos (
-    id                  INT IDENTITY(1,1) PRIMARY KEY,
-    docente_id          INT NOT NULL REFERENCES Docentes(id) ON DELETE CASCADE,
-    titulo              NVARCHAR(300) NOT NULL,
-    rol                 NVARCHAR(100),
-    fecha_inicio        NVARCHAR(20),
-    fecha_fin           NVARCHAR(20),
-    financiamiento      NVARCHAR(100),
-    estado              NVARCHAR(50) DEFAULT 'Activo',
-    created_at          DATETIME2 DEFAULT GETDATE(),
-    updated_at          DATETIME2 DEFAULT GETDATE()
+CREATE TABLE logros_profesionales (
+    id                      INT IDENTITY(1,1) PRIMARY KEY,
+    id_profesor             INT NOT NULL REFERENCES datos_generales(id_profesor) ON DELETE CASCADE,
+    desc_logro              NVARCHAR(MAX) NOT NULL,
+    activo                  BIT DEFAULT 1,
+    fecha_carga             DATETIME2 DEFAULT GETDATE(),
+    fecha_actualizacion     DATETIME2 DEFAULT GETDATE()
 );
 
 -- ===========================================
--- TABLA: Premios y Distinciones
+-- TABLA: Organismos (N por profesor)
 -- ===========================================
-CREATE TABLE Premios (
-    id              INT IDENTITY(1,1) PRIMARY KEY,
-    docente_id      INT NOT NULL REFERENCES Docentes(id) ON DELETE CASCADE,
-    titulo          NVARCHAR(300) NOT NULL,
-    organizacion    NVARCHAR(200),
-    anio            INT,
-    created_at      DATETIME2 DEFAULT GETDATE(),
-    updated_at      DATETIME2 DEFAULT GETDATE()
+CREATE TABLE organismos (
+    id                      INT IDENTITY(1,1) PRIMARY KEY,
+    id_profesor             INT NOT NULL REFERENCES datos_generales(id_profesor) ON DELETE CASCADE,
+    organismo               NVARCHAR(300) NOT NULL,
+    anio_inicio             INT,
+    anio_fin                INT,
+    nivel_experiencia       NVARCHAR(100),
+    activo                  BIT DEFAULT 1,
+    fecha_carga             DATETIME2 DEFAULT GETDATE(),
+    fecha_actualizacion     DATETIME2 DEFAULT GETDATE()
 );
 
 -- ===========================================
--- TABLA: Cursos (Docencia)
+-- TABLA: Premios o Distinciones (N por profesor)
 -- ===========================================
-CREATE TABLE Cursos (
-    id              INT IDENTITY(1,1) PRIMARY KEY,
-    docente_id      INT NOT NULL REFERENCES Docentes(id) ON DELETE CASCADE,
-    codigo          NVARCHAR(20) NOT NULL,
-    nombre          NVARCHAR(200) NOT NULL,
-    semestre        NVARCHAR(50),
-    estudiantes     INT DEFAULT 0,
-    created_at      DATETIME2 DEFAULT GETDATE(),
-    updated_at      DATETIME2 DEFAULT GETDATE()
+CREATE TABLE premios_distinciones (
+    id                      INT IDENTITY(1,1) PRIMARY KEY,
+    id_profesor             INT NOT NULL REFERENCES datos_generales(id_profesor) ON DELETE CASCADE,
+    desc_premio             NVARCHAR(MAX) NOT NULL,
+    activo                  BIT DEFAULT 1,
+    fecha_carga             DATETIME2 DEFAULT GETDATE(),
+    fecha_actualizacion     DATETIME2 DEFAULT GETDATE()
 );
 
 -- ===========================================
--- TABLA: Idiomas
+-- TABLA: Productos Académicos (N por profesor)
 -- ===========================================
-CREATE TABLE Idiomas (
-    id              INT IDENTITY(1,1) PRIMARY KEY,
-    docente_id      INT NOT NULL REFERENCES Docentes(id) ON DELETE CASCADE,
-    idioma          NVARCHAR(100) NOT NULL,
-    nivel           NVARCHAR(50),
-    created_at      DATETIME2 DEFAULT GETDATE(),
-    updated_at      DATETIME2 DEFAULT GETDATE()
+CREATE TABLE productos_academicos (
+    id                      INT IDENTITY(1,1) PRIMARY KEY,
+    id_profesor             INT NOT NULL REFERENCES datos_generales(id_profesor) ON DELETE CASCADE,
+    id_publicacion          NVARCHAR(100),
+    descripcion_publicacion NVARCHAR(MAX),
+    activo                  BIT DEFAULT 1,
+    fecha_carga             DATETIME2 DEFAULT GETDATE(),
+    fecha_actualizacion     DATETIME2 DEFAULT GETDATE()
 );
 
--- =========================================== 
--- TABLA: Estado de Secciones del Formulario
 -- ===========================================
-CREATE TABLE SeccionesEstado (
-    id              INT IDENTITY(1,1) PRIMARY KEY,
-    docente_id      INT NOT NULL REFERENCES Docentes(id) ON DELETE CASCADE,
-    seccion_id      NVARCHAR(50) NOT NULL,
-    estado          NVARCHAR(20) DEFAULT 'pending' CHECK (estado IN ('complete', 'pending', 'in_progress')),
-    created_at      DATETIME2 DEFAULT GETDATE(),
-    updated_at      DATETIME2 DEFAULT GETDATE(),
-    UNIQUE(docente_id, seccion_id)
+-- TABLA: Actualización (N por profesor)
+-- ===========================================
+CREATE TABLE actualizacion (
+    id                      INT IDENTITY(1,1) PRIMARY KEY,
+    id_profesor             INT NOT NULL REFERENCES datos_generales(id_profesor) ON DELETE CASCADE,
+    nombre_actualizacion    NVARCHAR(300) NOT NULL,
+    tipo_actualizacion      NVARCHAR(200),
+    institucion             NVARCHAR(300),
+    pais                    NVARCHAR(100),
+    horas                   INT,
+    activo                  BIT DEFAULT 1,
+    fecha_carga             DATETIME2 DEFAULT GETDATE(),
+    fecha_actualizacion     DATETIME2 DEFAULT GETDATE()
 );
 
 -- ===========================================
 -- ÍNDICES
 -- ===========================================
-CREATE INDEX IX_Docentes_DepartamentoId ON Docentes(departamento_id);
-CREATE INDEX IX_Docentes_UsuarioId ON Docentes(usuario_id);
-CREATE INDEX IX_GradosAcademicos_DocenteId ON GradosAcademicos(docente_id);
-CREATE INDEX IX_Publicaciones_DocenteId ON Publicaciones(docente_id);
-CREATE INDEX IX_Proyectos_DocenteId ON Proyectos(docente_id);
-CREATE INDEX IX_Premios_DocenteId ON Premios(docente_id);
-CREATE INDEX IX_Cursos_DocenteId ON Cursos(docente_id);
-CREATE INDEX IX_Idiomas_DocenteId ON Idiomas(docente_id);
-CREATE INDEX IX_SeccionesEstado_DocenteId ON SeccionesEstado(docente_id);
+CREATE INDEX IX_EstudiosAcademicos_IdProfesor ON estudios_academicos(id_profesor);
+CREATE INDEX IX_ExperienciaLaboral_IdProfesor ON experiencia_laboral(id_profesor);
+CREATE INDEX IX_Capacitacion_IdProfesor ON capacitacion(id_profesor);
+CREATE INDEX IX_LogrosProfesionales_IdProfesor ON logros_profesionales(id_profesor);
+CREATE INDEX IX_Organismos_IdProfesor ON organismos(id_profesor);
+CREATE INDEX IX_PremiosDistinciones_IdProfesor ON premios_distinciones(id_profesor);
+CREATE INDEX IX_ProductosAcademicos_IdProfesor ON productos_academicos(id_profesor);
+CREATE INDEX IX_Actualizacion_IdProfesor ON actualizacion(id_profesor);

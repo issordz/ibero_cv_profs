@@ -3,77 +3,59 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace IberoBackend.Models
 {
-    [Table("Docentes")]
-    public class Docente
+    [Table("datos_generales")]
+    public class DatosGenerales
     {
         [Key]
-        public int Id { get; set; }
-
-        [Required]
-        public int UsuarioId { get; set; }
-
-        [ForeignKey("UsuarioId")]
-        public Usuario? Usuario { get; set; }
-
-        [Required, MaxLength(20)]
-        public string EmployeeId { get; set; } = string.Empty;
+        [Column("id_profesor")]
+        public int IdProfesor { get; set; }
 
         [Required, MaxLength(200)]
-        public string Nombre { get; set; } = string.Empty;
+        [Column("nombres")]
+        public string Nombres { get; set; } = string.Empty;
 
-        [MaxLength(100)]
-        public string? RolAcademico { get; set; }
-
-        [MaxLength(10)]
-        public string? Avatar { get; set; }
-
-        [MaxLength(50)]
-        public string? AvatarColor { get; set; }
-
-        public int? DepartamentoId { get; set; }
-
-        [ForeignKey("DepartamentoId")]
-        public Departamento? Departamento { get; set; }
-
-        [MaxLength(50)]
-        public string? DepartamentoColor { get; set; }
-
-        [MaxLength(50)]
-        public string? UltimaActualizacion { get; set; }
-
-        public int ProgresoPerfil { get; set; } = 0;
-
-        [MaxLength(150)]
-        public string? Email { get; set; }
-
-        [MaxLength(30)]
-        public string? Telefono { get; set; }
+        [Required, MaxLength(200)]
+        [Column("apellido_paterno")]
+        public string ApellidoPaterno { get; set; } = string.Empty;
 
         [MaxLength(200)]
-        public string? UbicacionOficina { get; set; }
+        [Column("apellido_materno")]
+        public string? ApellidoMaterno { get; set; }
 
-        [MaxLength(50)]
-        public string? OrcidId { get; set; }
+        [Column("fecha_nacimiento")]
+        public DateTime? FechaNacimiento { get; set; }
+
+        [Column("edad")]
+        public int? Edad { get; set; }
+
+        [Required, MaxLength(150)]
+        [Column("correo_electronico")]
+        public string CorreoElectronico { get; set; } = string.Empty;
 
         [MaxLength(200)]
-        public string? Linkedin { get; set; }
+        [Column("puesto_institucion")]
+        public string? PuestoInstitucion { get; set; }
 
-        [MaxLength(200)]
-        public string? HorarioOficina { get; set; }
+        [Column("resumen_profesional")]
+        public string? ResumenProfesional { get; set; }
 
-        public string? Resumen { get; set; }
-
+        [Column("activo")]
         public bool Activo { get; set; } = true;
 
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
-        public DateTime UpdatedAt { get; set; } = DateTime.Now;
+        [Column("fecha_carga")]
+        public DateTime FechaCarga { get; set; } = DateTime.Now;
 
-        public ICollection<GradoAcademico> GradosAcademicos { get; set; } = new List<GradoAcademico>();
-        public ICollection<Publicacion> Publicaciones { get; set; } = new List<Publicacion>();
-        public ICollection<Proyecto> Proyectos { get; set; } = new List<Proyecto>();
-        public ICollection<Premio> Premios { get; set; } = new List<Premio>();
-        public ICollection<Curso> Cursos { get; set; } = new List<Curso>();
-        public ICollection<Idioma> Idiomas { get; set; } = new List<Idioma>();
-        public ICollection<SeccionEstado> SeccionesEstado { get; set; } = new List<SeccionEstado>();
+        [Column("fecha_actualizacion")]
+        public DateTime FechaActualizacion { get; set; } = DateTime.Now;
+
+        // Navegación: colecciones hijas (1:N)
+        public ICollection<EstudioAcademico> EstudiosAcademicos { get; set; } = new List<EstudioAcademico>();
+        public ICollection<ExperienciaLaboral> ExperienciasLaborales { get; set; } = new List<ExperienciaLaboral>();
+        public ICollection<Capacitacion> Capacitaciones { get; set; } = new List<Capacitacion>();
+        public ICollection<LogroProfesional> LogrosProfesionales { get; set; } = new List<LogroProfesional>();
+        public ICollection<Organismo> Organismos { get; set; } = new List<Organismo>();
+        public ICollection<PremioDistincion> PremiosDistinciones { get; set; } = new List<PremioDistincion>();
+        public ICollection<ProductoAcademico> ProductosAcademicos { get; set; } = new List<ProductoAcademico>();
+        public ICollection<Actualizacion> Actualizaciones { get; set; } = new List<Actualizacion>();
     }
 }

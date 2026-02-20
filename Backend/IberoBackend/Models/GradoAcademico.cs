@@ -3,30 +3,50 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace IberoBackend.Models
 {
-    [Table("GradosAcademicos")]
-    public class GradoAcademico
+    [Table("estudios_academicos")]
+    public class EstudioAcademico
     {
         [Key]
+        [Column("id")]
         public int Id { get; set; }
 
         [Required]
-        public int DocenteId { get; set; }
+        [Column("id_profesor")]
+        public int IdProfesor { get; set; }
 
-        [ForeignKey("DocenteId")]
-        public Docente? Docente { get; set; }
+        [ForeignKey("IdProfesor")]
+        public DatosGenerales? Profesor { get; set; }
 
-        [Required, MaxLength(200)]
-        public string Titulo { get; set; } = string.Empty;
-
-        [Required, MaxLength(200)]
-        public string Institucion { get; set; } = string.Empty;
-
-        public int? Anio { get; set; }
+        [Required, MaxLength(300)]
+        [Column("titulo_estudio")]
+        public string TituloEstudio { get; set; } = string.Empty;
 
         [MaxLength(100)]
+        [Column("nivel_estudios")]
+        public string? NivelEstudios { get; set; }
+
+        [MaxLength(300)]
+        [Column("institucion")]
+        public string? Institucion { get; set; }
+
+        [MaxLength(100)]
+        [Column("pais")]
         public string? Pais { get; set; }
 
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
-        public DateTime UpdatedAt { get; set; } = DateTime.Now;
+        [Column("anio_obtencion")]
+        public int? AnioObtencion { get; set; }
+
+        [MaxLength(100)]
+        [Column("cedula")]
+        public string? Cedula { get; set; }
+
+        [Column("activo")]
+        public bool Activo { get; set; } = true;
+
+        [Column("fecha_carga")]
+        public DateTime FechaCarga { get; set; } = DateTime.Now;
+
+        [Column("fecha_actualizacion")]
+        public DateTime FechaActualizacion { get; set; } = DateTime.Now;
     }
 }

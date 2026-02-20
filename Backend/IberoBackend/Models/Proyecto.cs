@@ -3,37 +3,53 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace IberoBackend.Models
 {
-    [Table("Proyectos")]
-    public class Proyecto
+    [Table("experiencia_laboral")]
+    public class ExperienciaLaboral
     {
         [Key]
+        [Column("id")]
         public int Id { get; set; }
 
         [Required]
-        public int DocenteId { get; set; }
+        [Column("id_profesor")]
+        public int IdProfesor { get; set; }
 
-        [ForeignKey("DocenteId")]
-        public Docente? Docente { get; set; }
+        [ForeignKey("IdProfesor")]
+        public DatosGenerales? Profesor { get; set; }
 
         [Required, MaxLength(300)]
-        public string Titulo { get; set; } = string.Empty;
+        [Column("actividad_puesto")]
+        public string ActividadPuesto { get; set; } = string.Empty;
 
-        [MaxLength(100)]
-        public string? Rol { get; set; }
-
-        [MaxLength(20)]
-        public string? FechaInicio { get; set; }
-
-        [MaxLength(20)]
-        public string? FechaFin { get; set; }
-
-        [MaxLength(100)]
-        public string? Financiamiento { get; set; }
+        [MaxLength(300)]
+        [Column("organizacion_empresa")]
+        public string? OrganizacionEmpresa { get; set; }
 
         [MaxLength(50)]
-        public string Estado { get; set; } = "Activo";
+        [Column("inicio_mes_anio")]
+        public string? InicioMesAnio { get; set; }
 
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
-        public DateTime UpdatedAt { get; set; } = DateTime.Now;
+        [MaxLength(50)]
+        [Column("fin_mes_anio")]
+        public string? FinMesAnio { get; set; }
+
+        [Column("escolar")]
+        public bool Escolar { get; set; } = false;
+
+        [Column("diseno_ingenieril")]
+        public bool DisenoIngenieril { get; set; } = false;
+
+        [MaxLength(100)]
+        [Column("nivel_experiencia")]
+        public string? NivelExperiencia { get; set; }
+
+        [Column("activo")]
+        public bool Activo { get; set; } = true;
+
+        [Column("fecha_carga")]
+        public DateTime FechaCarga { get; set; } = DateTime.Now;
+
+        [Column("fecha_actualizacion")]
+        public DateTime FechaActualizacion { get; set; } = DateTime.Now;
     }
 }

@@ -24,6 +24,9 @@ namespace IberoBackend.Models
         [Column("descripcion_publicacion")]
         public string? DescripcionPublicacion { get; set; }
 
+        [Column("anio_producto")]
+        public int? AnioProducto { get; set; }
+
         [Column("activo")]
         public bool Activo { get; set; } = true;
 

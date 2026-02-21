@@ -17,6 +17,10 @@ namespace IberoBackend.Models
         [ForeignKey("IdProfesor")]
         public DatosGenerales? Profesor { get; set; }
 
+        [MaxLength(300)]
+        [Column("nombre_capacitacion")]
+        public string? NombreCapacitacion { get; set; }
+
         [MaxLength(200)]
         [Column("tipo_capacitacion")]
         public string? TipoCapacitacion { get; set; }

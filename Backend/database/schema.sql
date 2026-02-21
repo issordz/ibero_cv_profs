@@ -14,13 +14,12 @@
 -- TABLA: Datos Generales (registro único por profesor)
 -- ===========================================
 CREATE TABLE datos_generales (
-    id_profesor             INT IDENTITY(1,1) PRIMARY KEY,
-    nombres                 NVARCHAR(200) NOT NULL,
+    id_profesor             INT IDENTITY(1,1) PRIMARY KEY, -- 
+    nombres                 NVARCHAR(200) NOT NULL, 
     apellido_paterno        NVARCHAR(200) NOT NULL,
     apellido_materno        NVARCHAR(200),
     fecha_nacimiento        DATE,
-    edad                    INT,
-    correo_electronico      NVARCHAR(150) NOT NULL UNIQUE,
+    correo_electronico      NVARCHAR(150) NOT NULL UNIQUE, 
     puesto_institucion      NVARCHAR(200),
     resumen_profesional     NVARCHAR(MAX),
     activo                  BIT DEFAULT 1,
@@ -67,8 +66,7 @@ CREATE TABLE experiencia_laboral (
     organizacion_empresa    NVARCHAR(300),
     inicio_mes_anio         NVARCHAR(50),
     fin_mes_anio            NVARCHAR(50),
-    escolar                 BIT DEFAULT 0,
-    diseno_ingenieril       BIT DEFAULT 0,
+    tipo_experiencia        NVARCHAR(100),
     nivel_experiencia       NVARCHAR(100),
     activo                  BIT DEFAULT 1,
     fecha_carga             DATETIME2 DEFAULT GETDATE(),
@@ -81,6 +79,7 @@ CREATE TABLE experiencia_laboral (
 CREATE TABLE capacitacion (
     id                      INT IDENTITY(1,1) PRIMARY KEY,
     id_profesor             INT NOT NULL REFERENCES datos_generales(id_profesor) ON DELETE CASCADE,
+    nombre_capacitacion     NVARCHAR(300),
     tipo_capacitacion       NVARCHAR(200),
     institucion             NVARCHAR(300),
     pais                    NVARCHAR(100),
@@ -143,6 +142,7 @@ CREATE TABLE productos_academicos (
     id_profesor             INT NOT NULL REFERENCES datos_generales(id_profesor) ON DELETE CASCADE,
     id_publicacion          NVARCHAR(100),
     descripcion_publicacion NVARCHAR(MAX),
+    anio_producto            INT,
     activo                  BIT DEFAULT 1,
     fecha_carga             DATETIME2 DEFAULT GETDATE(),
     fecha_actualizacion     DATETIME2 DEFAULT GETDATE()
@@ -158,6 +158,7 @@ CREATE TABLE actualizacion (
     tipo_actualizacion      NVARCHAR(200),
     institucion             NVARCHAR(300),
     pais                    NVARCHAR(100),
+    anio                    INT,
     horas                   INT,
     activo                  BIT DEFAULT 1,
     fecha_carga             DATETIME2 DEFAULT GETDATE(),

@@ -27,6 +27,7 @@ const GeneralDataSection = ({ faculty, onChanges }) => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <ReadOnlyField label="Número docente" value={faculty?.id} />
           <ReadOnlyField label="Nombres" value={faculty?.nombres} />
           <ReadOnlyField label="Apellido paterno" value={faculty?.apellidoPaterno} />
           <ReadOnlyField label="Apellido materno" value={faculty?.apellidoMaterno || '—'} />

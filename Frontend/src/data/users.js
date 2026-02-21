@@ -211,11 +211,11 @@ export const formSections = [
   { id: 'informacion-academica', label: 'Estudios Académicos', icon: 'GraduationCap' },
   { id: 'experiencia-laboral', label: 'Experiencia Laboral', icon: 'Briefcase' },
   { id: 'capacitaciones', label: 'Capacitación', icon: 'BookOpen' },
+  { id: 'actualizacion', label: 'Actualización', icon: 'RefreshCw' },
   { id: 'logros-profesionales', label: 'Logros Profesionales', icon: 'Award' },
   { id: 'organismos', label: 'Organismos', icon: 'Users' },
   { id: 'premios-distinciones', label: 'Premios y Distinciones', icon: 'Trophy' },
-  { id: 'productos-academicos', label: 'Productos Académicos', icon: 'FileText' },
-  { id: 'actualizacion', label: 'Actualización', icon: 'RefreshCw' }
+  { id: 'productos-academicos', label: 'Productos Académicos', icon: 'FileText' }
 ]
 
 // ---- estudios_academicos ----
@@ -238,27 +238,27 @@ export const estudiosAcademicos = {
 // ---- experiencia_laboral ----
 export const experienciaLaboral = {
   1: [
-    { id: 1, actividadPuesto: 'Profesora de Tiempo Completo', organizacionEmpresa: 'Universidad Iberoamericana', inicioMesAnio: 'Ago 2010', finMesAnio: 'Actual', escolar: true, disenoIngenieril: true, nivelExperiencia: 'Senior' },
-    { id: 2, actividadPuesto: 'Investigadora Asociada', organizacionEmpresa: 'MIT', inicioMesAnio: 'Ene 2005', finMesAnio: 'Jul 2010', escolar: true, disenoIngenieril: false, nivelExperiencia: 'Intermedio' }
+    { id: 1, actividadPuesto: 'Profesora de Tiempo Completo', organizacionEmpresa: 'Universidad Iberoamericana', inicioMesAnio: 'Ago 2010', finMesAnio: 'Actual', tipoExperiencia: 'Académica', nivelExperiencia: 'Senior' },
+    { id: 2, actividadPuesto: 'Investigadora Asociada', organizacionEmpresa: 'MIT', inicioMesAnio: 'Ene 2005', finMesAnio: 'Jul 2010', tipoExperiencia: 'Académica', nivelExperiencia: 'Intermedio' }
   ],
   2: [
-    { id: 1, actividadPuesto: 'Coordinador Académico', organizacionEmpresa: 'Universidad Iberoamericana', inicioMesAnio: 'Ene 2015', finMesAnio: 'Actual', escolar: true, disenoIngenieril: false, nivelExperiencia: 'Senior' },
-    { id: 2, actividadPuesto: 'Consultor de Gestión', organizacionEmpresa: 'Deloitte México', inicioMesAnio: 'Mar 2010', finMesAnio: 'Dic 2014', escolar: false, disenoIngenieril: false, nivelExperiencia: 'Intermedio' }
+    { id: 1, actividadPuesto: 'Coordinador Académico', organizacionEmpresa: 'Universidad Iberoamericana', inicioMesAnio: 'Ene 2015', finMesAnio: 'Actual', tipoExperiencia: 'Académica', nivelExperiencia: 'Senior' },
+    { id: 2, actividadPuesto: 'Consultor de Gestión', organizacionEmpresa: 'Deloitte México', inicioMesAnio: 'Mar 2010', finMesAnio: 'Dic 2014', tipoExperiencia: 'Profesional', nivelExperiencia: 'Intermedio' }
   ],
   3: [
-    { id: 1, actividadPuesto: 'Profesor de Asignatura', organizacionEmpresa: 'Universidad Iberoamericana', inicioMesAnio: 'Ago 2018', finMesAnio: 'Actual', escolar: true, disenoIngenieril: false, nivelExperiencia: 'Junior' },
-    { id: 2, actividadPuesto: 'Desarrollador de Software Sr.', organizacionEmpresa: 'IBM México', inicioMesAnio: 'Feb 2012', finMesAnio: 'Jul 2018', escolar: false, disenoIngenieril: true, nivelExperiencia: 'Senior' }
+    { id: 1, actividadPuesto: 'Profesor de Asignatura', organizacionEmpresa: 'Universidad Iberoamericana', inicioMesAnio: 'Ago 2018', finMesAnio: 'Actual', tipoExperiencia: 'Académica', nivelExperiencia: 'Junior' },
+    { id: 2, actividadPuesto: 'Desarrollador de Software Sr.', organizacionEmpresa: 'IBM México', inicioMesAnio: 'Feb 2012', finMesAnio: 'Jul 2018', tipoExperiencia: 'Ingenieril', nivelExperiencia: 'Senior' }
   ]
 }
 
 // ---- capacitacion ----
 export const capacitaciones = {
   1: [
-    { id: 1, tipoCapacitacion: 'Diplomado', institucion: 'UNAM', pais: 'México', anioObtencion: 2022, horas: 120, vigencia: 'Permanente' },
-    { id: 2, tipoCapacitacion: 'Certificación PMP', institucion: 'PMI', pais: 'EUA', anioObtencion: 2020, horas: 80, vigencia: '2025' }
+    { id: 1, nombreCapacitacion: 'Diplomado en Docencia Universitaria', tipoCapacitacion: 'Diplomado', institucion: 'UNAM', pais: 'México', anioObtencion: 2022, horas: 120, vigencia: 'Permanente' },
+    { id: 2, nombreCapacitacion: 'Certificación en Gestión de Proyectos', tipoCapacitacion: 'Certificación PMP', institucion: 'PMI', pais: 'EUA', anioObtencion: 2020, horas: 80, vigencia: '2025' }
   ],
   2: [
-    { id: 1, tipoCapacitacion: 'Taller de Liderazgo Académico', institucion: 'Harvard Extension', pais: 'EUA', anioObtencion: 2021, horas: 40, vigencia: 'Permanente' }
+    { id: 1, nombreCapacitacion: 'Taller de Liderazgo Académico', tipoCapacitacion: 'Taller', institucion: 'Harvard Extension', pais: 'EUA', anioObtencion: 2021, horas: 40, vigencia: 'Permanente' }
   ],
   3: []
 }
@@ -305,12 +305,12 @@ export const premiosDistinciones = {
 // ---- productos_academicos ----
 export const productosAcademicos = {
   1: [
-    { id: 1, idPublicacion: 'DOI-2023-001', descripcionPublicacion: 'Materiales de construcción resistentes a sismos: Revisión exhaustiva. Journal of Structural Engineering, 2023.' },
-    { id: 2, idPublicacion: 'DOI-2022-045', descripcionPublicacion: 'Prácticas de construcción sostenible en América Latina. Construction and Building Materials, 2022.' },
-    { id: 3, idPublicacion: 'ISBN-2021-112', descripcionPublicacion: 'Enfoques innovadores para diseño sísmico. Engineering Structures, 2021.' }
+    { id: 1, idPublicacion: 'DOI-2023-001', descripcionPublicacion: 'Materiales de construcción resistentes a sismos: Revisión exhaustiva. Journal of Structural Engineering.', anioProducto: 2023 },
+    { id: 2, idPublicacion: 'DOI-2022-045', descripcionPublicacion: 'Prácticas de construcción sostenible en América Latina. Construction and Building Materials.', anioProducto: 2022 },
+    { id: 3, idPublicacion: 'ISBN-2021-112', descripcionPublicacion: 'Enfoques innovadores para diseño sísmico. Engineering Structures.', anioProducto: 2021 }
   ],
   2: [
-    { id: 1, idPublicacion: 'DOI-2023-015', descripcionPublicacion: 'Gestión académica en universidades iberoamericanas. Revista de Educación Superior, 2023.' }
+    { id: 1, idPublicacion: 'DOI-2023-015', descripcionPublicacion: 'Gestión académica en universidades iberoamericanas. Revista de Educación Superior.', anioProducto: 2023 }
   ],
   3: []
 }
@@ -318,14 +318,14 @@ export const productosAcademicos = {
 // ---- actualizacion ----
 export const actualizaciones = {
   1: [
-    { id: 1, nombreActualizacion: 'Seminario de Nuevas Tecnologías en Ingeniería', tipoActualizacion: 'Seminario', institucion: 'Colegio de Ingenieros', pais: 'México', horas: 20 },
-    { id: 2, nombreActualizacion: 'Curso de BIM Avanzado', tipoActualizacion: 'Curso', institucion: 'Autodesk University', pais: 'EUA', horas: 40 }
+    { id: 1, nombreActualizacion: 'Seminario de Nuevas Tecnologías en Ingeniería', tipoActualizacion: 'Seminario', institucion: 'Colegio de Ingenieros', pais: 'México', anio: 2023, horas: 20 },
+    { id: 2, nombreActualizacion: 'Curso de BIM Avanzado', tipoActualizacion: 'Curso', institucion: 'Autodesk University', pais: 'EUA', anio: 2022, horas: 40 }
   ],
   2: [
-    { id: 1, nombreActualizacion: 'Workshop en Gestión del Cambio Organizacional', tipoActualizacion: 'Taller', institucion: 'IPADE', pais: 'México', horas: 16 }
+    { id: 1, nombreActualizacion: 'Workshop en Gestión del Cambio Organizacional', tipoActualizacion: 'Taller', institucion: 'IPADE', pais: 'México', anio: 2023, horas: 16 }
   ],
   3: [
-    { id: 1, nombreActualizacion: 'Certificación AWS Cloud Practitioner', tipoActualizacion: 'Certificación', institucion: 'Amazon Web Services', pais: 'EUA', horas: 60 }
+    { id: 1, nombreActualizacion: 'Certificación AWS Cloud Practitioner', tipoActualizacion: 'Certificación', institucion: 'Amazon Web Services', pais: 'EUA', anio: 2024, horas: 60 }
   ]
 }
 

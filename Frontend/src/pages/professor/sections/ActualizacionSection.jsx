@@ -11,12 +11,12 @@ const ActualizacionSection = ({ items: initialItems, onSave }) => {
   const [isPanelOpen, setIsPanelOpen] = useState(false)
   const [editing, setEditing] = useState(null)
   const [formData, setFormData] = useState({
-    nombreActualizacion: '', tipoActualizacion: '', institucion: '', pais: '', horas: ''
+    nombreActualizacion: '', tipoActualizacion: '', institucion: '', pais: '', anio: '', horas: ''
   })
 
   const handleAdd = () => {
     setEditing(null)
-    setFormData({ nombreActualizacion: '', tipoActualizacion: '', institucion: '', pais: '', horas: '' })
+    setFormData({ nombreActualizacion: '', tipoActualizacion: '', institucion: '', pais: '', anio: '', horas: '' })
     setIsPanelOpen(true)
   }
 
@@ -24,7 +24,7 @@ const ActualizacionSection = ({ items: initialItems, onSave }) => {
     setEditing(item)
     setFormData({
       nombreActualizacion: item.nombreActualizacion || '', tipoActualizacion: item.tipoActualizacion || '',
-      institucion: item.institucion || '', pais: item.pais || '', horas: item.horas?.toString() || ''
+      institucion: item.institucion || '', pais: item.pais || '', anio: item.anio?.toString() || '', horas: item.horas?.toString() || ''
     })
     setIsPanelOpen(true)
   }
@@ -42,7 +42,7 @@ const ActualizacionSection = ({ items: initialItems, onSave }) => {
       Swal.fire({ icon: 'warning', title: 'Campos requeridos', text: 'El nombre de la actualización es obligatorio', confirmButtonColor: '#C41E3A' })
       return
     }
-    const parsed = { ...formData, horas: parseInt(formData.horas) || null }
+    const parsed = { ...formData, anio: parseInt(formData.anio) || null, horas: parseInt(formData.horas) || null }
     if (editing) {
       setItems(prev => prev.map(i => i.id === editing.id ? { ...i, ...parsed } : i))
     } else {
@@ -65,7 +65,7 @@ const ActualizacionSection = ({ items: initialItems, onSave }) => {
             key={item.id}
             title={item.nombreActualizacion}
             subtitle={`${item.tipoActualizacion || ''} — ${item.institucion || ''}`}
-            details={[item.pais, item.horas ? `${item.horas} hrs` : null].filter(Boolean)}
+            details={[item.anio?.toString(), item.pais, item.horas ? `${item.horas} hrs` : null].filter(Boolean)}
             onEdit={() => handleEdit(item)}
             onDelete={() => handleDelete(item.id)}
           />
@@ -80,6 +80,7 @@ const ActualizacionSection = ({ items: initialItems, onSave }) => {
           <EditableField label="Tipo de actualización" value={formData.tipoActualizacion} onChange={(val) => setFormData(prev => ({ ...prev, tipoActualizacion: val }))} placeholder="Ej., Seminario, Curso, Taller, Certificación" />
           <EditableField label="Institución" value={formData.institucion} onChange={(val) => setFormData(prev => ({ ...prev, institucion: val }))} placeholder="Ej., Colegio de Ingenieros" />
           <EditableField label="País" value={formData.pais} onChange={(val) => setFormData(prev => ({ ...prev, pais: val }))} placeholder="Ej., México" />
+          <EditableField label="Año" value={formData.anio} onChange={(val) => setFormData(prev => ({ ...prev, anio: val }))} type="number" placeholder="Ej., 2023" />
           <EditableField label="Horas" value={formData.horas} onChange={(val) => setFormData(prev => ({ ...prev, horas: val }))} type="number" placeholder="Ej., 40" />
           <div className="pt-4 flex gap-3">
             <button onClick={() => setIsPanelOpen(false)} className="flex-1 px-4 py-3 border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50">Cancelar</button>

@@ -33,11 +33,9 @@ namespace IberoBackend.Models
         [Column("fin_mes_anio")]
         public string? FinMesAnio { get; set; }
 
-        [Column("escolar")]
-        public bool Escolar { get; set; } = false;
-
-        [Column("diseno_ingenieril")]
-        public bool DisenoIngenieril { get; set; } = false;
+        [MaxLength(100)]
+        [Column("tipo_experiencia")]
+        public string? TipoExperiencia { get; set; }
 
         [MaxLength(100)]
         [Column("nivel_experiencia")]

@@ -33,6 +33,9 @@ namespace IberoBackend.Models
         [Column("pais")]
         public string? Pais { get; set; }
 
+        [Column("anio")]
+        public int? Anio { get; set; }
+
         [Column("horas")]
         public int? Horas { get; set; }
 

@@ -11,18 +11,18 @@ const ProductosAcademicosSection = ({ items: initialItems, onSave }) => {
   const [isPanelOpen, setIsPanelOpen] = useState(false)
   const [editing, setEditing] = useState(null)
   const [formData, setFormData] = useState({
-    idPublicacion: '', descripcionPublicacion: ''
+    idPublicacion: '', descripcionPublicacion: '', anioProducto: ''
   })
 
   const handleAdd = () => {
     setEditing(null)
-    setFormData({ idPublicacion: '', descripcionPublicacion: '' })
+    setFormData({ idPublicacion: '', descripcionPublicacion: '', anioProducto: '' })
     setIsPanelOpen(true)
   }
 
   const handleEdit = (item) => {
     setEditing(item)
-    setFormData({ idPublicacion: item.idPublicacion || '', descripcionPublicacion: item.descripcionPublicacion || '' })
+    setFormData({ idPublicacion: item.idPublicacion || '', descripcionPublicacion: item.descripcionPublicacion || '', anioProducto: item.anioProducto?.toString() || '' })
     setIsPanelOpen(true)
   }
 
@@ -61,6 +61,7 @@ const ProductosAcademicosSection = ({ items: initialItems, onSave }) => {
             key={item.id}
             title={item.idPublicacion || 'Sin ID'}
             subtitle={item.descripcionPublicacion}
+            details={[item.anioProducto?.toString()].filter(Boolean)}
             onEdit={() => handleEdit(item)}
             onDelete={() => handleDelete(item.id)}
           />
@@ -73,6 +74,7 @@ const ProductosAcademicosSection = ({ items: initialItems, onSave }) => {
         <div className="space-y-4">
           <EditableField label="ID de publicación" value={formData.idPublicacion} onChange={(val) => setFormData(prev => ({ ...prev, idPublicacion: val }))} placeholder="Ej., DOI-2023-001 o ISBN" />
           <EditableField label="Descripción *" value={formData.descripcionPublicacion} onChange={(val) => setFormData(prev => ({ ...prev, descripcionPublicacion: val }))} rows={3} placeholder="Descripción completa del producto académico" />
+          <EditableField label="Año del producto" value={formData.anioProducto} onChange={(val) => setFormData(prev => ({ ...prev, anioProducto: val }))} type="number" placeholder="Ej., 2023" />
           <div className="pt-4 flex gap-3">
             <button onClick={() => setIsPanelOpen(false)} className="flex-1 px-4 py-3 border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50">Cancelar</button>
             <button onClick={handleSaveForm} className="flex-1 px-4 py-3 bg-red-700 hover:bg-red-800 text-white rounded-lg">{editing ? 'Actualizar' : 'Agregar'}</button>

@@ -11,12 +11,12 @@ const ExperienciaLaboralSection = ({ items: initialItems, onSave }) => {
   const [isPanelOpen, setIsPanelOpen] = useState(false)
   const [editing, setEditing] = useState(null)
   const [formData, setFormData] = useState({
-    actividadPuesto: '', organizacionEmpresa: '', inicioMesAnio: '', finMesAnio: '', escolar: false, disenoIngenieril: false, nivelExperiencia: ''
+    actividadPuesto: '', organizacionEmpresa: '', inicioMesAnio: '', finMesAnio: '', tipoExperiencia: '', nivelExperiencia: ''
   })
 
   const handleAdd = () => {
     setEditing(null)
-    setFormData({ actividadPuesto: '', organizacionEmpresa: '', inicioMesAnio: '', finMesAnio: '', escolar: false, disenoIngenieril: false, nivelExperiencia: '' })
+    setFormData({ actividadPuesto: '', organizacionEmpresa: '', inicioMesAnio: '', finMesAnio: '', tipoExperiencia: '', nivelExperiencia: '' })
     setIsPanelOpen(true)
   }
 
@@ -25,8 +25,7 @@ const ExperienciaLaboralSection = ({ items: initialItems, onSave }) => {
     setFormData({
       actividadPuesto: item.actividadPuesto, organizacionEmpresa: item.organizacionEmpresa || '',
       inicioMesAnio: item.inicioMesAnio || '', finMesAnio: item.finMesAnio || '',
-      escolar: item.escolar || false, disenoIngenieril: item.disenoIngenieril || false,
-      nivelExperiencia: item.nivelExperiencia || ''
+      tipoExperiencia: item.tipoExperiencia || '', nivelExperiencia: item.nivelExperiencia || ''
     })
     setIsPanelOpen(true)
   }
@@ -66,7 +65,7 @@ const ExperienciaLaboralSection = ({ items: initialItems, onSave }) => {
             key={item.id}
             title={item.actividadPuesto}
             subtitle={item.organizacionEmpresa}
-            details={[`${item.inicioMesAnio} - ${item.finMesAnio}`, item.nivelExperiencia, item.escolar ? 'Escolar' : null, item.disenoIngenieril ? 'Diseño ingenieril' : null].filter(Boolean)}
+            details={[`${item.inicioMesAnio} - ${item.finMesAnio}`, item.tipoExperiencia, item.nivelExperiencia].filter(Boolean)}
             onEdit={() => handleEdit(item)}
             onDelete={() => handleDelete(item.id)}
           />
@@ -78,9 +77,21 @@ const ExperienciaLaboralSection = ({ items: initialItems, onSave }) => {
       <SlideOverPanel isOpen={isPanelOpen} onClose={() => setIsPanelOpen(false)} title={editing ? 'Editar experiencia' : 'Agregar experiencia laboral'}>
         <div className="space-y-4">
           <EditableField label="Actividad / Puesto *" value={formData.actividadPuesto} onChange={(val) => setFormData(prev => ({ ...prev, actividadPuesto: val }))} placeholder="Ej., Profesor de Tiempo Completo" />
-          <EditableField label="Organización / Empresa" value={formData.organizacionEmpresa} onChange={(val) => setFormData(prev => ({ ...prev, organizacionEmpresa: val }))} placeholder="Ej., Universidad Iberoamericana" />
+          <EditableField label="Organización / Empresa / Escuela" value={formData.organizacionEmpresa} onChange={(val) => setFormData(prev => ({ ...prev, organizacionEmpresa: val }))} placeholder="Ej., Universidad Iberoamericana" />
           <EditableField label="Inicio (mes/año)" value={formData.inicioMesAnio} onChange={(val) => setFormData(prev => ({ ...prev, inicioMesAnio: val }))} placeholder="Ej., Ago 2010" />
           <EditableField label="Fin (mes/año)" value={formData.finMesAnio} onChange={(val) => setFormData(prev => ({ ...prev, finMesAnio: val }))} placeholder="Ej., Actual" />
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Tipo de experiencia</label>
+            <select value={formData.tipoExperiencia} onChange={(e) => setFormData(prev => ({ ...prev, tipoExperiencia: e.target.value }))} className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500">
+              <option value="">Seleccionar tipo...</option>
+              <option value="Académica">Académica</option>
+              <option value="Ingenieril">Ingenieril</option>
+              <option value="Profesional">Profesional</option>
+              <option value="Investigación">Investigación</option>
+              <option value="Administrativa">Administrativa</option>
+              <option value="Otra">Otra</option>
+            </select>
+          </div>
           <EditableField label="Nivel de experiencia" value={formData.nivelExperiencia} onChange={(val) => setFormData(prev => ({ ...prev, nivelExperiencia: val }))} placeholder="Ej., Senior, Intermedio, Junior" />
           <div className="pt-4 flex gap-3">
             <button onClick={() => setIsPanelOpen(false)} className="flex-1 px-4 py-3 border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50">Cancelar</button>

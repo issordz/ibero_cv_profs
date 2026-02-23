@@ -4,6 +4,8 @@ import SummaryCard from '../../../components/SummaryCard'
 import AddItemButton from '../../../components/AddItemButton'
 import SlideOverPanel from '../../../components/SlideOverPanel'
 import EditableField from '../../../components/EditableField'
+import InstitucionSelect from '../../../components/InstitucionSelect'
+import { getInstitucionNombre } from '../../../data/users'
 import Swal from 'sweetalert2'
 
 const AcademicDegreesSection = ({ degrees: initialDegrees, onSave }) => {
@@ -11,21 +13,21 @@ const AcademicDegreesSection = ({ degrees: initialDegrees, onSave }) => {
   const [isPanelOpen, setIsPanelOpen] = useState(false)
   const [editingDegree, setEditingDegree] = useState(null)
   const [formData, setFormData] = useState({
-    tituloEstudio: '', nivelEstudios: '', institucion: '', pais: '', anioObtencion: '', cedula: ''
+    nivelEstudio: '', tituloEstudio: '', idInstitucion: '', pais: '', anioObtencion: '', cedula: ''
   })
 
   const handleAdd = () => {
     setEditingDegree(null)
-    setFormData({ tituloEstudio: '', nivelEstudios: '', institucion: '', pais: '', anioObtencion: '', cedula: '' })
+    setFormData({ nivelEstudio: '', tituloEstudio: '', idInstitucion: '', pais: '', anioObtencion: '', cedula: '' })
     setIsPanelOpen(true)
   }
 
   const handleEdit = (degree) => {
     setEditingDegree(degree)
     setFormData({
+      nivelEstudio: degree.nivelEstudio || '',
       tituloEstudio: degree.tituloEstudio,
-      nivelEstudios: degree.nivelEstudios || '',
-      institucion: degree.institucion || '',
+      idInstitucion: degree.idInstitucion || '',
       pais: degree.pais || '',
       anioObtencion: degree.anioObtencion?.toString() || '',
       cedula: degree.cedula || ''
@@ -71,7 +73,7 @@ const AcademicDegreesSection = ({ degrees: initialDegrees, onSave }) => {
           <SummaryCard
             key={d.id}
             title={d.tituloEstudio}
-            subtitle={`${d.nivelEstudios || ''} — ${d.institucion || ''}`}
+            subtitle={`${d.nivelEstudio || ''} — ${getInstitucionNombre(d.idInstitucion)}`}
             details={[d.anioObtencion?.toString(), d.pais, d.cedula ? `Cédula: ${d.cedula}` : null].filter(Boolean)}
             onEdit={() => handleEdit(d)}
             onDelete={() => handleDelete(d.id)}
@@ -83,9 +85,9 @@ const AcademicDegreesSection = ({ degrees: initialDegrees, onSave }) => {
 
       <SlideOverPanel isOpen={isPanelOpen} onClose={() => setIsPanelOpen(false)} title={editingDegree ? 'Editar estudio' : 'Agregar estudio académico'}>
         <div className="space-y-4">
+          <EditableField label="Nivel de estudio" value={formData.nivelEstudio} onChange={(val) => setFormData(prev => ({ ...prev, nivelEstudio: val }))} placeholder="Ej., Doctorado, Maestría, Licenciatura" />
           <EditableField label="Título del estudio *" value={formData.tituloEstudio} onChange={(val) => setFormData(prev => ({ ...prev, tituloEstudio: val }))} placeholder="Ej., Doctorado en Ingeniería" />
-          <EditableField label="Nivel de estudios" value={formData.nivelEstudios} onChange={(val) => setFormData(prev => ({ ...prev, nivelEstudios: val }))} placeholder="Ej., Doctorado, Maestría, Licenciatura" />
-          <EditableField label="Institución" value={formData.institucion} onChange={(val) => setFormData(prev => ({ ...prev, institucion: val }))} placeholder="Ej., UNAM" />
+          <InstitucionSelect value={formData.idInstitucion} onChange={(val) => setFormData(prev => ({ ...prev, idInstitucion: val }))} />
           <EditableField label="País" value={formData.pais} onChange={(val) => setFormData(prev => ({ ...prev, pais: val }))} placeholder="Ej., México" />
           <EditableField label="Año de obtención" value={formData.anioObtencion} onChange={(val) => setFormData(prev => ({ ...prev, anioObtencion: val }))} type="number" placeholder="Ej., 2020" />
           <EditableField label="Cédula profesional" value={formData.cedula} onChange={(val) => setFormData(prev => ({ ...prev, cedula: val }))} placeholder="Ej., 12345678" />

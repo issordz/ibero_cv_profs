@@ -4,6 +4,8 @@ import SummaryCard from '../../../components/SummaryCard'
 import AddItemButton from '../../../components/AddItemButton'
 import SlideOverPanel from '../../../components/SlideOverPanel'
 import EditableField from '../../../components/EditableField'
+import InstitucionSelect from '../../../components/InstitucionSelect'
+import { getInstitucionNombre } from '../../../data/users'
 import Swal from 'sweetalert2'
 
 const ExperienciaLaboralSection = ({ items: initialItems, onSave }) => {
@@ -11,19 +13,19 @@ const ExperienciaLaboralSection = ({ items: initialItems, onSave }) => {
   const [isPanelOpen, setIsPanelOpen] = useState(false)
   const [editing, setEditing] = useState(null)
   const [formData, setFormData] = useState({
-    actividadPuesto: '', organizacionEmpresa: '', inicioMesAnio: '', finMesAnio: '', tipoExperiencia: '', nivelExperiencia: ''
+    actividadPuesto: '', idInstitucion: '', inicioMesAnio: '', finMesAnio: '', tipoExperiencia: '', nivelExperiencia: ''
   })
 
   const handleAdd = () => {
     setEditing(null)
-    setFormData({ actividadPuesto: '', organizacionEmpresa: '', inicioMesAnio: '', finMesAnio: '', tipoExperiencia: '', nivelExperiencia: '' })
+    setFormData({ actividadPuesto: '', idInstitucion: '', inicioMesAnio: '', finMesAnio: '', tipoExperiencia: '', nivelExperiencia: '' })
     setIsPanelOpen(true)
   }
 
   const handleEdit = (item) => {
     setEditing(item)
     setFormData({
-      actividadPuesto: item.actividadPuesto, organizacionEmpresa: item.organizacionEmpresa || '',
+      actividadPuesto: item.actividadPuesto, idInstitucion: item.idInstitucion || '',
       inicioMesAnio: item.inicioMesAnio || '', finMesAnio: item.finMesAnio || '',
       tipoExperiencia: item.tipoExperiencia || '', nivelExperiencia: item.nivelExperiencia || ''
     })
@@ -64,7 +66,7 @@ const ExperienciaLaboralSection = ({ items: initialItems, onSave }) => {
           <SummaryCard
             key={item.id}
             title={item.actividadPuesto}
-            subtitle={item.organizacionEmpresa}
+            subtitle={getInstitucionNombre(item.idInstitucion)}
             details={[`${item.inicioMesAnio} - ${item.finMesAnio}`, item.tipoExperiencia, item.nivelExperiencia].filter(Boolean)}
             onEdit={() => handleEdit(item)}
             onDelete={() => handleDelete(item.id)}
@@ -77,7 +79,7 @@ const ExperienciaLaboralSection = ({ items: initialItems, onSave }) => {
       <SlideOverPanel isOpen={isPanelOpen} onClose={() => setIsPanelOpen(false)} title={editing ? 'Editar experiencia' : 'Agregar experiencia laboral'}>
         <div className="space-y-4">
           <EditableField label="Actividad / Puesto *" value={formData.actividadPuesto} onChange={(val) => setFormData(prev => ({ ...prev, actividadPuesto: val }))} placeholder="Ej., Profesor de Tiempo Completo" />
-          <EditableField label="Organización / Empresa / Escuela" value={formData.organizacionEmpresa} onChange={(val) => setFormData(prev => ({ ...prev, organizacionEmpresa: val }))} placeholder="Ej., Universidad Iberoamericana" />
+          <InstitucionSelect value={formData.idInstitucion} onChange={(val) => setFormData(prev => ({ ...prev, idInstitucion: val }))} label="Institución / Empresa / Escuela" />
           <EditableField label="Inicio (mes/año)" value={formData.inicioMesAnio} onChange={(val) => setFormData(prev => ({ ...prev, inicioMesAnio: val }))} placeholder="Ej., Ago 2010" />
           <EditableField label="Fin (mes/año)" value={formData.finMesAnio} onChange={(val) => setFormData(prev => ({ ...prev, finMesAnio: val }))} placeholder="Ej., Actual" />
           <div>

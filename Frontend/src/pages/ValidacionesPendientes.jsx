@@ -9,8 +9,7 @@ const ValidacionesPendientes = () => {
   const pendingFaculty = facultyMembers
     .filter(f => 
       getFullName(f).toLowerCase().includes(searchTerm.toLowerCase()) ||
-      f.puestoInstitucion.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      f.correoElectronico.toLowerCase().includes(searchTerm.toLowerCase())
+      f.puestoInstitucion.toLowerCase().includes(searchTerm.toLowerCase())
     )
 
   return (
@@ -106,7 +105,7 @@ const ValidacionesPendientes = () => {
                       </div>
                       <div>
                         <p className="text-sm font-medium text-gray-900">{getFullName(faculty)}</p>
-                        <p className="text-xs text-gray-400">{faculty.correoElectronico}</p>
+                        <p className="text-xs text-gray-400">{faculty.puestoInstitucion}</p>
                       </div>
                     </div>
                   </td>

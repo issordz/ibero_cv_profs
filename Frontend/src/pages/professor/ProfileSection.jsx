@@ -5,12 +5,11 @@ import {
   facultyMembers, 
   estudiosAcademicos, 
   experienciaLaboral, 
-  capacitaciones, 
+  capacitacionActualizacion, 
   logrosProfesionales, 
   organismos, 
   premiosDistinciones, 
-  productosAcademicos, 
-  actualizaciones 
+  productosAcademicos 
 } from '../../data/users'
 import Swal from 'sweetalert2'
 
@@ -22,7 +21,6 @@ import LogrosProfesionalesSection from './sections/LogrosProfesionalesSection'
 import OrganismosSection from './sections/LanguagesSection'
 import PremiosDistincionesSection from './sections/AwardsSection'
 import ProductosAcademicosSection from './sections/PublicationsSection'
-import ActualizacionSection from './sections/ActualizacionSection'
 import PlaceholderSection from './sections/PlaceholderSection'
 
 const ProfileSection = () => {
@@ -56,24 +54,22 @@ const ProfileSection = () => {
     'datos-generales': 'Datos Generales',
     'informacion-academica': 'Estudios Académicos',
     'experiencia-laboral': 'Experiencia Laboral',
-    'capacitaciones': 'Capacitación',
+    'capacitacion-actualizacion': 'Capacitación / Actualización',
     'logros-profesionales': 'Logros Profesionales',
     'organismos': 'Organismos',
     'premios-distinciones': 'Premios y Distinciones',
-    'productos-academicos': 'Productos Académicos',
-    'actualizacion': 'Actualización'
+    'productos-academicos': 'Productos Académicos'
   }
 
   const sectionDescriptions = {
     'datos-generales': 'Administra tu información personal e institucional.',
     'informacion-academica': 'Registra tus estudios académicos y formación.',
     'experiencia-laboral': 'Detalla tu trayectoria profesional y laboral.',
-    'capacitaciones': 'Agrega cursos, talleres, diplomados y certificaciones.',
+    'capacitacion-actualizacion': 'Agrega cursos, talleres, diplomados, certificaciones y actualizaciones.',
     'logros-profesionales': 'Documenta tus logros y reconocimientos profesionales.',
     'organismos': 'Membresías y participación en organismos.',
     'premios-distinciones': 'Registra tus premios, distinciones y reconocimientos.',
-    'productos-academicos': 'Registra tus publicaciones, investigaciones y proyectos.',
-    'actualizacion': 'Registra tus cursos de actualización profesional.'
+    'productos-academicos': 'Registra tus publicaciones, investigaciones y proyectos.'
   }
 
   const renderSection = () => {
@@ -104,10 +100,10 @@ const ProfileSection = () => {
             onSave={handleSave}
           />
         )
-      case 'capacitaciones':
+      case 'capacitacion-actualizacion':
         return (
           <CapacitacionSection 
-            items={capacitaciones[facultyId] || []}
+            items={capacitacionActualizacion[facultyId] || []}
             onSave={handleSave}
           />
         )
@@ -136,13 +132,6 @@ const ProfileSection = () => {
         return (
           <ProductosAcademicosSection 
             items={productosAcademicos[facultyId] || []}
-            onSave={handleSave}
-          />
-        )
-      case 'actualizacion':
-        return (
-          <ActualizacionSection 
-            items={actualizaciones[facultyId] || []}
             onSave={handleSave}
           />
         )

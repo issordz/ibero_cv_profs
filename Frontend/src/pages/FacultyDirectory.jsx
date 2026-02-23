@@ -19,7 +19,6 @@ const FacultyDirectory = () => {
       const fullName = getFullName(item)
       const matchesText = 
         fullName.toLowerCase().includes(filterText.toLowerCase()) ||
-        item.correoElectronico.toLowerCase().includes(filterText.toLowerCase()) ||
         item.puestoInstitucion.toLowerCase().includes(filterText.toLowerCase())
 
       let matchesStatus = true
@@ -179,9 +178,7 @@ const FacultyDirectory = () => {
             <thead className="bg-[#fcfafa] text-xs uppercase text-[#896169]">
               <tr>
                 <th className="px-6 py-4 font-semibold" scope="col">Profesor</th>
-                <th className="px-6 py-4 font-semibold" scope="col">Correo</th>
                 <th className="px-6 py-4 font-semibold" scope="col">Puesto</th>
-                <th className="px-6 py-4 font-semibold" scope="col">Edad</th>
                 <th className="px-6 py-4 font-semibold" scope="col">Estado</th>
                 <th className="px-6 py-4 font-semibold text-right" scope="col">Acciones</th>
               </tr>
@@ -200,13 +197,11 @@ const FacultyDirectory = () => {
                       </div>
                     </div>
                   </td>
-                  <td className="px-6 py-4 text-sm text-[#181112]">{row.correoElectronico}</td>
                   <td className="px-6 py-4">
                     <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-gray-50 text-gray-700">
                       {row.puestoInstitucion}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-sm text-[#181112] tabular-nums">{row.edad}</td>
                   <td className="px-6 py-4">
                     {getStatusBadge(row.activo)}
                   </td>

@@ -19,11 +19,11 @@ const UserManagement = () => {
     })),
     // Agregar faculty members que no están en loginUsers
     ...facultyMembers
-      .filter(f => !loginUsers.find(u => u.correo === f.correoElectronico))
+      .filter(f => !loginUsers.find(u => u.facultyId === f.id))
       .map(f => ({
         id: f.id + 100,
         name: getFullName(f),
-        email: f.correoElectronico,
+        email: '',
         role: 'professor',
         puestoInstitucion: f.puestoInstitucion,
         avatar: f.avatar,

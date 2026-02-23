@@ -32,8 +32,6 @@ const GeneralDataSection = ({ faculty, onChanges }) => {
           <ReadOnlyField label="Apellido paterno" value={faculty?.apellidoPaterno} />
           <ReadOnlyField label="Apellido materno" value={faculty?.apellidoMaterno || '—'} />
           <ReadOnlyField label="Fecha de nacimiento" value={faculty?.fechaNacimiento} />
-          <ReadOnlyField label="Edad" value={faculty?.edad} />
-          <ReadOnlyField label="Correo electrónico" value={faculty?.correoElectronico} />
           <ReadOnlyField label="Puesto en la institución" value={faculty?.puestoInstitucion} />
           <ReadOnlyField label="Estado" value={faculty?.activo ? 'Activo' : 'Inactivo'} />
         </div>

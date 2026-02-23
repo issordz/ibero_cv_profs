@@ -4,10 +4,16 @@ Serializers for all IBERO GDD models.
 
 from rest_framework import serializers
 from .models import (
-    DatosGenerales, UsuarioPortal, EstudioAcademico,
-    ExperienciaLaboral, Capacitacion, LogroProfesional,
-    Organismo, PremioDistincion, ProductoAcademico, Actualizacion,
+    CatalogoInstitucion, DatosGenerales, GestionUsuario,
+    EstudioAcademico, CapacitacionActualizacion, ExperienciaLaboral,
+    ProductoAcademico, LogroProfesional, Organismo, PremioDistincion,
 )
+
+
+class CatalogoInstitucionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CatalogoInstitucion
+        fields = '__all__'
 
 
 class DatosGeneralesSerializer(serializers.ModelSerializer):
@@ -16,57 +22,65 @@ class DatosGeneralesSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class UsuarioPortalSerializer(serializers.ModelSerializer):
+class GestionUsuarioSerializer(serializers.ModelSerializer):
     class Meta:
-        model = UsuarioPortal
-        fields = ['id', 'correo', 'rol', 'activo', 'fecha_carga', 'fecha_actualizacion']
+        model = GestionUsuario
+        fields = ['id', 'profesor', 'correo', 'rol', 'activo', 'fecha_carga', 'fecha_actualizacion']
 
 
 class EstudioAcademicoSerializer(serializers.ModelSerializer):
+    institucion_nombre = serializers.CharField(source='institucion.nombre_institucion', read_only=True, default=None)
+
     class Meta:
         model = EstudioAcademico
         fields = '__all__'
 
 
+class CapacitacionActualizacionSerializer(serializers.ModelSerializer):
+    institucion_nombre = serializers.CharField(source='institucion.nombre_institucion', read_only=True, default=None)
+
+    class Meta:
+        model = CapacitacionActualizacion
+        fields = '__all__'
+
+
 class ExperienciaLaboralSerializer(serializers.ModelSerializer):
+    institucion_nombre = serializers.CharField(source='institucion.nombre_institucion', read_only=True, default=None)
+
     class Meta:
         model = ExperienciaLaboral
         fields = '__all__'
 
 
-class CapacitacionSerializer(serializers.ModelSerializer):
+class ProductoAcademicoSerializer(serializers.ModelSerializer):
+    institucion_nombre = serializers.CharField(source='institucion.nombre_institucion', read_only=True, default=None)
+
     class Meta:
-        model = Capacitacion
+        model = ProductoAcademico
         fields = '__all__'
 
 
 class LogroProfesionalSerializer(serializers.ModelSerializer):
+    institucion_nombre = serializers.CharField(source='institucion.nombre_institucion', read_only=True, default=None)
+
     class Meta:
         model = LogroProfesional
         fields = '__all__'
 
 
 class OrganismoSerializer(serializers.ModelSerializer):
+    institucion_nombre = serializers.CharField(source='institucion.nombre_institucion', read_only=True, default=None)
+
     class Meta:
         model = Organismo
         fields = '__all__'
 
 
 class PremioDistincionSerializer(serializers.ModelSerializer):
+    institucion_nombre = serializers.CharField(source='institucion.nombre_institucion', read_only=True, default=None)
+
     class Meta:
         model = PremioDistincion
-        fields = '__all__'
-
-
-class ProductoAcademicoSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ProductoAcademico
-        fields = '__all__'
-
-
-class ActualizacionSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Actualizacion
         fields = '__all__'
 
 

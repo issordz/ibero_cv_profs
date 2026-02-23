@@ -17,7 +17,6 @@ import {
   Award,
   Trophy,
   Users,
-  RefreshCw
 } from 'lucide-react'
 import { facultyMembers, getFullName } from '../data/users'
 import Swal from 'sweetalert2'
@@ -33,12 +32,11 @@ const FacultyProfile = () => {
     { id: 'general', label: 'Datos Generales', icon: User, completed: true },
     { id: 'estudios', label: 'Estudios Académicos', icon: GraduationCap, completed: true },
     { id: 'experiencia', label: 'Experiencia Laboral', icon: Briefcase, completed: true },
-    { id: 'capacitacion', label: 'Capacitación', icon: BookOpen, completed: false },
+    { id: 'capacitacion', label: 'Capacitación / Actualización', icon: BookOpen, completed: false },
     { id: 'logros', label: 'Logros Profesionales', icon: Award, completed: false },
     { id: 'organismos', label: 'Organismos', icon: Users, completed: false },
     { id: 'premios', label: 'Premios y Distinciones', icon: Trophy, completed: false },
-    { id: 'productos', label: 'Productos Académicos', icon: FileText, completed: false },
-    { id: 'actualizacion', label: 'Actualización', icon: RefreshCw, completed: false }
+    { id: 'productos', label: 'Productos Académicos', icon: FileText, completed: false }
   ]
 
   useEffect(() => {
@@ -207,26 +205,6 @@ const FacultyProfile = () => {
                   <div>
                     <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">FECHA DE NACIMIENTO</p>
                     <p className="font-medium text-gray-900">{faculty.fechaNacimiento || '—'}</p>
-                  </div>
-                  <Lock size={16} className="text-gray-400" />
-                </div>
-              </div>
-
-              <div className="bg-gray-50 rounded-lg p-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">EDAD</p>
-                    <p className="font-medium text-gray-900">{faculty.edad || '—'}</p>
-                  </div>
-                  <Lock size={16} className="text-gray-400" />
-                </div>
-              </div>
-
-              <div className="bg-gray-50 rounded-lg p-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">CORREO ELECTRÓNICO</p>
-                    <p className="font-medium text-gray-900">{faculty.correoElectronico}</p>
                   </div>
                   <Lock size={16} className="text-gray-400" />
                 </div>

@@ -4,6 +4,8 @@ import SummaryCard from '../../../components/SummaryCard'
 import AddItemButton from '../../../components/AddItemButton'
 import SlideOverPanel from '../../../components/SlideOverPanel'
 import EditableField from '../../../components/EditableField'
+import InstitucionSelect from '../../../components/InstitucionSelect'
+import { getInstitucionNombre } from '../../../data/users'
 import Swal from 'sweetalert2'
 
 const OrganismosSection = ({ items: initialItems, onSave }) => {
@@ -11,19 +13,19 @@ const OrganismosSection = ({ items: initialItems, onSave }) => {
   const [isPanelOpen, setIsPanelOpen] = useState(false)
   const [editing, setEditing] = useState(null)
   const [formData, setFormData] = useState({
-    organismo: '', anioInicio: '', anioFin: '', nivelExperiencia: ''
+    idInstitucion: '', anioInicio: '', anioFin: '', nivelExperiencia: ''
   })
 
   const handleAdd = () => {
     setEditing(null)
-    setFormData({ organismo: '', anioInicio: '', anioFin: '', nivelExperiencia: '' })
+    setFormData({ idInstitucion: '', anioInicio: '', anioFin: '', nivelExperiencia: '' })
     setIsPanelOpen(true)
   }
 
   const handleEdit = (item) => {
     setEditing(item)
     setFormData({
-      organismo: item.organismo || '', anioInicio: item.anioInicio?.toString() || '',
+      idInstitucion: item.idInstitucion || '', anioInicio: item.anioInicio?.toString() || '',
       anioFin: item.anioFin?.toString() || '', nivelExperiencia: item.nivelExperiencia || ''
     })
     setIsPanelOpen(true)
@@ -38,8 +40,8 @@ const OrganismosSection = ({ items: initialItems, onSave }) => {
   }
 
   const handleSaveForm = () => {
-    if (!formData.organismo) {
-      Swal.fire({ icon: 'warning', title: 'Campos requeridos', text: 'El nombre del organismo es obligatorio', confirmButtonColor: '#C41E3A' })
+    if (!formData.idInstitucion) {
+      Swal.fire({ icon: 'warning', title: 'Campos requeridos', text: 'La institución/organismo es obligatoria', confirmButtonColor: '#C41E3A' })
       return
     }
     const parsed = { ...formData, anioInicio: parseInt(formData.anioInicio) || null, anioFin: formData.anioFin ? parseInt(formData.anioFin) : null }
@@ -63,7 +65,7 @@ const OrganismosSection = ({ items: initialItems, onSave }) => {
         {items.map((item) => (
           <SummaryCard
             key={item.id}
-            title={item.organismo}
+            title={getInstitucionNombre(item.idInstitucion)}
             subtitle={item.nivelExperiencia}
             details={[`${item.anioInicio || '?'} - ${item.anioFin || 'Actual'}`]}
             onEdit={() => handleEdit(item)}
@@ -76,7 +78,7 @@ const OrganismosSection = ({ items: initialItems, onSave }) => {
 
       <SlideOverPanel isOpen={isPanelOpen} onClose={() => setIsPanelOpen(false)} title={editing ? 'Editar organismo' : 'Agregar organismo'}>
         <div className="space-y-4">
-          <EditableField label="Nombre del organismo *" value={formData.organismo} onChange={(val) => setFormData(prev => ({ ...prev, organismo: val }))} placeholder="Ej., Academia Mexicana de Ingeniería" />
+          <InstitucionSelect value={formData.idInstitucion} onChange={(val) => setFormData(prev => ({ ...prev, idInstitucion: val }))} label="Organismo / Institución *" />
           <EditableField label="Año de inicio" value={formData.anioInicio} onChange={(val) => setFormData(prev => ({ ...prev, anioInicio: val }))} type="number" placeholder="Ej., 2015" />
           <EditableField label="Año de fin" value={formData.anioFin} onChange={(val) => setFormData(prev => ({ ...prev, anioFin: val }))} type="number" placeholder="Dejar vacío si es actual" />
           <EditableField label="Nivel de experiencia / Rol" value={formData.nivelExperiencia} onChange={(val) => setFormData(prev => ({ ...prev, nivelExperiencia: val }))} placeholder="Ej., Miembro Titular, Fellow" />

@@ -4,8 +4,8 @@ import SummaryCard from '../../../components/SummaryCard'
 import AddItemButton from '../../../components/AddItemButton'
 import SlideOverPanel from '../../../components/SlideOverPanel'
 import EditableField from '../../../components/EditableField'
-import InstitucionSelect from '../../../components/InstitucionSelect'
-import { getInstitucionNombre } from '../../../data/users'
+import CatalogoSelect from '../../../components/InstitucionSelect'
+import { getInstitucionEducativaNombre } from '../../../data/users'
 import Swal from 'sweetalert2'
 
 const ProductosAcademicosSection = ({ items: initialItems, onSave }) => {
@@ -13,18 +13,18 @@ const ProductosAcademicosSection = ({ items: initialItems, onSave }) => {
   const [isPanelOpen, setIsPanelOpen] = useState(false)
   const [editing, setEditing] = useState(null)
   const [formData, setFormData] = useState({
-    idPublicacion: '', descripcionPublicacion: '', idInstitucion: '', anioProducto: ''
+    descripcionProductoAcademico: '', idInstitucionEducativa: '', anioProducto: ''
   })
 
   const handleAdd = () => {
     setEditing(null)
-    setFormData({ idPublicacion: '', descripcionPublicacion: '', idInstitucion: '', anioProducto: '' })
+    setFormData({ descripcionProductoAcademico: '', idInstitucionEducativa: '', anioProducto: '' })
     setIsPanelOpen(true)
   }
 
   const handleEdit = (item) => {
     setEditing(item)
-    setFormData({ idPublicacion: item.idPublicacion || '', descripcionPublicacion: item.descripcionPublicacion || '', idInstitucion: item.idInstitucion || '', anioProducto: item.anioProducto?.toString() || '' })
+    setFormData({ descripcionProductoAcademico: item.descripcionProductoAcademico || '', idInstitucionEducativa: item.idInstitucionEducativa || '', anioProducto: item.anioProducto?.toString() || '' })
     setIsPanelOpen(true)
   }
 
@@ -37,7 +37,7 @@ const ProductosAcademicosSection = ({ items: initialItems, onSave }) => {
   }
 
   const handleSaveForm = () => {
-    if (!formData.descripcionPublicacion) {
+    if (!formData.descripcionProductoAcademico) {
       Swal.fire({ icon: 'warning', title: 'Campos requeridos', text: 'La descripción es obligatoria', confirmButtonColor: '#C41E3A' })
       return
     }
@@ -61,9 +61,9 @@ const ProductosAcademicosSection = ({ items: initialItems, onSave }) => {
         {items.map((item) => (
           <SummaryCard
             key={item.id}
-            title={item.idPublicacion || 'Sin ID'}
-            subtitle={item.descripcionPublicacion}
-            details={[getInstitucionNombre(item.idInstitucion), item.anioProducto?.toString()].filter(Boolean)}
+            title={item.descripcionProductoAcademico?.substring(0, 80) || 'Sin descripción'}
+            subtitle={getInstitucionEducativaNombre(item.idInstitucionEducativa)}
+            details={[item.anioProducto?.toString()].filter(Boolean)}
             onEdit={() => handleEdit(item)}
             onDelete={() => handleDelete(item.id)}
           />
@@ -74,9 +74,8 @@ const ProductosAcademicosSection = ({ items: initialItems, onSave }) => {
 
       <SlideOverPanel isOpen={isPanelOpen} onClose={() => setIsPanelOpen(false)} title={editing ? 'Editar producto' : 'Agregar producto académico'}>
         <div className="space-y-4">
-          <EditableField label="ID de publicación" value={formData.idPublicacion} onChange={(val) => setFormData(prev => ({ ...prev, idPublicacion: val }))} placeholder="Ej., DOI-2023-001 o ISBN" />
-          <EditableField label="Descripción *" value={formData.descripcionPublicacion} onChange={(val) => setFormData(prev => ({ ...prev, descripcionPublicacion: val }))} rows={3} placeholder="Descripción completa del producto académico" />
-          <InstitucionSelect value={formData.idInstitucion} onChange={(val) => setFormData(prev => ({ ...prev, idInstitucion: val }))} />
+          <EditableField label="Descripción del producto académico *" value={formData.descripcionProductoAcademico} onChange={(val) => setFormData(prev => ({ ...prev, descripcionProductoAcademico: val }))} rows={3} placeholder="Descripción completa del producto académico" />
+          <CatalogoSelect label="Institución Educativa" value={formData.idInstitucionEducativa} onChange={(val) => setFormData(prev => ({ ...prev, idInstitucionEducativa: val }))} catalog="educativas" placeholder="Seleccionar institución educativa..." />
           <EditableField label="Año del producto" value={formData.anioProducto} onChange={(val) => setFormData(prev => ({ ...prev, anioProducto: val }))} type="number" placeholder="Ej., 2023" />
           <div className="pt-4 flex gap-3">
             <button onClick={() => setIsPanelOpen(false)} className="flex-1 px-4 py-3 border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50">Cancelar</button>

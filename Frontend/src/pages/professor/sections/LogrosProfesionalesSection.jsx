@@ -4,7 +4,7 @@ import SummaryCard from '../../../components/SummaryCard'
 import AddItemButton from '../../../components/AddItemButton'
 import SlideOverPanel from '../../../components/SlideOverPanel'
 import EditableField from '../../../components/EditableField'
-import InstitucionSelect from '../../../components/InstitucionSelect'
+import CatalogoSelect from '../../../components/InstitucionSelect'
 import { getInstitucionNombre } from '../../../data/users'
 import Swal from 'sweetalert2'
 
@@ -74,7 +74,7 @@ const LogrosProfesionalesSection = ({ items: initialItems, onSave }) => {
       <SlideOverPanel isOpen={isPanelOpen} onClose={() => setIsPanelOpen(false)} title={editing ? 'Editar logro' : 'Agregar logro profesional'}>
         <div className="space-y-4">
           <EditableField label="Descripción del logro *" value={formData.descLogro} onChange={(val) => setFormData(prev => ({ ...prev, descLogro: val }))} rows={3} placeholder="Descripción completa del logro profesional" />
-          <InstitucionSelect value={formData.idInstitucion} onChange={(val) => setFormData(prev => ({ ...prev, idInstitucion: val }))} />
+          <CatalogoSelect value={formData.idInstitucion} onChange={(val) => setFormData(prev => ({ ...prev, idInstitucion: val }))} label="Institución" catalog="instituciones" placeholder="Seleccionar institución..." />
           <EditableField label="Año de obtención" value={formData.anioObtencion} onChange={(val) => setFormData(prev => ({ ...prev, anioObtencion: val }))} type="number" placeholder="Ej., 2023" />
           <div className="pt-4 flex gap-3">
             <button onClick={() => setIsPanelOpen(false)} className="flex-1 px-4 py-3 border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50">Cancelar</button>

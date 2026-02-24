@@ -4,8 +4,8 @@ import SummaryCard from '../../../components/SummaryCard'
 import AddItemButton from '../../../components/AddItemButton'
 import SlideOverPanel from '../../../components/SlideOverPanel'
 import EditableField from '../../../components/EditableField'
-import InstitucionSelect from '../../../components/InstitucionSelect'
-import { getInstitucionNombre } from '../../../data/users'
+import CatalogoSelect from '../../../components/InstitucionSelect'
+import { getInstitucionNombre, getTipoExperienciaNombre } from '../../../data/users'
 import Swal from 'sweetalert2'
 
 const ExperienciaLaboralSection = ({ items: initialItems, onSave }) => {
@@ -13,12 +13,12 @@ const ExperienciaLaboralSection = ({ items: initialItems, onSave }) => {
   const [isPanelOpen, setIsPanelOpen] = useState(false)
   const [editing, setEditing] = useState(null)
   const [formData, setFormData] = useState({
-    actividadPuesto: '', idInstitucion: '', inicioMesAnio: '', finMesAnio: '', tipoExperiencia: '', nivelExperiencia: ''
+    actividadPuesto: '', idInstitucion: '', inicioMesAnio: '', finMesAnio: '', idTipoExperiencia: '', nivelExperiencia: ''
   })
 
   const handleAdd = () => {
     setEditing(null)
-    setFormData({ actividadPuesto: '', idInstitucion: '', inicioMesAnio: '', finMesAnio: '', tipoExperiencia: '', nivelExperiencia: '' })
+    setFormData({ actividadPuesto: '', idInstitucion: '', inicioMesAnio: '', finMesAnio: '', idTipoExperiencia: '', nivelExperiencia: '' })
     setIsPanelOpen(true)
   }
 
@@ -27,7 +27,7 @@ const ExperienciaLaboralSection = ({ items: initialItems, onSave }) => {
     setFormData({
       actividadPuesto: item.actividadPuesto, idInstitucion: item.idInstitucion || '',
       inicioMesAnio: item.inicioMesAnio || '', finMesAnio: item.finMesAnio || '',
-      tipoExperiencia: item.tipoExperiencia || '', nivelExperiencia: item.nivelExperiencia || ''
+      idTipoExperiencia: item.idTipoExperiencia || '', nivelExperiencia: item.nivelExperiencia || ''
     })
     setIsPanelOpen(true)
   }
@@ -67,7 +67,7 @@ const ExperienciaLaboralSection = ({ items: initialItems, onSave }) => {
             key={item.id}
             title={item.actividadPuesto}
             subtitle={getInstitucionNombre(item.idInstitucion)}
-            details={[`${item.inicioMesAnio} - ${item.finMesAnio}`, item.tipoExperiencia, item.nivelExperiencia].filter(Boolean)}
+            details={[`${item.inicioMesAnio} - ${item.finMesAnio}`, getTipoExperienciaNombre(item.idTipoExperiencia), item.nivelExperiencia].filter(Boolean)}
             onEdit={() => handleEdit(item)}
             onDelete={() => handleDelete(item.id)}
           />
@@ -79,21 +79,10 @@ const ExperienciaLaboralSection = ({ items: initialItems, onSave }) => {
       <SlideOverPanel isOpen={isPanelOpen} onClose={() => setIsPanelOpen(false)} title={editing ? 'Editar experiencia' : 'Agregar experiencia laboral'}>
         <div className="space-y-4">
           <EditableField label="Actividad / Puesto *" value={formData.actividadPuesto} onChange={(val) => setFormData(prev => ({ ...prev, actividadPuesto: val }))} placeholder="Ej., Profesor de Tiempo Completo" />
-          <InstitucionSelect value={formData.idInstitucion} onChange={(val) => setFormData(prev => ({ ...prev, idInstitucion: val }))} label="Institución / Empresa / Escuela" />
+          <CatalogoSelect value={formData.idInstitucion} onChange={(val) => setFormData(prev => ({ ...prev, idInstitucion: val }))} label="Institución / Empresa" catalog="instituciones" placeholder="Seleccionar institución..." />
           <EditableField label="Inicio (mes/año)" value={formData.inicioMesAnio} onChange={(val) => setFormData(prev => ({ ...prev, inicioMesAnio: val }))} placeholder="Ej., Ago 2010" />
           <EditableField label="Fin (mes/año)" value={formData.finMesAnio} onChange={(val) => setFormData(prev => ({ ...prev, finMesAnio: val }))} placeholder="Ej., Actual" />
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Tipo de experiencia</label>
-            <select value={formData.tipoExperiencia} onChange={(e) => setFormData(prev => ({ ...prev, tipoExperiencia: e.target.value }))} className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500">
-              <option value="">Seleccionar tipo...</option>
-              <option value="Académica">Académica</option>
-              <option value="Ingenieril">Ingenieril</option>
-              <option value="Profesional">Profesional</option>
-              <option value="Investigación">Investigación</option>
-              <option value="Administrativa">Administrativa</option>
-              <option value="Otra">Otra</option>
-            </select>
-          </div>
+          <CatalogoSelect label="Tipo de experiencia" value={formData.idTipoExperiencia} onChange={(val) => setFormData(prev => ({ ...prev, idTipoExperiencia: val }))} catalog="tipoExperiencia" placeholder="Seleccionar tipo..." />
           <EditableField label="Nivel de experiencia" value={formData.nivelExperiencia} onChange={(val) => setFormData(prev => ({ ...prev, nivelExperiencia: val }))} placeholder="Ej., Senior, Intermedio, Junior" />
           <div className="pt-4 flex gap-3">
             <button onClick={() => setIsPanelOpen(false)} className="flex-1 px-4 py-3 border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50">Cancelar</button>

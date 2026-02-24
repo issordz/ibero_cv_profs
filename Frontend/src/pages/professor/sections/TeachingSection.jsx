@@ -4,8 +4,8 @@ import SummaryCard from '../../../components/SummaryCard'
 import AddItemButton from '../../../components/AddItemButton'
 import SlideOverPanel from '../../../components/SlideOverPanel'
 import EditableField from '../../../components/EditableField'
-import InstitucionSelect from '../../../components/InstitucionSelect'
-import { getInstitucionNombre } from '../../../data/users'
+import CatalogoSelect from '../../../components/InstitucionSelect'
+import { getInstitucionEducativaNombre, getTipoCapacitacionNombre, getTipoCursoNombre } from '../../../data/users'
 import Swal from 'sweetalert2'
 
 const CapacitacionSection = ({ items: initialItems, onSave }) => {
@@ -13,21 +13,21 @@ const CapacitacionSection = ({ items: initialItems, onSave }) => {
   const [isPanelOpen, setIsPanelOpen] = useState(false)
   const [editing, setEditing] = useState(null)
   const [formData, setFormData] = useState({
-    nombreCapacitacion: '', tipoCapacitacion: '', idInstitucion: '', pais: '', anioObtencion: '', horas: '', tipTipoCurso: '', vigencia: ''
+    nombreCapacitacion: '', idTipoCapacitacion: '', idInstitucionEducativa: '', pais: '', anioObtencion: '', horas: '', idTipoCurso: '', vigencia: ''
   })
 
   const handleAdd = () => {
     setEditing(null)
-    setFormData({ nombreCapacitacion: '', tipoCapacitacion: '', idInstitucion: '', pais: '', anioObtencion: '', horas: '', tipTipoCurso: '', vigencia: '' })
+    setFormData({ nombreCapacitacion: '', idTipoCapacitacion: '', idInstitucionEducativa: '', pais: '', anioObtencion: '', horas: '', idTipoCurso: '', vigencia: '' })
     setIsPanelOpen(true)
   }
 
   const handleEdit = (item) => {
     setEditing(item)
     setFormData({
-      nombreCapacitacion: item.nombreCapacitacion || '', tipoCapacitacion: item.tipoCapacitacion || '', idInstitucion: item.idInstitucion || '',
+      nombreCapacitacion: item.nombreCapacitacion || '', idTipoCapacitacion: item.idTipoCapacitacion || '', idInstitucionEducativa: item.idInstitucionEducativa || '',
       pais: item.pais || '', anioObtencion: item.anioObtencion?.toString() || '',
-      horas: item.horas?.toString() || '', tipTipoCurso: item.tipTipoCurso || '', vigencia: item.vigencia || ''
+      horas: item.horas?.toString() || '', idTipoCurso: item.idTipoCurso || '', vigencia: item.vigencia || ''
     })
     setIsPanelOpen(true)
   }
@@ -45,7 +45,7 @@ const CapacitacionSection = ({ items: initialItems, onSave }) => {
       Swal.fire({ icon: 'warning', title: 'Campos requeridos', text: 'El nombre es obligatorio', confirmButtonColor: '#C41E3A' })
       return
     }
-    const parsed = { ...formData, anioObtencion: parseInt(formData.anioObtencion) || null, horas: parseInt(formData.horas) || null, idInstitucion: formData.idInstitucion || null }
+    const parsed = { ...formData, anioObtencion: parseInt(formData.anioObtencion) || null, horas: parseInt(formData.horas) || null, idInstitucionEducativa: formData.idInstitucionEducativa || null, idTipoCapacitacion: formData.idTipoCapacitacion || null, idTipoCurso: formData.idTipoCurso || null }
     if (editing) {
       setItems(prev => prev.map(i => i.id === editing.id ? { ...i, ...parsed } : i))
     } else {
@@ -66,9 +66,9 @@ const CapacitacionSection = ({ items: initialItems, onSave }) => {
         {items.map((item) => (
           <SummaryCard
             key={item.id}
-            title={item.nombreCapacitacion || item.tipoCapacitacion}
-            subtitle={`${item.tipoCapacitacion || ''} — ${getInstitucionNombre(item.idInstitucion)}`}
-            details={[item.tipTipoCurso, item.anioObtencion?.toString(), item.pais, item.horas ? `${item.horas} hrs` : null, item.vigencia ? `Vigencia: ${item.vigencia}` : null].filter(Boolean)}
+            title={item.nombreCapacitacion}
+            subtitle={`${getTipoCapacitacionNombre(item.idTipoCapacitacion)} — ${getInstitucionEducativaNombre(item.idInstitucionEducativa)}`}
+            details={[getTipoCursoNombre(item.idTipoCurso), item.anioObtencion?.toString(), item.pais, item.horas ? `${item.horas} hrs` : null, item.vigencia ? `Vigencia: ${item.vigencia}` : null].filter(Boolean)}
             onEdit={() => handleEdit(item)}
             onDelete={() => handleDelete(item.id)}
           />
@@ -80,16 +80,9 @@ const CapacitacionSection = ({ items: initialItems, onSave }) => {
       <SlideOverPanel isOpen={isPanelOpen} onClose={() => setIsPanelOpen(false)} title={editing ? 'Editar registro' : 'Agregar capacitación / actualización'}>
         <div className="space-y-4">
           <EditableField label="Nombre *" value={formData.nombreCapacitacion} onChange={(val) => setFormData(prev => ({ ...prev, nombreCapacitacion: val }))} placeholder="Ej., Diplomado en Docencia Universitaria" />
-          <EditableField label="Tipo de capacitación" value={formData.tipoCapacitacion} onChange={(val) => setFormData(prev => ({ ...prev, tipoCapacitacion: val }))} placeholder="Ej., Diplomado, Certificación, Taller" />
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Tipo de curso</label>
-            <select value={formData.tipTipoCurso} onChange={(e) => setFormData(prev => ({ ...prev, tipTipoCurso: e.target.value }))} className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500">
-              <option value="">Seleccionar...</option>
-              <option value="Capacitación">Capacitación</option>
-              <option value="Actualización">Actualización</option>
-            </select>
-          </div>
-          <InstitucionSelect value={formData.idInstitucion} onChange={(val) => setFormData(prev => ({ ...prev, idInstitucion: val }))} />
+          <CatalogoSelect label="Tipo de capacitación" value={formData.idTipoCapacitacion} onChange={(val) => setFormData(prev => ({ ...prev, idTipoCapacitacion: val }))} catalog="tipoCapacitacion" placeholder="Seleccionar tipo..." />
+          <CatalogoSelect label="Tipo de curso" value={formData.idTipoCurso} onChange={(val) => setFormData(prev => ({ ...prev, idTipoCurso: val }))} catalog="tipoCurso" placeholder="Seleccionar..." />
+          <CatalogoSelect label="Institución Educativa" value={formData.idInstitucionEducativa} onChange={(val) => setFormData(prev => ({ ...prev, idInstitucionEducativa: val }))} catalog="educativas" placeholder="Seleccionar institución educativa..." />
           <EditableField label="País" value={formData.pais} onChange={(val) => setFormData(prev => ({ ...prev, pais: val }))} placeholder="Ej., México" />
           <EditableField label="Año de obtención" value={formData.anioObtencion} onChange={(val) => setFormData(prev => ({ ...prev, anioObtencion: val }))} type="number" placeholder="Ej., 2022" />
           <EditableField label="Horas" value={formData.horas} onChange={(val) => setFormData(prev => ({ ...prev, horas: val }))} type="number" placeholder="Ej., 120" />

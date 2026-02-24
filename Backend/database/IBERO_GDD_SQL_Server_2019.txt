@@ -1,0 +1,499 @@
+-- ===========================================
+-- IBERO - Gestor de Datos del Docente
+-- Script de creación de Base de Datos
+-- Compatible con: SQL Server 2019 (v15.x)
+-- Fecha: 2026-02-23
+-- ===========================================
+--
+-- ┌─────────────────────────────────────────────────────────────────┐
+-- │ TIPOS DE DATOS UTILIZADOS (SQL Server 2019)                    │
+-- ├──────────────────┬──────────────────────────────────────────────┤
+-- │ VARCHAR(n)       │ Cadena ASCII de longitud variable.           │
+-- │                  │ 1 byte por carácter. Máx n = 8000.          │
+-- │                  │ Uso: IDs alfanuméricos (ej. id_profesor).    │
+-- ├──────────────────┼──────────────────────────────────────────────┤
+-- │ NVARCHAR(n)      │ Cadena Unicode de longitud variable.         │
+-- │                  │ 2 bytes por carácter. Máx n = 4000.          │
+-- │                  │ Soporta ñ, acentos, caracteres especiales.   │
+-- │                  │ Uso: nombres, títulos, descripciones cortas. │
+-- ├──────────────────┼──────────────────────────────────────────────┤
+-- │ NVARCHAR(MAX)    │ Cadena Unicode hasta ~2 GB.                  │
+-- │                  │ Reemplaza el tipo TEXT (obsoleto en 2019).    │
+-- │                  │ Uso: resúmenes, descripciones largas.        │
+-- ├──────────────────┼──────────────────────────────────────────────┤
+-- │ INT              │ Entero de 4 bytes.                           │
+-- │                  │ Rango: -2,147,483,648 a 2,147,483,647.       │
+-- │                  │ Uso: PKs auto-incrementales, años, horas.    │
+-- ├──────────────────┼──────────────────────────────────────────────┤
+-- │ TINYINT          │ Entero de 1 byte. Rango: 0–255.              │
+-- │                  │ Uso: campos activo/inactivo (0 o 1).         │
+-- │                  │ Más flexible que BIT: permite futuros estados.│
+-- ├──────────────────┼──────────────────────────────────────────────┤
+-- │ DATE             │ Solo fecha (YYYY-MM-DD). 3 bytes.            │
+-- │                  │ Rango: 0001-01-01 a 9999-12-31.              │
+-- │                  │ Uso: fecha de nacimiento.                    │
+-- ├──────────────────┼──────────────────────────────────────────────┤
+-- │ DATETIME2        │ Fecha y hora de alta precisión (100 ns).     │
+-- │                  │ 6 a 8 bytes según precisión.                 │
+-- │                  │ Rango: 0001-01-01 a 9999-12-31.              │
+-- │                  │ Reemplaza DATETIME (rango y precisión menor).│
+-- │                  │ Uso: auditoría (fecha_carga, actualización). │
+-- ├──────────────────┼──────────────────────────────────────────────┤
+-- │ IDENTITY(1,1)    │ Propiedad de columna para auto-incremento.   │
+-- │                  │ Inicia en 1, incrementa de 1 en 1.           │
+-- │                  │ Uso: PKs de catálogos y tablas hijas.        │
+-- └──────────────────┴──────────────────────────────────────────────┘
+--
+-- NOTAS:
+-- • Se usa NVARCHAR en lugar de VARCHAR para todos los campos de texto
+--   que puedan contener caracteres del español (ñ, á, é, í, ó, ú, ü).
+-- • DATETIME2 reemplaza DATETIME por tener mayor precisión y rango.
+-- • GETDATE() devuelve la fecha/hora actual del servidor.
+-- • Las FK usan ON DELETE CASCADE solo en tablas hijas de datos_generales;
+--   las FK a catálogos no eliminan en cascada (protección de datos).
+-- • id_profesor es VARCHAR(10) (no auto-incremental) porque corresponde
+--   al número de empleado asignado por la institución.
+-- ===========================================
+
+-- Crear base de datos (ejecutar por separado si es necesario)
+-- CREATE DATABASE IBERO_GDD;
+-- GO
+-- USE IBERO_GDD;
+-- GO
+
+-- ///////////////////////////////////////////
+-- ELIMINAR TABLAS EXISTENTES
+-- (orden inverso para respetar dependencias FK)
+-- ///////////////////////////////////////////
+
+IF OBJECT_ID('dbo.premios_distinciones', 'U') IS NOT NULL DROP TABLE dbo.premios_distinciones;
+IF OBJECT_ID('dbo.organismos', 'U') IS NOT NULL DROP TABLE dbo.organismos;
+IF OBJECT_ID('dbo.logros_profesionales', 'U') IS NOT NULL DROP TABLE dbo.logros_profesionales;
+IF OBJECT_ID('dbo.productos_academicos', 'U') IS NOT NULL DROP TABLE dbo.productos_academicos;
+IF OBJECT_ID('dbo.experiencia_laboral', 'U') IS NOT NULL DROP TABLE dbo.experiencia_laboral;
+IF OBJECT_ID('dbo.capacitacion_actualizacion', 'U') IS NOT NULL DROP TABLE dbo.capacitacion_actualizacion;
+IF OBJECT_ID('dbo.estudios_academicos', 'U') IS NOT NULL DROP TABLE dbo.estudios_academicos;
+IF OBJECT_ID('dbo.gestion_usuarios', 'U') IS NOT NULL DROP TABLE dbo.gestion_usuarios;
+IF OBJECT_ID('dbo.datos_generales', 'U') IS NOT NULL DROP TABLE dbo.datos_generales;
+IF OBJECT_ID('dbo.catalogo_puesto_institucional', 'U') IS NOT NULL DROP TABLE dbo.catalogo_puesto_institucional;
+IF OBJECT_ID('dbo.catalogo_organismos', 'U') IS NOT NULL DROP TABLE dbo.catalogo_organismos;
+IF OBJECT_ID('dbo.catalogo_experiencia_laboral', 'U') IS NOT NULL DROP TABLE dbo.catalogo_experiencia_laboral;
+IF OBJECT_ID('dbo.catalogo_capacitacion', 'U') IS NOT NULL DROP TABLE dbo.catalogo_capacitacion;
+IF OBJECT_ID('dbo.catalogo_tipo_curso', 'U') IS NOT NULL DROP TABLE dbo.catalogo_tipo_curso;
+IF OBJECT_ID('dbo.catalogo_paises', 'U') IS NOT NULL DROP TABLE dbo.catalogo_paises;
+IF OBJECT_ID('dbo.catalogo_carreras', 'U') IS NOT NULL DROP TABLE dbo.catalogo_carreras;
+IF OBJECT_ID('dbo.catalogo_nivel_estudio', 'U') IS NOT NULL DROP TABLE dbo.catalogo_nivel_estudio;
+IF OBJECT_ID('dbo.catalogo_instituciones_educativas', 'U') IS NOT NULL DROP TABLE dbo.catalogo_instituciones_educativas;
+IF OBJECT_ID('dbo.catalogo_instituciones', 'U') IS NOT NULL DROP TABLE dbo.catalogo_instituciones;
+GO
+
+-- ///////////////////////////////////////////
+-- TABLAS CATÁLOGO
+-- ///////////////////////////////////////////
+
+-- ===========================================
+-- CATÁLOGO: Instituciones (empresas, organismos generales)
+-- Uso: FK en experiencia_laboral, logros_profesionales
+-- ===========================================
+CREATE TABLE catalogo_instituciones (
+    id_institucion          INT             IDENTITY(1,1)   NOT NULL,
+    nombre_institucion      NVARCHAR(300)                   NOT NULL,
+    activo                  TINYINT                         NOT NULL    DEFAULT 1,
+    fecha_carga             DATETIME2                       NOT NULL    DEFAULT GETDATE(),
+    fecha_actualizacion     DATETIME2                       NOT NULL    DEFAULT GETDATE(),
+    CONSTRAINT PK_catalogo_instituciones PRIMARY KEY CLUSTERED (id_institucion)
+);
+GO
+
+-- ===========================================
+-- CATÁLOGO: Instituciones Educativas
+-- Uso: FK en estudios_academicos, capacitacion_actualizacion,
+--      productos_academicos
+-- ===========================================
+CREATE TABLE catalogo_instituciones_educativas (
+    id_institucion_educativa INT            IDENTITY(1,1)   NOT NULL,
+    nombre_institucion      NVARCHAR(300)                   NOT NULL,
+    activo                  TINYINT                         NOT NULL    DEFAULT 1,
+    fecha_carga             DATETIME2                       NOT NULL    DEFAULT GETDATE(),
+    fecha_actualizacion     DATETIME2                       NOT NULL    DEFAULT GETDATE(),
+    CONSTRAINT PK_catalogo_instituciones_educativas PRIMARY KEY CLUSTERED (id_institucion_educativa)
+);
+GO
+
+-- ===========================================
+-- CATÁLOGO: Nivel de Estudio
+-- Uso: FK en estudios_academicos
+-- Valores ejemplo: Licenciatura, Maestría, Doctorado,
+--                  Especialidad, Técnico Superior
+-- ===========================================
+CREATE TABLE catalogo_nivel_estudio (
+    id_nivel_estudio        INT             IDENTITY(1,1)   NOT NULL,
+    desc_nivel_estudio      NVARCHAR(200)                   NOT NULL,
+    fecha_carga             DATETIME2                       NOT NULL    DEFAULT GETDATE(),
+    fecha_actualizacion     DATETIME2                       NOT NULL    DEFAULT GETDATE(),
+    CONSTRAINT PK_catalogo_nivel_estudio PRIMARY KEY CLUSTERED (id_nivel_estudio)
+);
+GO
+
+-- ===========================================
+-- CATÁLOGO: Carreras
+-- Uso: referencia para dropdowns en frontend
+-- ===========================================
+CREATE TABLE catalogo_carreras (
+    id_carrera              INT             IDENTITY(1,1)   NOT NULL,
+    nombre_carrera          NVARCHAR(300)                   NOT NULL,
+    fecha_carga             DATETIME2                       NOT NULL    DEFAULT GETDATE(),
+    fecha_actualizacion     DATETIME2                       NOT NULL    DEFAULT GETDATE(),
+    CONSTRAINT PK_catalogo_carreras PRIMARY KEY CLUSTERED (id_carrera)
+);
+GO
+
+-- ===========================================
+-- CATÁLOGO: Países
+-- Uso: referencia para dropdowns en frontend
+-- ===========================================
+CREATE TABLE catalogo_paises (
+    id_pais                 INT             IDENTITY(1,1)   NOT NULL,
+    nombre_pais             NVARCHAR(150)                   NOT NULL,
+    fecha_carga             DATETIME2                       NOT NULL    DEFAULT GETDATE(),
+    fecha_actualizacion     DATETIME2                       NOT NULL    DEFAULT GETDATE(),
+    CONSTRAINT PK_catalogo_paises PRIMARY KEY CLUSTERED (id_pais)
+);
+GO
+
+-- ===========================================
+-- CATÁLOGO: Tipo de Curso
+-- Uso: FK en capacitacion_actualizacion
+-- Valores ejemplo: Presencial, En línea, Híbrido
+-- ===========================================
+CREATE TABLE catalogo_tipo_curso (
+    id_tipo_curso           INT             IDENTITY(1,1)   NOT NULL,
+    desc_tipo_curso         NVARCHAR(200)                   NOT NULL,
+    fecha_carga             DATETIME2                       NOT NULL    DEFAULT GETDATE(),
+    fecha_actualizacion     DATETIME2                       NOT NULL    DEFAULT GETDATE(),
+    CONSTRAINT PK_catalogo_tipo_curso PRIMARY KEY CLUSTERED (id_tipo_curso)
+);
+GO
+
+-- ===========================================
+-- CATÁLOGO: Tipo de Capacitación
+-- Uso: FK en capacitacion_actualizacion
+-- Valores ejemplo: Curso, Diplomado, Taller, Seminario,
+--                  Certificación, Congreso
+-- ===========================================
+CREATE TABLE catalogo_capacitacion (
+    id_tipo_capacitacion    INT             IDENTITY(1,1)   NOT NULL,
+    desc_tipo_capacitacion  NVARCHAR(200)                   NOT NULL,
+    fecha_carga             DATETIME2                       NOT NULL    DEFAULT GETDATE(),
+    fecha_actualizacion     DATETIME2                       NOT NULL    DEFAULT GETDATE(),
+    CONSTRAINT PK_catalogo_capacitacion PRIMARY KEY CLUSTERED (id_tipo_capacitacion)
+);
+GO
+
+-- ===========================================
+-- CATÁLOGO: Tipo de Experiencia Laboral
+-- Uso: FK en experiencia_laboral
+-- Valores ejemplo: Docencia, Investigación, Industria,
+--                  Consultoría, Gobierno
+-- ===========================================
+CREATE TABLE catalogo_experiencia_laboral (
+    id_tipo_experiencia     INT             IDENTITY(1,1)   NOT NULL,
+    desc_tipo_experiencia   NVARCHAR(200)                   NOT NULL,
+    fecha_carga             DATETIME2                       NOT NULL    DEFAULT GETDATE(),
+    fecha_actualizacion     DATETIME2                       NOT NULL    DEFAULT GETDATE(),
+    CONSTRAINT PK_catalogo_experiencia_laboral PRIMARY KEY CLUSTERED (id_tipo_experiencia)
+);
+GO
+
+-- ===========================================
+-- CATÁLOGO: Organismos
+-- Uso: FK en organismos (membresías / participaciones)
+-- ===========================================
+CREATE TABLE catalogo_organismos (
+    id_organismo            INT             IDENTITY(1,1)   NOT NULL,
+    nombre_organismo        NVARCHAR(300)                   NOT NULL,
+    fecha_carga             DATETIME2                       NOT NULL    DEFAULT GETDATE(),
+    fecha_actualizacion     DATETIME2                       NOT NULL    DEFAULT GETDATE(),
+    CONSTRAINT PK_catalogo_organismos PRIMARY KEY CLUSTERED (id_organismo)
+);
+GO
+
+-- ===========================================
+-- CATÁLOGO: Puesto Institucional
+-- Uso: referencia para dropdowns en frontend
+-- Valores ejemplo: Profesor de Tiempo Completo,
+--                  Profesor de Asignatura, Coordinador
+-- ===========================================
+CREATE TABLE catalogo_puesto_institucional (
+    id_puesto               INT             IDENTITY(1,1)   NOT NULL,
+    desc_puesto             NVARCHAR(200)                   NOT NULL,
+    fecha_carga             DATETIME2                       NOT NULL    DEFAULT GETDATE(),
+    fecha_actualizacion     DATETIME2                       NOT NULL    DEFAULT GETDATE(),
+    CONSTRAINT PK_catalogo_puesto_institucional PRIMARY KEY CLUSTERED (id_puesto)
+);
+GO
+
+-- ///////////////////////////////////////////
+-- TABLAS PRINCIPALES
+-- ///////////////////////////////////////////
+
+-- ===========================================
+-- TABLA: Datos Generales (registro único por profesor)
+-- id_profesor = número de empleado asignado por la institución
+-- ===========================================
+CREATE TABLE datos_generales (
+    id_profesor             VARCHAR(10)                     NOT NULL,
+    nombres                 NVARCHAR(100)                   NOT NULL,
+    apellido_paterno        NVARCHAR(100)                   NOT NULL,
+    apellido_materno        NVARCHAR(100)                   NULL,
+    fecha_de_nacimiento     DATE                            NULL,
+    puesto_institucional    NVARCHAR(200)                   NULL,
+    resumen_profesional     NVARCHAR(MAX)                   NULL,
+    activo                  TINYINT                         NOT NULL    DEFAULT 1,
+    fecha_carga             DATETIME2                       NOT NULL    DEFAULT GETDATE(),
+    fecha_actualizacion     DATETIME2                       NOT NULL    DEFAULT GETDATE(),
+    CONSTRAINT PK_datos_generales PRIMARY KEY CLUSTERED (id_profesor)
+);
+GO
+
+-- ===========================================
+-- TABLA: Gestión de Usuarios (login del sistema)
+-- ===========================================
+CREATE TABLE gestion_usuarios (
+    id                      INT             IDENTITY(1,1)   NOT NULL,
+    id_profesor             VARCHAR(10)                     NULL,
+    correo                  NVARCHAR(200)                   NOT NULL,
+    contrasena              NVARCHAR(255)                   NOT NULL,
+    rol                     NVARCHAR(50)                    NOT NULL    DEFAULT N'professor',
+    activo                  TINYINT                         NOT NULL    DEFAULT 1,
+    fecha_carga             DATETIME2                       NOT NULL    DEFAULT GETDATE(),
+    fecha_actualizacion     DATETIME2                       NOT NULL    DEFAULT GETDATE(),
+    CONSTRAINT PK_gestion_usuarios PRIMARY KEY CLUSTERED (id),
+    CONSTRAINT FK_gestion_usuarios_profesor FOREIGN KEY (id_profesor)
+        REFERENCES datos_generales (id_profesor),
+    CONSTRAINT UQ_gestion_usuarios_correo UNIQUE (correo)
+);
+GO
+
+-- ===========================================
+-- TABLA: Estudios Académicos (N por profesor)
+-- ===========================================
+CREATE TABLE estudios_academicos (
+    id                      INT             IDENTITY(1,1)   NOT NULL,
+    id_profesor             VARCHAR(10)                     NOT NULL,
+    id_nivel_estudio        INT                             NULL,
+    titulo_estudio          NVARCHAR(300)                   NOT NULL,
+    id_institucion_educativa INT                            NULL,
+    pais                    NVARCHAR(100)                   NULL,
+    anio_obtencion          INT                             NULL,
+    cedula                  NVARCHAR(50)                    NULL,
+    fecha_carga             DATETIME2                       NOT NULL    DEFAULT GETDATE(),
+    fecha_actualizacion     DATETIME2                       NOT NULL    DEFAULT GETDATE(),
+    CONSTRAINT PK_estudios_academicos PRIMARY KEY CLUSTERED (id),
+    CONSTRAINT FK_estudios_profesor FOREIGN KEY (id_profesor)
+        REFERENCES datos_generales (id_profesor) ON DELETE CASCADE,
+    CONSTRAINT FK_estudios_nivel FOREIGN KEY (id_nivel_estudio)
+        REFERENCES catalogo_nivel_estudio (id_nivel_estudio),
+    CONSTRAINT FK_estudios_inst_edu FOREIGN KEY (id_institucion_educativa)
+        REFERENCES catalogo_instituciones_educativas (id_institucion_educativa)
+);
+GO
+
+-- ===========================================
+-- TABLA: Capacitación / Actualización Docente (N por profesor)
+-- ===========================================
+CREATE TABLE capacitacion_actualizacion (
+    id                      INT             IDENTITY(1,1)   NOT NULL,
+    id_profesor             VARCHAR(10)                     NOT NULL,
+    nombre_capacitacion     NVARCHAR(300)                   NOT NULL,
+    id_tipo_capacitacion    INT                             NULL,
+    id_institucion_educativa INT                            NULL,
+    id_tipo_curso           INT                             NULL,
+    pais                    NVARCHAR(100)                   NULL,
+    anio_obtencion          INT                             NULL,
+    horas                   INT                             NULL,
+    vigencia                NVARCHAR(100)                   NULL,
+    fecha_carga             DATETIME2                       NOT NULL    DEFAULT GETDATE(),
+    fecha_actualizacion     DATETIME2                       NOT NULL    DEFAULT GETDATE(),
+    CONSTRAINT PK_capacitacion_actualizacion PRIMARY KEY CLUSTERED (id),
+    CONSTRAINT FK_capacitacion_profesor FOREIGN KEY (id_profesor)
+        REFERENCES datos_generales (id_profesor) ON DELETE CASCADE,
+    CONSTRAINT FK_capacitacion_tipo FOREIGN KEY (id_tipo_capacitacion)
+        REFERENCES catalogo_capacitacion (id_tipo_capacitacion),
+    CONSTRAINT FK_capacitacion_inst_edu FOREIGN KEY (id_institucion_educativa)
+        REFERENCES catalogo_instituciones_educativas (id_institucion_educativa),
+    CONSTRAINT FK_capacitacion_tipo_curso FOREIGN KEY (id_tipo_curso)
+        REFERENCES catalogo_tipo_curso (id_tipo_curso)
+);
+GO
+
+-- ===========================================
+-- TABLA: Experiencia Laboral (N por profesor)
+-- ===========================================
+CREATE TABLE experiencia_laboral (
+    id                      INT             IDENTITY(1,1)   NOT NULL,
+    id_profesor             VARCHAR(10)                     NOT NULL,
+    actividad_puesto        NVARCHAR(300)                   NOT NULL,
+    id_institucion          INT                             NULL,
+    inicio_mes_anio         NVARCHAR(50)                    NULL,
+    fin_mes_anio            NVARCHAR(50)                    NULL,
+    id_tipo_experiencia     INT                             NULL,
+    nivel_experiencia       NVARCHAR(100)                   NULL,
+    fecha_carga             DATETIME2                       NOT NULL    DEFAULT GETDATE(),
+    fecha_actualizacion     DATETIME2                       NOT NULL    DEFAULT GETDATE(),
+    CONSTRAINT PK_experiencia_laboral PRIMARY KEY CLUSTERED (id),
+    CONSTRAINT FK_experiencia_profesor FOREIGN KEY (id_profesor)
+        REFERENCES datos_generales (id_profesor) ON DELETE CASCADE,
+    CONSTRAINT FK_experiencia_institucion FOREIGN KEY (id_institucion)
+        REFERENCES catalogo_instituciones (id_institucion),
+    CONSTRAINT FK_experiencia_tipo FOREIGN KEY (id_tipo_experiencia)
+        REFERENCES catalogo_experiencia_laboral (id_tipo_experiencia)
+);
+GO
+
+-- ===========================================
+-- TABLA: Productos Académicos (N por profesor)
+-- ===========================================
+CREATE TABLE productos_academicos (
+    id                      INT             IDENTITY(1,1)   NOT NULL,
+    id_profesor             VARCHAR(10)                     NOT NULL,
+    descripcion_producto_academico NVARCHAR(MAX)            NULL,
+    id_institucion_educativa INT                            NULL,
+    anio_producto           INT                             NULL,
+    fecha_carga             DATETIME2                       NOT NULL    DEFAULT GETDATE(),
+    fecha_actualizacion     DATETIME2                       NOT NULL    DEFAULT GETDATE(),
+    CONSTRAINT PK_productos_academicos PRIMARY KEY CLUSTERED (id),
+    CONSTRAINT FK_productos_profesor FOREIGN KEY (id_profesor)
+        REFERENCES datos_generales (id_profesor) ON DELETE CASCADE,
+    CONSTRAINT FK_productos_inst_edu FOREIGN KEY (id_institucion_educativa)
+        REFERENCES catalogo_instituciones_educativas (id_institucion_educativa)
+);
+GO
+
+-- ===========================================
+-- TABLA: Logros Profesionales - No Académicos (N por profesor)
+-- ===========================================
+CREATE TABLE logros_profesionales (
+    id                      INT             IDENTITY(1,1)   NOT NULL,
+    id_profesor             VARCHAR(10)                     NOT NULL,
+    desc_logro              NVARCHAR(MAX)                   NOT NULL,
+    id_institucion          INT                             NULL,
+    anio_obtencion          INT                             NULL,
+    fecha_carga             DATETIME2                       NOT NULL    DEFAULT GETDATE(),
+    fecha_actualizacion     DATETIME2                       NOT NULL    DEFAULT GETDATE(),
+    CONSTRAINT PK_logros_profesionales PRIMARY KEY CLUSTERED (id),
+    CONSTRAINT FK_logros_profesor FOREIGN KEY (id_profesor)
+        REFERENCES datos_generales (id_profesor) ON DELETE CASCADE,
+    CONSTRAINT FK_logros_institucion FOREIGN KEY (id_institucion)
+        REFERENCES catalogo_instituciones (id_institucion)
+);
+GO
+
+-- ===========================================
+-- TABLA: Membresía / Participación en Organismos, Colegios,
+--        Academias, Tribunales, Comités u otro tipo de
+--        experiencia académica, profesional o técnica
+--        (N por profesor)
+-- ===========================================
+CREATE TABLE organismos (
+    id                      INT             IDENTITY(1,1)   NOT NULL,
+    id_profesor             VARCHAR(10)                     NOT NULL,
+    id_organismo            INT                             NULL,
+    anio_inicio             INT                             NULL,
+    anio_fin                INT                             NULL,
+    nivel_experiencia       NVARCHAR(100)                   NULL,
+    fecha_carga             DATETIME2                       NOT NULL    DEFAULT GETDATE(),
+    fecha_actualizacion     DATETIME2                       NOT NULL    DEFAULT GETDATE(),
+    CONSTRAINT PK_organismos PRIMARY KEY CLUSTERED (id),
+    CONSTRAINT FK_organismos_profesor FOREIGN KEY (id_profesor)
+        REFERENCES datos_generales (id_profesor) ON DELETE CASCADE,
+    CONSTRAINT FK_organismos_organismo FOREIGN KEY (id_organismo)
+        REFERENCES catalogo_organismos (id_organismo)
+);
+GO
+
+-- ===========================================
+-- TABLA: Premios, Distinciones y Becas o Comisión Académica
+--        (N por profesor)
+-- ===========================================
+CREATE TABLE premios_distinciones (
+    id                      INT             IDENTITY(1,1)   NOT NULL,
+    id_profesor             VARCHAR(10)                     NOT NULL,
+    desc_premio             NVARCHAR(MAX)                   NOT NULL,
+    anio_obtencion          INT                             NULL,
+    fecha_carga             DATETIME2                       NOT NULL    DEFAULT GETDATE(),
+    fecha_actualizacion     DATETIME2                       NOT NULL    DEFAULT GETDATE(),
+    CONSTRAINT PK_premios_distinciones PRIMARY KEY CLUSTERED (id),
+    CONSTRAINT FK_premios_profesor FOREIGN KEY (id_profesor)
+        REFERENCES datos_generales (id_profesor) ON DELETE CASCADE
+);
+GO
+
+-- ///////////////////////////////////////////
+-- ÍNDICES NO AGRUPADOS (NONCLUSTERED)
+-- Mejoran rendimiento en consultas por FK
+-- ///////////////////////////////////////////
+
+-- Índices en id_profesor (columna más consultada)
+CREATE NONCLUSTERED INDEX IX_estudios_academicos_profesor
+    ON estudios_academicos (id_profesor);
+
+CREATE NONCLUSTERED INDEX IX_capacitacion_actualizacion_profesor
+    ON capacitacion_actualizacion (id_profesor);
+
+CREATE NONCLUSTERED INDEX IX_experiencia_laboral_profesor
+    ON experiencia_laboral (id_profesor);
+
+CREATE NONCLUSTERED INDEX IX_productos_academicos_profesor
+    ON productos_academicos (id_profesor);
+
+CREATE NONCLUSTERED INDEX IX_logros_profesionales_profesor
+    ON logros_profesionales (id_profesor);
+
+CREATE NONCLUSTERED INDEX IX_organismos_profesor
+    ON organismos (id_profesor);
+
+CREATE NONCLUSTERED INDEX IX_premios_distinciones_profesor
+    ON premios_distinciones (id_profesor);
+GO
+
+-- Índices en FKs a catálogos
+CREATE NONCLUSTERED INDEX IX_estudios_nivel_estudio
+    ON estudios_academicos (id_nivel_estudio);
+
+CREATE NONCLUSTERED INDEX IX_estudios_inst_educativa
+    ON estudios_academicos (id_institucion_educativa);
+
+CREATE NONCLUSTERED INDEX IX_capacitacion_tipo_capacitacion
+    ON capacitacion_actualizacion (id_tipo_capacitacion);
+
+CREATE NONCLUSTERED INDEX IX_capacitacion_inst_educativa
+    ON capacitacion_actualizacion (id_institucion_educativa);
+
+CREATE NONCLUSTERED INDEX IX_capacitacion_tipo_curso
+    ON capacitacion_actualizacion (id_tipo_curso);
+
+CREATE NONCLUSTERED INDEX IX_experiencia_institucion
+    ON experiencia_laboral (id_institucion);
+
+CREATE NONCLUSTERED INDEX IX_experiencia_tipo_experiencia
+    ON experiencia_laboral (id_tipo_experiencia);
+
+CREATE NONCLUSTERED INDEX IX_productos_inst_educativa
+    ON productos_academicos (id_institucion_educativa);
+
+CREATE NONCLUSTERED INDEX IX_logros_institucion
+    ON logros_profesionales (id_institucion);
+
+CREATE NONCLUSTERED INDEX IX_organismos_organismo
+    ON organismos (id_organismo);
+
+CREATE NONCLUSTERED INDEX IX_gestion_usuarios_profesor
+    ON gestion_usuarios (id_profesor);
+GO
+
+-- ///////////////////////////////////////////
+-- FIN DEL SCRIPT
+-- ///////////////////////////////////////////
+PRINT N'Base de datos IBERO_GDD creada exitosamente.';
+GO

@@ -31,7 +31,7 @@ const ProfileSection = () => {
 
   useEffect(() => {
     if (user?.facultyId) {
-      const found = facultyMembers.find(f => f.id === user.facultyId)
+      const found = facultyMembers.find(f => f.idProfesor === user.facultyId)
       setFaculty(found)
     }
   }, [user])

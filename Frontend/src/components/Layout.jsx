@@ -123,10 +123,10 @@ const Layout = () => {
           </div>
           <div className="flex flex-col gap-0">
             <h1 className="text-sm font-bold leading-tight text-white">
-              {user?.role === 'admin' ? 'IBERO - GDD' : 'IBERO - GDD'}
+              IBERO - PGA
             </h1>
             <span className="text-[11px] leading-tight" style={{ color: 'rgba(255,255,255,0.7)' }}>
-              {user?.role === 'admin' ? 'Administrador docente' : 'Currículum Docente'}
+              {user?.role === 'admin' ? 'Administración' : 'Gestión para acreditaciones'}
             </span>
           </div>
           {/* Close button for mobile */}
@@ -306,7 +306,7 @@ const Layout = () => {
                 >
                   <div className="text-right hidden sm:flex flex-col justify-center" style={{ gap: '1px' }}>
                     <p className="text-sm font-semibold" style={{ color: '#181112', lineHeight: '1.1', margin: 0 }}>{user?.nombres} {user?.apellidoPaterno}</p>
-                    <p className="text-[11px]" style={{ color: '#896169', lineHeight: '1.1', margin: 0 }}>{user?.puestoInstitucion}</p>
+                    <p className="text-[11px]" style={{ color: '#896169', lineHeight: '1.1', margin: 0 }}>{user?.puestoInstitucional}</p>
                   </div>
                   <div className="h-10 w-10 overflow-hidden rounded-full bg-gray-200 flex items-center justify-center font-bold text-sm" style={{ color: '#4b5563' }}>
                     {user?.avatar || 'U'}
@@ -323,7 +323,7 @@ const Layout = () => {
                     <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-1.5 z-50" style={{ border: '1px solid #e5e7eb' }}>
                       <div className="px-4 py-2 sm:hidden" style={{ borderBottom: '1px solid #e5e7eb' }}>
                         <p className="text-sm font-semibold" style={{ color: '#181112' }}>{user?.nombres} {user?.apellidoPaterno}</p>
-                        <p className="text-xs" style={{ color: '#896169' }}>{user?.puestoInstitucion}</p>
+                        <p className="text-xs" style={{ color: '#896169' }}>{user?.puestoInstitucional}</p>
                       </div>
                       <button
                         onClick={() => { handleLogout(); setUserMenuOpen(false); }}

@@ -18,7 +18,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     const foundUser = loginUsers.find(
-      (u) => u.correo === email && u.password === password
+      (u) => u.correo === email && u.contrasena === password
     )
 
     if (foundUser) {

@@ -27,12 +27,12 @@ const GeneralDataSection = ({ faculty, onChanges }) => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          <ReadOnlyField label="Número docente" value={faculty?.id} />
+          <ReadOnlyField label="Número docente" value={faculty?.idProfesor} />
           <ReadOnlyField label="Nombres" value={faculty?.nombres} />
           <ReadOnlyField label="Apellido paterno" value={faculty?.apellidoPaterno} />
           <ReadOnlyField label="Apellido materno" value={faculty?.apellidoMaterno || '—'} />
-          <ReadOnlyField label="Fecha de nacimiento" value={faculty?.fechaNacimiento} />
-          <ReadOnlyField label="Puesto en la institución" value={faculty?.puestoInstitucion} />
+          <ReadOnlyField label="Fecha de nacimiento" value={faculty?.fechaDeNacimiento} />
+          <ReadOnlyField label="Puesto en la institución" value={faculty?.puestoInstitucional} />
           <ReadOnlyField label="Estado" value={faculty?.activo ? 'Activo' : 'Inactivo'} />
         </div>
       </div>

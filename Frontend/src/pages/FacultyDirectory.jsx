@@ -19,13 +19,13 @@ const FacultyDirectory = () => {
       const fullName = getFullName(item)
       const matchesText = 
         fullName.toLowerCase().includes(filterText.toLowerCase()) ||
-        item.puestoInstitucion.toLowerCase().includes(filterText.toLowerCase())
+        item.puestoInstitucional.toLowerCase().includes(filterText.toLowerCase())
 
       let matchesStatus = true
       if (selectedStatus === 'Activo') {
-        matchesStatus = item.activo === true
+        matchesStatus = item.activo === 1
       } else if (selectedStatus === 'Inactivo') {
-        matchesStatus = item.activo === false
+        matchesStatus = item.activo === 0
       }
 
       return matchesText && matchesStatus
@@ -39,7 +39,7 @@ const FacultyDirectory = () => {
   )
 
   const handleViewProfile = (row) => {
-    navigate(`/faculty/${row.id}`)
+    navigate(`/faculty/${row.idProfesor}`)
   }
 
   const handleAddFaculty = () => {
@@ -185,7 +185,7 @@ const FacultyDirectory = () => {
             </thead>
             <tbody className="divide-y divide-[#e6dbdd] border-t border-[#e6dbdd]">
               {paginatedData.map((row) => (
-                <tr key={row.id} className="hover:bg-gray-50 transition-colors">
+                <tr key={row.idProfesor} className="hover:bg-gray-50 transition-colors">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
                       <div className={`h-10 w-10 overflow-hidden rounded-full ${row.avatarColor} flex items-center justify-center font-semibold text-sm flex-shrink-0`}>
@@ -199,7 +199,7 @@ const FacultyDirectory = () => {
                   </td>
                   <td className="px-6 py-4">
                     <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-gray-50 text-gray-700">
-                      {row.puestoInstitucion}
+                      {row.puestoInstitucional}
                     </span>
                   </td>
                   <td className="px-6 py-4">

@@ -4,8 +4,8 @@ import SummaryCard from '../../../components/SummaryCard'
 import AddItemButton from '../../../components/AddItemButton'
 import SlideOverPanel from '../../../components/SlideOverPanel'
 import EditableField from '../../../components/EditableField'
-import InstitucionSelect from '../../../components/InstitucionSelect'
-import { getInstitucionNombre } from '../../../data/users'
+import CatalogoSelect from '../../../components/InstitucionSelect'
+import { getInstitucionEducativaNombre, getNivelEstudioNombre } from '../../../data/users'
 import Swal from 'sweetalert2'
 
 const AcademicDegreesSection = ({ degrees: initialDegrees, onSave }) => {
@@ -13,21 +13,21 @@ const AcademicDegreesSection = ({ degrees: initialDegrees, onSave }) => {
   const [isPanelOpen, setIsPanelOpen] = useState(false)
   const [editingDegree, setEditingDegree] = useState(null)
   const [formData, setFormData] = useState({
-    nivelEstudio: '', tituloEstudio: '', idInstitucion: '', pais: '', anioObtencion: '', cedula: ''
+    idNivelEstudio: '', tituloEstudio: '', idInstitucionEducativa: '', pais: '', anioObtencion: '', cedula: ''
   })
 
   const handleAdd = () => {
     setEditingDegree(null)
-    setFormData({ nivelEstudio: '', tituloEstudio: '', idInstitucion: '', pais: '', anioObtencion: '', cedula: '' })
+    setFormData({ idNivelEstudio: '', tituloEstudio: '', idInstitucionEducativa: '', pais: '', anioObtencion: '', cedula: '' })
     setIsPanelOpen(true)
   }
 
   const handleEdit = (degree) => {
     setEditingDegree(degree)
     setFormData({
-      nivelEstudio: degree.nivelEstudio || '',
+      idNivelEstudio: degree.idNivelEstudio || '',
       tituloEstudio: degree.tituloEstudio,
-      idInstitucion: degree.idInstitucion || '',
+      idInstitucionEducativa: degree.idInstitucionEducativa || '',
       pais: degree.pais || '',
       anioObtencion: degree.anioObtencion?.toString() || '',
       cedula: degree.cedula || ''
@@ -73,7 +73,7 @@ const AcademicDegreesSection = ({ degrees: initialDegrees, onSave }) => {
           <SummaryCard
             key={d.id}
             title={d.tituloEstudio}
-            subtitle={`${d.nivelEstudio || ''} — ${getInstitucionNombre(d.idInstitucion)}`}
+            subtitle={`${getNivelEstudioNombre(d.idNivelEstudio)} — ${getInstitucionEducativaNombre(d.idInstitucionEducativa)}`}
             details={[d.anioObtencion?.toString(), d.pais, d.cedula ? `Cédula: ${d.cedula}` : null].filter(Boolean)}
             onEdit={() => handleEdit(d)}
             onDelete={() => handleDelete(d.id)}
@@ -85,9 +85,9 @@ const AcademicDegreesSection = ({ degrees: initialDegrees, onSave }) => {
 
       <SlideOverPanel isOpen={isPanelOpen} onClose={() => setIsPanelOpen(false)} title={editingDegree ? 'Editar estudio' : 'Agregar estudio académico'}>
         <div className="space-y-4">
-          <EditableField label="Nivel de estudio" value={formData.nivelEstudio} onChange={(val) => setFormData(prev => ({ ...prev, nivelEstudio: val }))} placeholder="Ej., Doctorado, Maestría, Licenciatura" />
+          <CatalogoSelect label="Nivel de estudio" value={formData.idNivelEstudio} onChange={(val) => setFormData(prev => ({ ...prev, idNivelEstudio: val }))} catalog="nivelEstudio" placeholder="Seleccionar nivel..." />
           <EditableField label="Título del estudio *" value={formData.tituloEstudio} onChange={(val) => setFormData(prev => ({ ...prev, tituloEstudio: val }))} placeholder="Ej., Doctorado en Ingeniería" />
-          <InstitucionSelect value={formData.idInstitucion} onChange={(val) => setFormData(prev => ({ ...prev, idInstitucion: val }))} />
+          <CatalogoSelect label="Institución Educativa" value={formData.idInstitucionEducativa} onChange={(val) => setFormData(prev => ({ ...prev, idInstitucionEducativa: val }))} catalog="educativas" placeholder="Seleccionar institución educativa..." />
           <EditableField label="País" value={formData.pais} onChange={(val) => setFormData(prev => ({ ...prev, pais: val }))} placeholder="Ej., México" />
           <EditableField label="Año de obtención" value={formData.anioObtencion} onChange={(val) => setFormData(prev => ({ ...prev, anioObtencion: val }))} type="number" placeholder="Ej., 2020" />
           <EditableField label="Cédula profesional" value={formData.cedula} onChange={(val) => setFormData(prev => ({ ...prev, cedula: val }))} placeholder="Ej., 12345678" />

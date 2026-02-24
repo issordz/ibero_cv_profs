@@ -1,20 +1,81 @@
 """
-Serializers for all IBERO GDD models.
+Serializers for all IBERO Portal de gestión para acreditaciones models.
 """
 
 from rest_framework import serializers
 from .models import (
-    CatalogoInstitucion, DatosGenerales, GestionUsuario,
+    CatalogoInstitucion, CatalogoInstitucionEducativa, CatalogoNivelEstudio,
+    CatalogoCarrera, CatalogoPais, CatalogoTipoCurso, CatalogoCapacitacion,
+    CatalogoExperienciaLaboral, CatalogoOrganismo, CatalogoPuestoInstitucional,
+    DatosGenerales, GestionUsuario,
     EstudioAcademico, CapacitacionActualizacion, ExperienciaLaboral,
     ProductoAcademico, LogroProfesional, Organismo, PremioDistincion,
 )
 
+
+# --- Catálogos ---
 
 class CatalogoInstitucionSerializer(serializers.ModelSerializer):
     class Meta:
         model = CatalogoInstitucion
         fields = '__all__'
 
+
+class CatalogoInstitucionEducativaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CatalogoInstitucionEducativa
+        fields = '__all__'
+
+
+class CatalogoNivelEstudioSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CatalogoNivelEstudio
+        fields = '__all__'
+
+
+class CatalogoCarreraSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CatalogoCarrera
+        fields = '__all__'
+
+
+class CatalogoPaisSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CatalogoPais
+        fields = '__all__'
+
+
+class CatalogoTipoCursoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CatalogoTipoCurso
+        fields = '__all__'
+
+
+class CatalogoCapacitacionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CatalogoCapacitacion
+        fields = '__all__'
+
+
+class CatalogoExperienciaLaboralSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CatalogoExperienciaLaboral
+        fields = '__all__'
+
+
+class CatalogoOrganismoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CatalogoOrganismo
+        fields = '__all__'
+
+
+class CatalogoPuestoInstitucionalSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CatalogoPuestoInstitucional
+        fields = '__all__'
+
+
+# --- Tablas principales ---
 
 class DatosGeneralesSerializer(serializers.ModelSerializer):
     class Meta:
@@ -29,7 +90,10 @@ class GestionUsuarioSerializer(serializers.ModelSerializer):
 
 
 class EstudioAcademicoSerializer(serializers.ModelSerializer):
-    institucion_nombre = serializers.CharField(source='institucion.nombre_institucion', read_only=True, default=None)
+    institucion_nombre = serializers.CharField(
+        source='institucion_educativa.nombre_institucion', read_only=True, default=None)
+    nivel_estudio_nombre = serializers.CharField(
+        source='nivel_estudio.desc_nivel_estudio', read_only=True, default=None)
 
     class Meta:
         model = EstudioAcademico
@@ -37,7 +101,12 @@ class EstudioAcademicoSerializer(serializers.ModelSerializer):
 
 
 class CapacitacionActualizacionSerializer(serializers.ModelSerializer):
-    institucion_nombre = serializers.CharField(source='institucion.nombre_institucion', read_only=True, default=None)
+    institucion_nombre = serializers.CharField(
+        source='institucion_educativa.nombre_institucion', read_only=True, default=None)
+    tipo_capacitacion_nombre = serializers.CharField(
+        source='tipo_capacitacion.desc_tipo_capacitacion', read_only=True, default=None)
+    tipo_curso_nombre = serializers.CharField(
+        source='tipo_curso.desc_tipo_curso', read_only=True, default=None)
 
     class Meta:
         model = CapacitacionActualizacion
@@ -45,7 +114,10 @@ class CapacitacionActualizacionSerializer(serializers.ModelSerializer):
 
 
 class ExperienciaLaboralSerializer(serializers.ModelSerializer):
-    institucion_nombre = serializers.CharField(source='institucion.nombre_institucion', read_only=True, default=None)
+    institucion_nombre = serializers.CharField(
+        source='institucion.nombre_institucion', read_only=True, default=None)
+    tipo_experiencia_nombre = serializers.CharField(
+        source='tipo_experiencia.desc_tipo_experiencia', read_only=True, default=None)
 
     class Meta:
         model = ExperienciaLaboral
@@ -53,7 +125,8 @@ class ExperienciaLaboralSerializer(serializers.ModelSerializer):
 
 
 class ProductoAcademicoSerializer(serializers.ModelSerializer):
-    institucion_nombre = serializers.CharField(source='institucion.nombre_institucion', read_only=True, default=None)
+    institucion_nombre = serializers.CharField(
+        source='institucion_educativa.nombre_institucion', read_only=True, default=None)
 
     class Meta:
         model = ProductoAcademico
@@ -61,7 +134,8 @@ class ProductoAcademicoSerializer(serializers.ModelSerializer):
 
 
 class LogroProfesionalSerializer(serializers.ModelSerializer):
-    institucion_nombre = serializers.CharField(source='institucion.nombre_institucion', read_only=True, default=None)
+    institucion_nombre = serializers.CharField(
+        source='institucion.nombre_institucion', read_only=True, default=None)
 
     class Meta:
         model = LogroProfesional
@@ -69,7 +143,8 @@ class LogroProfesionalSerializer(serializers.ModelSerializer):
 
 
 class OrganismoSerializer(serializers.ModelSerializer):
-    institucion_nombre = serializers.CharField(source='institucion.nombre_institucion', read_only=True, default=None)
+    organismo_nombre = serializers.CharField(
+        source='organismo.nombre_organismo', read_only=True, default=None)
 
     class Meta:
         model = Organismo
@@ -77,8 +152,6 @@ class OrganismoSerializer(serializers.ModelSerializer):
 
 
 class PremioDistincionSerializer(serializers.ModelSerializer):
-    institucion_nombre = serializers.CharField(source='institucion.nombre_institucion', read_only=True, default=None)
-
     class Meta:
         model = PremioDistincion
         fields = '__all__'
@@ -88,10 +161,10 @@ class PremioDistincionSerializer(serializers.ModelSerializer):
 
 class LoginSerializer(serializers.Serializer):
     correo = serializers.CharField()
-    password = serializers.CharField()
+    contrasena = serializers.CharField()
 
 
 class RegisterSerializer(serializers.Serializer):
     correo = serializers.CharField()
-    password = serializers.CharField()
+    contrasena = serializers.CharField()
     rol = serializers.ChoiceField(choices=['profesor', 'admin'], default='profesor')

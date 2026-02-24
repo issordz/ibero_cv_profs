@@ -4,25 +4,23 @@ import SummaryCard from '../../../components/SummaryCard'
 import AddItemButton from '../../../components/AddItemButton'
 import SlideOverPanel from '../../../components/SlideOverPanel'
 import EditableField from '../../../components/EditableField'
-import InstitucionSelect from '../../../components/InstitucionSelect'
-import { getInstitucionNombre } from '../../../data/users'
 import Swal from 'sweetalert2'
 
 const PremiosDistincionesSection = ({ items: initialItems, onSave }) => {
   const [items, setItems] = useState(initialItems)
   const [isPanelOpen, setIsPanelOpen] = useState(false)
   const [editing, setEditing] = useState(null)
-  const [formData, setFormData] = useState({ descPremio: '', idInstitucion: '', anioObtencion: '' })
+  const [formData, setFormData] = useState({ descPremio: '', anioObtencion: '' })
 
   const handleAdd = () => {
     setEditing(null)
-    setFormData({ descPremio: '', idInstitucion: '', anioObtencion: '' })
+    setFormData({ descPremio: '', anioObtencion: '' })
     setIsPanelOpen(true)
   }
 
   const handleEdit = (item) => {
     setEditing(item)
-    setFormData({ descPremio: item.descPremio || '', idInstitucion: item.idInstitucion || '', anioObtencion: item.anioObtencion?.toString() || '' })
+    setFormData({ descPremio: item.descPremio || '', anioObtencion: item.anioObtencion?.toString() || '' })
     setIsPanelOpen(true)
   }
 
@@ -61,8 +59,8 @@ const PremiosDistincionesSection = ({ items: initialItems, onSave }) => {
           <SummaryCard
             key={item.id}
             title={item.descPremio}
-            subtitle={getInstitucionNombre(item.idInstitucion)}
-            details={[item.anioObtencion?.toString()].filter(Boolean)}
+            subtitle={item.anioObtencion?.toString() || ''}
+            details={[]}
             onEdit={() => handleEdit(item)}
             onDelete={() => handleDelete(item.id)}
           />
@@ -74,7 +72,6 @@ const PremiosDistincionesSection = ({ items: initialItems, onSave }) => {
       <SlideOverPanel isOpen={isPanelOpen} onClose={() => setIsPanelOpen(false)} title={editing ? 'Editar premio' : 'Agregar premio o distinción'}>
         <div className="space-y-4">
           <EditableField label="Descripción del premio / distinción *" value={formData.descPremio} onChange={(val) => setFormData(prev => ({ ...prev, descPremio: val }))} rows={3} placeholder="Descripción completa del premio o distinción" />
-          <InstitucionSelect value={formData.idInstitucion} onChange={(val) => setFormData(prev => ({ ...prev, idInstitucion: val }))} />
           <EditableField label="Año de obtención" value={formData.anioObtencion} onChange={(val) => setFormData(prev => ({ ...prev, anioObtencion: val }))} type="number" placeholder="Ej., 2023" />
           <div className="pt-4 flex gap-3">
             <button onClick={() => setIsPanelOpen(false)} className="flex-1 px-4 py-3 border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50">Cancelar</button>

@@ -13,19 +13,19 @@ const UserManagement = () => {
       name: `${u.nombres} ${u.apellidoPaterno}${u.apellidoMaterno ? ' ' + u.apellidoMaterno : ''}`,
       email: u.correo,
       role: u.role,
-      puestoInstitucion: u.puestoInstitucion,
+      puestoInstitucional: u.puestoInstitucional,
       avatar: u.avatar,
       activo: u.activo
     })),
     // Agregar faculty members que no están en loginUsers
     ...facultyMembers
-      .filter(f => !loginUsers.find(u => u.facultyId === f.id))
+      .filter(f => !loginUsers.find(u => u.facultyId === f.idProfesor))
       .map(f => ({
-        id: f.id + 100,
+        id: f.idProfesor,
         name: getFullName(f),
         email: '',
         role: 'professor',
-        puestoInstitucion: f.puestoInstitucion,
+        puestoInstitucional: f.puestoInstitucional,
         avatar: f.avatar,
         activo: f.activo
       }))
@@ -36,7 +36,7 @@ const UserManagement = () => {
     .filter(u => 
       u.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       u.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      u.puestoInstitucion.toLowerCase().includes(searchTerm.toLowerCase())
+      (u.puestoInstitucional || '').toLowerCase().includes(searchTerm.toLowerCase())
     )
 
   const adminCount = allUsers.filter(u => u.role === 'admin').length
@@ -172,7 +172,7 @@ const UserManagement = () => {
                     </span>
                   </td>
                   <td className="py-4 pr-4">
-                    <span className="text-sm text-gray-600">{user.puestoInstitucion}</span>
+                    <span className="text-sm text-gray-600">{user.puestoInstitucional}</span>
                   </td>
                   <td className="py-4 pr-4">
                     <span className={`flex items-center gap-1.5 text-xs font-medium ${user.activo ? 'text-green-600' : 'text-gray-500'}`}>

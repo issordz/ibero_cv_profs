@@ -65,7 +65,7 @@ const Login = () => {
         <div className="flex-1 flex items-center justify-center px-8 lg:px-14 pb-12">
           <div className="w-full max-w-sm">
             {/* Heading */}
-            <p className="text-gray-500 text-lg mb-1" style={{ fontFamily: 'Georgia, serif' }}>Gestor de Datos del Docente</p>
+            <p className="text-gray-500 text-lg mb-1" style={{ fontFamily: 'Georgia, serif' }}>Portal de gestión para acreditaciones</p>
             <h1 className="text-2xl font-bold italic text-gray-900 mb-6" style={{ fontFamily: 'Georgia, serif' }}>Iniciar Sesión</h1>
 
             {/* Role selector */}

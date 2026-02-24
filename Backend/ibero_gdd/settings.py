@@ -1,6 +1,6 @@
 """
 Django settings for ibero_gdd project.
-IBERO - Gestor de Datos del Docente
+IBERO - Portal de gestión para acreditaciones
 """
 
 import os

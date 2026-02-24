@@ -9,7 +9,7 @@ const ValidacionesPendientes = () => {
   const pendingFaculty = facultyMembers
     .filter(f => 
       getFullName(f).toLowerCase().includes(searchTerm.toLowerCase()) ||
-      f.puestoInstitucion.toLowerCase().includes(searchTerm.toLowerCase())
+      f.puestoInstitucional.toLowerCase().includes(searchTerm.toLowerCase())
     )
 
   return (
@@ -97,7 +97,7 @@ const ValidacionesPendientes = () => {
             </thead>
             <tbody className="divide-y divide-gray-50">
               {pendingFaculty.map((faculty) => (
-                <tr key={faculty.id} className="hover:bg-gray-50 transition-colors">
+                <tr key={faculty.idProfesor} className="hover:bg-gray-50 transition-colors">
                   <td className="py-4 pr-4">
                     <div className="flex items-center gap-3">
                       <div className={`w-9 h-9 rounded-full ${faculty.avatarColor} flex items-center justify-center text-xs font-bold`}>
@@ -105,12 +105,12 @@ const ValidacionesPendientes = () => {
                       </div>
                       <div>
                         <p className="text-sm font-medium text-gray-900">{getFullName(faculty)}</p>
-                        <p className="text-xs text-gray-400">{faculty.puestoInstitucion}</p>
+                        <p className="text-xs text-gray-400">{faculty.puestoInstitucional}</p>
                       </div>
                     </div>
                   </td>
                   <td className="py-4 pr-4">
-                    <span className="text-sm text-gray-600">{faculty.puestoInstitucion}</span>
+                    <span className="text-sm text-gray-600">{faculty.puestoInstitucional}</span>
                   </td>
                   <td className="py-4 pr-4">
                     <span className="text-sm text-gray-600">{faculty.fechaActualizacion}</span>

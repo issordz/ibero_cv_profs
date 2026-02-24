@@ -40,7 +40,7 @@ const FacultyProfile = () => {
   ]
 
   useEffect(() => {
-    const found = facultyMembers.find(f => f.id === parseInt(id))
+    const found = facultyMembers.find(f => f.idProfesor === id)
     if (found) {
       setFaculty(found)
       setFormData({
@@ -110,7 +110,7 @@ const FacultyProfile = () => {
             </div>
             <div className="text-right">
               <p className="font-medium text-gray-900">{getFullName(faculty)}</p>
-              <p className="text-xs text-gray-500">{faculty.puestoInstitucion}</p>
+              <p className="text-xs text-gray-500">{faculty.puestoInstitucional}</p>
             </div>
           </div>
         </div>
@@ -204,7 +204,7 @@ const FacultyProfile = () => {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">FECHA DE NACIMIENTO</p>
-                    <p className="font-medium text-gray-900">{faculty.fechaNacimiento || '—'}</p>
+                    <p className="font-medium text-gray-900">{faculty.fechaDeNacimiento || '—'}</p>
                   </div>
                   <Lock size={16} className="text-gray-400" />
                 </div>
@@ -214,7 +214,7 @@ const FacultyProfile = () => {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">PUESTO EN LA INSTITUCIÓN</p>
-                    <p className="font-medium text-gray-900">{faculty.puestoInstitucion}</p>
+                    <p className="font-medium text-gray-900">{faculty.puestoInstitucional}</p>
                   </div>
                   <Lock size={16} className="text-gray-400" />
                 </div>

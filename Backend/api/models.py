@@ -183,7 +183,10 @@ class DatosGenerales(models.Model):
     apellido_paterno = models.CharField(max_length=100)
     apellido_materno = models.CharField(max_length=100, blank=True, null=True)
     fecha_de_nacimiento = models.DateField(blank=True, null=True)
-    puesto_institucional = models.CharField(max_length=200, blank=True, null=True)
+    puesto_institucional = models.ForeignKey(
+        CatalogoPuestoInstitucional, on_delete=models.SET_NULL,
+        blank=True, null=True, db_column='id_puesto'
+    )
     resumen_profesional = models.TextField(blank=True, null=True)
     activo = models.PositiveSmallIntegerField(default=1)
     fecha_carga = models.DateTimeField(auto_now_add=True)
@@ -239,7 +242,10 @@ class EstudioAcademico(models.Model):
         CatalogoInstitucionEducativa, on_delete=models.SET_NULL,
         blank=True, null=True, db_column='id_institucion_educativa'
     )
-    pais = models.CharField(max_length=100, blank=True, null=True)
+    pais = models.ForeignKey(
+        CatalogoPais, on_delete=models.SET_NULL,
+        blank=True, null=True, db_column='id_pais'
+    )
     anio_obtencion = models.IntegerField(blank=True, null=True)
     cedula = models.CharField(max_length=50, blank=True, null=True)
     fecha_carga = models.DateTimeField(auto_now_add=True)
@@ -273,7 +279,10 @@ class CapacitacionActualizacion(models.Model):
         CatalogoTipoCurso, on_delete=models.SET_NULL,
         blank=True, null=True, db_column='id_tipo_curso'
     )
-    pais = models.CharField(max_length=100, blank=True, null=True)
+    pais = models.ForeignKey(
+        CatalogoPais, on_delete=models.SET_NULL,
+        blank=True, null=True, db_column='id_pais'
+    )
     anio_obtencion = models.IntegerField(blank=True, null=True)
     horas = models.IntegerField(blank=True, null=True)
     vigencia = models.CharField(max_length=100, blank=True, null=True)

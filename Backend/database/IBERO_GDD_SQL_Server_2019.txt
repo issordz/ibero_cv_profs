@@ -247,12 +247,14 @@ CREATE TABLE datos_generales (
     apellido_paterno        NVARCHAR(100)                   NOT NULL,
     apellido_materno        NVARCHAR(100)                   NULL,
     fecha_de_nacimiento     DATE                            NULL,
-    puesto_institucional    NVARCHAR(200)                   NULL,
+    id_puesto              INT                             NULL,
     resumen_profesional     NVARCHAR(MAX)                   NULL,
     activo                  TINYINT                         NOT NULL    DEFAULT 1,
     fecha_carga             DATETIME2                       NOT NULL    DEFAULT GETDATE(),
     fecha_actualizacion     DATETIME2                       NOT NULL    DEFAULT GETDATE(),
-    CONSTRAINT PK_datos_generales PRIMARY KEY CLUSTERED (id_profesor)
+    CONSTRAINT PK_datos_generales PRIMARY KEY CLUSTERED (id_profesor),
+    CONSTRAINT FK_datos_generales_puesto FOREIGN KEY (id_puesto)
+        REFERENCES catalogo_puesto_institucional (id_puesto)
 );
 GO
 
@@ -284,7 +286,7 @@ CREATE TABLE estudios_academicos (
     id_nivel_estudio        INT                             NULL,
     titulo_estudio          NVARCHAR(300)                   NOT NULL,
     id_institucion_educativa INT                            NULL,
-    pais                    NVARCHAR(100)                   NULL,
+    id_pais                 INT                             NULL,
     anio_obtencion          INT                             NULL,
     cedula                  NVARCHAR(50)                    NULL,
     fecha_carga             DATETIME2                       NOT NULL    DEFAULT GETDATE(),
@@ -295,7 +297,9 @@ CREATE TABLE estudios_academicos (
     CONSTRAINT FK_estudios_nivel FOREIGN KEY (id_nivel_estudio)
         REFERENCES catalogo_nivel_estudio (id_nivel_estudio),
     CONSTRAINT FK_estudios_inst_edu FOREIGN KEY (id_institucion_educativa)
-        REFERENCES catalogo_instituciones_educativas (id_institucion_educativa)
+        REFERENCES catalogo_instituciones_educativas (id_institucion_educativa),
+    CONSTRAINT FK_estudios_pais FOREIGN KEY (id_pais)
+        REFERENCES catalogo_paises (id_pais)
 );
 GO
 
@@ -309,7 +313,7 @@ CREATE TABLE capacitacion_actualizacion (
     id_tipo_capacitacion    INT                             NULL,
     id_institucion_educativa INT                            NULL,
     id_tipo_curso           INT                             NULL,
-    pais                    NVARCHAR(100)                   NULL,
+    id_pais                 INT                             NULL,
     anio_obtencion          INT                             NULL,
     horas                   INT                             NULL,
     vigencia                NVARCHAR(100)                   NULL,
@@ -323,7 +327,9 @@ CREATE TABLE capacitacion_actualizacion (
     CONSTRAINT FK_capacitacion_inst_edu FOREIGN KEY (id_institucion_educativa)
         REFERENCES catalogo_instituciones_educativas (id_institucion_educativa),
     CONSTRAINT FK_capacitacion_tipo_curso FOREIGN KEY (id_tipo_curso)
-        REFERENCES catalogo_tipo_curso (id_tipo_curso)
+        REFERENCES catalogo_tipo_curso (id_tipo_curso),
+    CONSTRAINT FK_capacitacion_pais FOREIGN KEY (id_pais)
+        REFERENCES catalogo_paises (id_pais)
 );
 GO
 
@@ -464,6 +470,9 @@ CREATE NONCLUSTERED INDEX IX_estudios_nivel_estudio
 CREATE NONCLUSTERED INDEX IX_estudios_inst_educativa
     ON estudios_academicos (id_institucion_educativa);
 
+CREATE NONCLUSTERED INDEX IX_estudios_pais
+    ON estudios_academicos (id_pais);
+
 CREATE NONCLUSTERED INDEX IX_capacitacion_tipo_capacitacion
     ON capacitacion_actualizacion (id_tipo_capacitacion);
 
@@ -472,6 +481,12 @@ CREATE NONCLUSTERED INDEX IX_capacitacion_inst_educativa
 
 CREATE NONCLUSTERED INDEX IX_capacitacion_tipo_curso
     ON capacitacion_actualizacion (id_tipo_curso);
+
+CREATE NONCLUSTERED INDEX IX_capacitacion_pais
+    ON capacitacion_actualizacion (id_pais);
+
+CREATE NONCLUSTERED INDEX IX_datos_generales_puesto
+    ON datos_generales (id_puesto);
 
 CREATE NONCLUSTERED INDEX IX_experiencia_institucion
     ON experiencia_laboral (id_institucion);

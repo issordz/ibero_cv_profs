@@ -163,26 +163,31 @@ def seed_view(request):
         CatalogoPuestoInstitucional.objects.create(desc_puesto=puesto)
 
     # Create professors (id_profesor = employee number)
+    # Get catalog references for seed
+    puesto_tc = CatalogoPuestoInstitucional.objects.get(desc_puesto='Profesor de Tiempo Completo')
+    puesto_coord = CatalogoPuestoInstitucional.objects.get(desc_puesto='Coordinador Académico')
+    puesto_asig = CatalogoPuestoInstitucional.objects.get(desc_puesto='Profesor de Asignatura')
+
     profesores_data = [
         {
             'id_profesor': 'PROF000001',
             'nombres': 'Ana', 'apellido_paterno': 'Martínez', 'apellido_materno': 'López',
             'fecha_de_nacimiento': '1980-03-15',
-            'puesto_institucional': 'Profesora de Tiempo Completo',
+            'puesto_institucional': puesto_tc,
             'resumen_profesional': 'Doctora en Ingeniería con más de 15 años de experiencia en docencia e investigación.',
         },
         {
             'id_profesor': 'PROF000002',
             'nombres': 'Sergio', 'apellido_paterno': 'Rodríguez', 'apellido_materno': 'Hernández',
             'fecha_de_nacimiento': '1975-07-22',
-            'puesto_institucional': 'Coordinador Académico',
+            'puesto_institucional': puesto_coord,
             'resumen_profesional': 'Maestro en Administración con experiencia en gestión académica y proyectos de vinculación.',
         },
         {
             'id_profesor': 'PROF000003',
             'nombres': 'Juan', 'apellido_paterno': 'Ramos', 'apellido_materno': 'García',
             'fecha_de_nacimiento': '1985-11-10',
-            'puesto_institucional': 'Profesor de Asignatura',
+            'puesto_institucional': puesto_asig,
             'resumen_profesional': 'Ingeniero en Sistemas con especialidad en desarrollo de software y bases de datos.',
         },
     ]
@@ -261,15 +266,17 @@ class CatalogoPuestoInstitucionalViewSet(viewsets.ModelViewSet):
 # ──────────────────────────────────────
 
 class DatosGeneralesViewSet(viewsets.ModelViewSet):
-    queryset = DatosGenerales.objects.filter(activo=True)
     serializer_class = DatosGeneralesSerializer
+
+    def get_queryset(self):
+        return DatosGenerales.objects.filter(activo=True).select_related('puesto_institucional')
 
 
 class EstudioAcademicoViewSet(viewsets.ModelViewSet):
     serializer_class = EstudioAcademicoSerializer
 
     def get_queryset(self):
-        qs = EstudioAcademico.objects.select_related('nivel_estudio', 'institucion_educativa')
+        qs = EstudioAcademico.objects.select_related('nivel_estudio', 'institucion_educativa', 'pais')
         profesor_id = self.request.query_params.get('profesor_id')
         if profesor_id:
             qs = qs.filter(profesor_id=profesor_id)
@@ -281,7 +288,7 @@ class CapacitacionActualizacionViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         qs = CapacitacionActualizacion.objects.select_related(
-            'tipo_capacitacion', 'institucion_educativa', 'tipo_curso')
+            'tipo_capacitacion', 'institucion_educativa', 'tipo_curso', 'pais')
         profesor_id = self.request.query_params.get('profesor_id')
         if profesor_id:
             qs = qs.filter(profesor_id=profesor_id)

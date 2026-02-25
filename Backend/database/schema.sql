@@ -129,7 +129,7 @@ CREATE TABLE datos_generales (
     apellido_paterno        NVARCHAR(100) NOT NULL,
     apellido_materno        NVARCHAR(100),
     fecha_de_nacimiento     DATE,
-    puesto_institucional    NVARCHAR(200),
+    id_puesto              INT REFERENCES catalogo_puesto_institucional(id_puesto),
     resumen_profesional     NVARCHAR(MAX),
     activo                  TINYINT DEFAULT 1,
     fecha_carga             DATETIME2 DEFAULT GETDATE(),
@@ -159,7 +159,7 @@ CREATE TABLE estudios_academicos (
     id_nivel_estudio        INT REFERENCES catalogo_nivel_estudio(id_nivel_estudio),
     titulo_estudio          NVARCHAR(300) NOT NULL,
     id_institucion_educativa INT REFERENCES catalogo_instituciones_educativas(id_institucion_educativa),
-    pais                    NVARCHAR(100),
+    id_pais                 INT REFERENCES catalogo_paises(id_pais),
     anio_obtencion          INT,
     cedula                  NVARCHAR(50),
     fecha_carga             DATETIME2 DEFAULT GETDATE(),
@@ -176,7 +176,7 @@ CREATE TABLE capacitacion_actualizacion (
     id_tipo_capacitacion    INT REFERENCES catalogo_capacitacion(id_tipo_capacitacion),
     id_institucion_educativa INT REFERENCES catalogo_instituciones_educativas(id_institucion_educativa),
     id_tipo_curso           INT REFERENCES catalogo_tipo_curso(id_tipo_curso),
-    pais                    NVARCHAR(100),
+    id_pais                 INT REFERENCES catalogo_paises(id_pais),
     anio_obtencion          INT,
     horas                   INT,
     vigencia                NVARCHAR(100),
@@ -270,9 +270,12 @@ CREATE INDEX IX_PremiosDistinciones_IdProfesor ON premios_distinciones(id_profes
 -- Índices en FKs de catálogos
 CREATE INDEX IX_EstudiosAcademicos_NivelEstudio ON estudios_academicos(id_nivel_estudio);
 CREATE INDEX IX_EstudiosAcademicos_InstEducativa ON estudios_academicos(id_institucion_educativa);
+CREATE INDEX IX_EstudiosAcademicos_Pais ON estudios_academicos(id_pais);
 CREATE INDEX IX_Capacitacion_TipoCapacitacion ON capacitacion_actualizacion(id_tipo_capacitacion);
 CREATE INDEX IX_Capacitacion_InstEducativa ON capacitacion_actualizacion(id_institucion_educativa);
 CREATE INDEX IX_Capacitacion_TipoCurso ON capacitacion_actualizacion(id_tipo_curso);
+CREATE INDEX IX_Capacitacion_Pais ON capacitacion_actualizacion(id_pais);
+CREATE INDEX IX_DatosGenerales_Puesto ON datos_generales(id_puesto);
 CREATE INDEX IX_ExperienciaLaboral_Institucion ON experiencia_laboral(id_institucion);
 CREATE INDEX IX_ExperienciaLaboral_TipoExp ON experiencia_laboral(id_tipo_experiencia);
 CREATE INDEX IX_ProductosAcademicos_InstEducativa ON productos_academicos(id_institucion_educativa);

@@ -62,13 +62,31 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'ibero_gdd.wsgi.application'
 
-# Database - SQLite for development, configure for SQL Server in production
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+# Database - SQL Server
+DB_ENGINE = os.getenv('DB_ENGINE', 'mssql')
+
+if DB_ENGINE == 'sqlite':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'mssql',
+            'NAME': os.getenv('DB_NAME', 'IBERO_GDD'),
+            'HOST': os.getenv('DB_HOST', 'localhost'),
+            'PORT': os.getenv('DB_PORT', '1433'),
+            'USER': os.getenv('DB_USER', ''),
+            'PASSWORD': os.getenv('DB_PASSWORD', ''),
+            'OPTIONS': {
+                'driver': os.getenv('DB_DRIVER', 'ODBC Driver 17 for SQL Server'),
+                'extra_params': 'TrustServerCertificate=yes',
+            },
+        }
+    }
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [

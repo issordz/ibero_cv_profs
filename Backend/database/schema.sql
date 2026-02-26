@@ -1,283 +1,295 @@
 -- ===========================================
 -- IBERO - Gestor de Datos del Docente
--- Script de creación de Base de Datos
--- SQL Server
+-- Script compatible con SQL Server 2019
+-- Schema: [acreditacion]
+-- Generado a partir de Django migrations (mssql-django)
 -- ===========================================
 
--- Crear base de datos (ejecutar por separado si es necesario)
+-- Crear base de datos y schema (ejecutar por separado si es necesario)
 -- CREATE DATABASE IBERO_GDD;
 -- GO
 -- USE IBERO_GDD;
 -- GO
+-- CREATE SCHEMA acreditacion;
+-- GO
+
+BEGIN TRANSACTION;
 
 -- ///////////////////////////////////////////
 -- TABLAS CATÁLOGO
 -- ///////////////////////////////////////////
 
--- ===========================================
--- CATÁLOGO: Instituciones (empresas, organismos generales)
--- ===========================================
-CREATE TABLE catalogo_instituciones (
-    id_institucion          INT IDENTITY(1,1) PRIMARY KEY,
-    nombre_institucion      NVARCHAR(300) NOT NULL,
-    activo                  TINYINT DEFAULT 1,
-    fecha_carga             DATETIME2 DEFAULT GETDATE(),
-    fecha_actualizacion     DATETIME2 DEFAULT GETDATE()
+CREATE TABLE [acreditacion].[catalogo_carreras] (
+    [id]                    BIGINT NOT NULL PRIMARY KEY IDENTITY (1, 1),
+    [activo]                BIT NOT NULL,
+    [fecha_carga]           DATETIMEOFFSET NOT NULL,
+    [fecha_actualizacion]   DATETIMEOFFSET NOT NULL,
+    [nombre_carrera]        NVARCHAR(300) NOT NULL
 );
 
--- ===========================================
--- CATÁLOGO: Instituciones Educativas
--- ===========================================
-CREATE TABLE catalogo_instituciones_educativas (
-    id_institucion_educativa INT IDENTITY(1,1) PRIMARY KEY,
-    nombre_institucion      NVARCHAR(300) NOT NULL,
-    activo                  TINYINT DEFAULT 1,
-    fecha_carga             DATETIME2 DEFAULT GETDATE(),
-    fecha_actualizacion     DATETIME2 DEFAULT GETDATE()
+CREATE TABLE [acreditacion].[catalogo_paises] (
+    [id]                    BIGINT NOT NULL PRIMARY KEY IDENTITY (1, 1),
+    [activo]                BIT NOT NULL,
+    [fecha_carga]           DATETIMEOFFSET NOT NULL,
+    [fecha_actualizacion]   DATETIMEOFFSET NOT NULL,
+    [nombre_pais]           NVARCHAR(150) NOT NULL
 );
 
--- ===========================================
--- CATÁLOGO: Nivel de Estudio
--- ===========================================
-CREATE TABLE catalogo_nivel_estudio (
-    id_nivel_estudio        INT IDENTITY(1,1) PRIMARY KEY,
-    desc_nivel_estudio      NVARCHAR(200) NOT NULL,
-    fecha_carga             DATETIME2 DEFAULT GETDATE(),
-    fecha_actualizacion     DATETIME2 DEFAULT GETDATE()
+CREATE TABLE [acreditacion].[catalogo_tipo_curso] (
+    [id]                    BIGINT NOT NULL PRIMARY KEY IDENTITY (1, 1),
+    [activo]                BIT NOT NULL,
+    [fecha_carga]           DATETIMEOFFSET NOT NULL,
+    [fecha_actualizacion]   DATETIMEOFFSET NOT NULL,
+    [desc_tipo_curso]       NVARCHAR(200) NOT NULL
 );
 
--- ===========================================
--- CATÁLOGO: Carreras
--- ===========================================
-CREATE TABLE catalogo_carreras (
-    id_carrera              INT IDENTITY(1,1) PRIMARY KEY,
-    nombre_carrera          NVARCHAR(300) NOT NULL,
-    fecha_carga             DATETIME2 DEFAULT GETDATE(),
-    fecha_actualizacion     DATETIME2 DEFAULT GETDATE()
+CREATE TABLE [acreditacion].[catalogo_instituciones_educativas] (
+    [id]                    BIGINT NOT NULL PRIMARY KEY IDENTITY (1, 1),
+    [activo]                BIT NOT NULL,
+    [fecha_carga]           DATETIMEOFFSET NOT NULL,
+    [fecha_actualizacion]   DATETIMEOFFSET NOT NULL,
+    [nombre_institucion]    NVARCHAR(300) NOT NULL
 );
 
--- ===========================================
--- CATÁLOGO: Países
--- ===========================================
-CREATE TABLE catalogo_paises (
-    id_pais                 INT IDENTITY(1,1) PRIMARY KEY,
-    nombre_pais             NVARCHAR(150) NOT NULL,
-    fecha_carga             DATETIME2 DEFAULT GETDATE(),
-    fecha_actualizacion     DATETIME2 DEFAULT GETDATE()
+CREATE TABLE [acreditacion].[catalogo_instituciones] (
+    [id]                    BIGINT NOT NULL PRIMARY KEY IDENTITY (1, 1),
+    [activo]                BIT NOT NULL,
+    [fecha_carga]           DATETIMEOFFSET NOT NULL,
+    [fecha_actualizacion]   DATETIMEOFFSET NOT NULL,
+    [nombre_institucion]    NVARCHAR(300) NOT NULL
 );
 
--- ===========================================
--- CATÁLOGO: Tipo de Curso
--- ===========================================
-CREATE TABLE catalogo_tipo_curso (
-    id_tipo_curso           INT IDENTITY(1,1) PRIMARY KEY,
-    desc_tipo_curso         NVARCHAR(200) NOT NULL,
-    fecha_carga             DATETIME2 DEFAULT GETDATE(),
-    fecha_actualizacion     DATETIME2 DEFAULT GETDATE()
+CREATE TABLE [acreditacion].[catalogo_puesto_institucional] (
+    [id]                    BIGINT NOT NULL PRIMARY KEY IDENTITY (1, 1),
+    [activo]                BIT NOT NULL,
+    [fecha_carga]           DATETIMEOFFSET NOT NULL,
+    [fecha_actualizacion]   DATETIMEOFFSET NOT NULL,
+    [desc_puesto]           NVARCHAR(200) NOT NULL
 );
 
--- ===========================================
--- CATÁLOGO: Tipo de Capacitación
--- ===========================================
-CREATE TABLE catalogo_capacitacion (
-    id_tipo_capacitacion    INT IDENTITY(1,1) PRIMARY KEY,
-    desc_tipo_capacitacion  NVARCHAR(200) NOT NULL,
-    fecha_carga             DATETIME2 DEFAULT GETDATE(),
-    fecha_actualizacion     DATETIME2 DEFAULT GETDATE()
+CREATE TABLE [acreditacion].[catalogo_organismos] (
+    [id]                    BIGINT NOT NULL PRIMARY KEY IDENTITY (1, 1),
+    [activo]                BIT NOT NULL,
+    [fecha_carga]           DATETIMEOFFSET NOT NULL,
+    [fecha_actualizacion]   DATETIMEOFFSET NOT NULL,
+    [nombre_organismo]      NVARCHAR(300) NOT NULL
 );
 
--- ===========================================
--- CATÁLOGO: Tipo de Experiencia Laboral
--- ===========================================
-CREATE TABLE catalogo_experiencia_laboral (
-    id_tipo_experiencia     INT IDENTITY(1,1) PRIMARY KEY,
-    desc_tipo_experiencia   NVARCHAR(200) NOT NULL,
-    fecha_carga             DATETIME2 DEFAULT GETDATE(),
-    fecha_actualizacion     DATETIME2 DEFAULT GETDATE()
+CREATE TABLE [acreditacion].[catalogo_nivel_estudio] (
+    [id]                    BIGINT NOT NULL PRIMARY KEY IDENTITY (1, 1),
+    [activo]                BIT NOT NULL,
+    [fecha_carga]           DATETIMEOFFSET NOT NULL,
+    [fecha_actualizacion]   DATETIMEOFFSET NOT NULL,
+    [desc_nivel_estudio]    NVARCHAR(200) NOT NULL
 );
 
--- ===========================================
--- CATÁLOGO: Organismos
--- ===========================================
-CREATE TABLE catalogo_organismos (
-    id_organismo            INT IDENTITY(1,1) PRIMARY KEY,
-    nombre_organismo        NVARCHAR(300) NOT NULL,
-    fecha_carga             DATETIME2 DEFAULT GETDATE(),
-    fecha_actualizacion     DATETIME2 DEFAULT GETDATE()
+CREATE TABLE [acreditacion].[catalogo_capacitacion] (
+    [id]                    BIGINT NOT NULL PRIMARY KEY IDENTITY (1, 1),
+    [activo]                BIT NOT NULL,
+    [fecha_carga]           DATETIMEOFFSET NOT NULL,
+    [fecha_actualizacion]   DATETIMEOFFSET NOT NULL,
+    [desc_tipo_capacitacion] NVARCHAR(200) NOT NULL
 );
 
--- ===========================================
--- CATÁLOGO: Puesto Institucional
--- ===========================================
-CREATE TABLE catalogo_puesto_institucional (
-    id_puesto               INT IDENTITY(1,1) PRIMARY KEY,
-    desc_puesto             NVARCHAR(200) NOT NULL,
-    fecha_carga             DATETIME2 DEFAULT GETDATE(),
-    fecha_actualizacion     DATETIME2 DEFAULT GETDATE()
+CREATE TABLE [acreditacion].[catalogo_experiencia_laboral] (
+    [id]                    BIGINT NOT NULL PRIMARY KEY IDENTITY (1, 1),
+    [activo]                BIT NOT NULL,
+    [fecha_carga]           DATETIMEOFFSET NOT NULL,
+    [fecha_actualizacion]   DATETIMEOFFSET NOT NULL,
+    [desc_tipo_experiencia] NVARCHAR(200) NOT NULL
 );
 
 -- ///////////////////////////////////////////
 -- TABLAS PRINCIPALES
 -- ///////////////////////////////////////////
 
--- ===========================================
--- TABLA: Datos Generales (registro único por profesor)
--- ===========================================
-CREATE TABLE datos_generales (
-    id_profesor             VARCHAR(10) NOT NULL PRIMARY KEY,
-    nombres                 NVARCHAR(100) NOT NULL,
-    apellido_paterno        NVARCHAR(100) NOT NULL,
-    apellido_materno        NVARCHAR(100),
-    fecha_de_nacimiento     DATE,
-    id_puesto              INT REFERENCES catalogo_puesto_institucional(id_puesto),
-    resumen_profesional     NVARCHAR(MAX),
-    activo                  TINYINT DEFAULT 1,
-    fecha_carga             DATETIME2 DEFAULT GETDATE(),
-    fecha_actualizacion     DATETIME2 DEFAULT GETDATE()
+CREATE TABLE [acreditacion].[datos_generales] (
+    [id]                    BIGINT NOT NULL PRIMARY KEY IDENTITY (1, 1),
+    [activo]                BIT NOT NULL,
+    [fecha_carga]           DATETIMEOFFSET NOT NULL,
+    [fecha_actualizacion]   DATETIMEOFFSET NOT NULL,
+    [apellido_materno]      NVARCHAR(100) NULL,
+    [apellido_paterno]      NVARCHAR(100) NOT NULL,
+    [fecha_de_nacimiento]   DATE NULL,
+    [nombres]               NVARCHAR(100) NOT NULL,
+    [puesto_institucional]  NVARCHAR(200) NULL,
+    [resumen_profesional]   NVARCHAR(MAX) NULL
 );
 
--- ===========================================
--- TABLA: Gestión de Usuarios (login del sistema)
--- ===========================================
-CREATE TABLE gestion_usuarios (
-    id                      INT IDENTITY(1,1) PRIMARY KEY,
-    id_profesor             VARCHAR(10) REFERENCES datos_generales(id_profesor),
-    correo                  NVARCHAR(200) NOT NULL UNIQUE,
-    contrasena              NVARCHAR(255) NOT NULL,
-    rol                     NVARCHAR(50) NOT NULL DEFAULT 'professor',
-    activo                  TINYINT DEFAULT 1,
-    fecha_carga             DATETIME2 DEFAULT GETDATE(),
-    fecha_actualizacion     DATETIME2 DEFAULT GETDATE()
+CREATE TABLE [acreditacion].[gestion_usuarios] (
+    [id]                    BIGINT NOT NULL PRIMARY KEY IDENTITY (1, 1),
+    [activo]                BIT NOT NULL,
+    [fecha_carga]           DATETIMEOFFSET NOT NULL,
+    [fecha_actualizacion]   DATETIMEOFFSET NOT NULL,
+    [contrasena]            NVARCHAR(255) NOT NULL,
+    [correo]                NVARCHAR(200) NOT NULL UNIQUE,
+    [rol]                   NVARCHAR(50) NOT NULL,
+    [teacher_id]            BIGINT NOT NULL
 );
 
--- ===========================================
--- TABLA: Estudios Académicos (N por profesor)
--- ===========================================
-CREATE TABLE estudios_academicos (
-    id                      INT IDENTITY(1,1) PRIMARY KEY,
-    id_profesor             VARCHAR(10) NOT NULL REFERENCES datos_generales(id_profesor) ON DELETE CASCADE,
-    id_nivel_estudio        INT REFERENCES catalogo_nivel_estudio(id_nivel_estudio),
-    titulo_estudio          NVARCHAR(300) NOT NULL,
-    id_institucion_educativa INT REFERENCES catalogo_instituciones_educativas(id_institucion_educativa),
-    id_pais                 INT REFERENCES catalogo_paises(id_pais),
-    anio_obtencion          INT,
-    cedula                  NVARCHAR(50),
-    fecha_carga             DATETIME2 DEFAULT GETDATE(),
-    fecha_actualizacion     DATETIME2 DEFAULT GETDATE()
+CREATE TABLE [acreditacion].[estudios_academicos] (
+    [id]                    BIGINT NOT NULL PRIMARY KEY IDENTITY (1, 1),
+    [activo]                BIT NOT NULL,
+    [fecha_carga]           DATETIMEOFFSET NOT NULL,
+    [fecha_actualizacion]   DATETIMEOFFSET NOT NULL,
+    [anio_obtencion]        INT NULL,
+    [cedula]                NVARCHAR(50) NULL,
+    [titulo_estudio]        NVARCHAR(300) NOT NULL,
+    [country_id]            BIGINT NULL,
+    [educational_institution_id] BIGINT NULL,
+    [study_level_id]        BIGINT NULL,
+    [teacher_id]            BIGINT NOT NULL
 );
 
--- ===========================================
--- TABLA: Capacitación / Actualización Docente (N por profesor)
--- ===========================================
-CREATE TABLE capacitacion_actualizacion (
-    id                      INT IDENTITY(1,1) PRIMARY KEY,
-    id_profesor             VARCHAR(10) NOT NULL REFERENCES datos_generales(id_profesor) ON DELETE CASCADE,
-    nombre_capacitacion     NVARCHAR(300) NOT NULL,
-    id_tipo_capacitacion    INT REFERENCES catalogo_capacitacion(id_tipo_capacitacion),
-    id_institucion_educativa INT REFERENCES catalogo_instituciones_educativas(id_institucion_educativa),
-    id_tipo_curso           INT REFERENCES catalogo_tipo_curso(id_tipo_curso),
-    id_pais                 INT REFERENCES catalogo_paises(id_pais),
-    anio_obtencion          INT,
-    horas                   INT,
-    vigencia                NVARCHAR(100),
-    fecha_carga             DATETIME2 DEFAULT GETDATE(),
-    fecha_actualizacion     DATETIME2 DEFAULT GETDATE()
+CREATE TABLE [acreditacion].[capacitacion_actualizacion] (
+    [id]                    BIGINT NOT NULL PRIMARY KEY IDENTITY (1, 1),
+    [activo]                BIT NOT NULL,
+    [fecha_carga]           DATETIMEOFFSET NOT NULL,
+    [fecha_actualizacion]   DATETIMEOFFSET NOT NULL,
+    [anio_obtencion]        INT NULL,
+    [horas]                 INT NULL,
+    [nombre_capacitacion]   NVARCHAR(300) NOT NULL,
+    [vigencia]              NVARCHAR(100) NULL,
+    [country_id]            BIGINT NULL,
+    [course_type_id]        BIGINT NULL,
+    [educational_institution_id] BIGINT NULL,
+    [teacher_id]            BIGINT NOT NULL,
+    [training_id]           BIGINT NULL
 );
 
--- ===========================================
--- TABLA: Experiencia Laboral (N por profesor)
--- ===========================================
-CREATE TABLE experiencia_laboral (
-    id                      INT IDENTITY(1,1) PRIMARY KEY,
-    id_profesor             VARCHAR(10) NOT NULL REFERENCES datos_generales(id_profesor) ON DELETE CASCADE,
-    actividad_puesto        NVARCHAR(300) NOT NULL,
-    id_institucion          INT REFERENCES catalogo_instituciones(id_institucion),
-    inicio_mes_anio         NVARCHAR(50),
-    fin_mes_anio            NVARCHAR(50),
-    id_tipo_experiencia     INT REFERENCES catalogo_experiencia_laboral(id_tipo_experiencia),
-    nivel_experiencia       NVARCHAR(100),
-    fecha_carga             DATETIME2 DEFAULT GETDATE(),
-    fecha_actualizacion     DATETIME2 DEFAULT GETDATE()
+CREATE TABLE [acreditacion].[experiencia_laboral] (
+    [id]                    BIGINT NOT NULL PRIMARY KEY IDENTITY (1, 1),
+    [activo]                BIT NOT NULL,
+    [fecha_carga]           DATETIMEOFFSET NOT NULL,
+    [fecha_actualizacion]   DATETIMEOFFSET NOT NULL,
+    [actividad_puesto]      NVARCHAR(300) NOT NULL,
+    [fin_mes_anio]          NVARCHAR(50) NULL,
+    [inicio_mes_anio]       NVARCHAR(50) NULL,
+    [nivel_experiencia]     NVARCHAR(100) NULL,
+    [institution_id]        BIGINT NULL,
+    [teacher_id]            BIGINT NOT NULL,
+    [work_experience_id]    BIGINT NULL
 );
 
--- ===========================================
--- TABLA: Productos Académicos (N por profesor)
--- ===========================================
-CREATE TABLE productos_academicos (
-    id                      INT IDENTITY(1,1) PRIMARY KEY,
-    id_profesor             VARCHAR(10) NOT NULL REFERENCES datos_generales(id_profesor) ON DELETE CASCADE,
-    descripcion_producto_academico NVARCHAR(MAX),
-    id_institucion_educativa INT REFERENCES catalogo_instituciones_educativas(id_institucion_educativa),
-    anio_producto           INT,
-    fecha_carga             DATETIME2 DEFAULT GETDATE(),
-    fecha_actualizacion     DATETIME2 DEFAULT GETDATE()
+CREATE TABLE [acreditacion].[productos_academicos] (
+    [id]                    BIGINT NOT NULL PRIMARY KEY IDENTITY (1, 1),
+    [activo]                BIT NOT NULL,
+    [fecha_carga]           DATETIMEOFFSET NOT NULL,
+    [fecha_actualizacion]   DATETIMEOFFSET NOT NULL,
+    [anio_producto]         INT NULL,
+    [descripcion_producto_academico] NVARCHAR(MAX) NULL,
+    [educational_institution_id] BIGINT NULL,
+    [teacher_id]            BIGINT NOT NULL
 );
 
--- ===========================================
--- TABLA: Logros Profesionales - No Académicos (N por profesor)
--- ===========================================
-CREATE TABLE logros_profesionales (
-    id                      INT IDENTITY(1,1) PRIMARY KEY,
-    id_profesor             VARCHAR(10) NOT NULL REFERENCES datos_generales(id_profesor) ON DELETE CASCADE,
-    desc_logro              NVARCHAR(MAX) NOT NULL,
-    id_institucion          INT REFERENCES catalogo_instituciones(id_institucion),
-    anio_obtencion          INT,
-    fecha_carga             DATETIME2 DEFAULT GETDATE(),
-    fecha_actualizacion     DATETIME2 DEFAULT GETDATE()
+CREATE TABLE [acreditacion].[logros_profesionales] (
+    [id]                    BIGINT NOT NULL PRIMARY KEY IDENTITY (1, 1),
+    [activo]                BIT NOT NULL,
+    [fecha_carga]           DATETIMEOFFSET NOT NULL,
+    [fecha_actualizacion]   DATETIMEOFFSET NOT NULL,
+    [anio_obtencion]        INT NULL,
+    [desc_logro]            NVARCHAR(MAX) NOT NULL,
+    [institution_id]        BIGINT NULL,
+    [teacher_id]            BIGINT NOT NULL
 );
 
--- ===========================================
--- TABLA: Membresía / Participación en Organismos, Colegios,
---        Academias, Tribunales, Comités u otro tipo de
---        experiencia académica, profesional o técnica
---        (N por profesor)
--- ===========================================
-CREATE TABLE organismos (
-    id                      INT IDENTITY(1,1) PRIMARY KEY,
-    id_profesor             VARCHAR(10) NOT NULL REFERENCES datos_generales(id_profesor) ON DELETE CASCADE,
-    id_organismo            INT REFERENCES catalogo_organismos(id_organismo),
-    anio_inicio             INT,
-    anio_fin                INT,
-    nivel_experiencia       NVARCHAR(100),
-    fecha_carga             DATETIME2 DEFAULT GETDATE(),
-    fecha_actualizacion     DATETIME2 DEFAULT GETDATE()
+CREATE TABLE [acreditacion].[organismos] (
+    [id]                    BIGINT NOT NULL PRIMARY KEY IDENTITY (1, 1),
+    [activo]                BIT NOT NULL,
+    [fecha_carga]           DATETIMEOFFSET NOT NULL,
+    [fecha_actualizacion]   DATETIMEOFFSET NOT NULL,
+    [anio_fin]              INT NULL,
+    [anio_inicio]           INT NULL,
+    [nivel_experiencia]     NVARCHAR(100) NULL,
+    [organization_id]       BIGINT NULL,
+    [teacher_id]            BIGINT NOT NULL
 );
 
--- ===========================================
--- TABLA: Premios, Distinciones y Becas o Comisión Académica
---        (N por profesor)
--- ===========================================
-CREATE TABLE premios_distinciones (
-    id                      INT IDENTITY(1,1) PRIMARY KEY,
-    id_profesor             VARCHAR(10) NOT NULL REFERENCES datos_generales(id_profesor) ON DELETE CASCADE,
-    desc_premio             NVARCHAR(MAX) NOT NULL,
-    anio_obtencion          INT,
-    fecha_carga             DATETIME2 DEFAULT GETDATE(),
-    fecha_actualizacion     DATETIME2 DEFAULT GETDATE()
+CREATE TABLE [acreditacion].[premios_distinciones] (
+    [id]                    BIGINT NOT NULL PRIMARY KEY IDENTITY (1, 1),
+    [activo]                BIT NOT NULL,
+    [fecha_carga]           DATETIMEOFFSET NOT NULL,
+    [fecha_actualizacion]   DATETIMEOFFSET NOT NULL,
+    [anio_obtencion]        INT NULL,
+    [desc_premio]           NVARCHAR(MAX) NOT NULL,
+    [teacher_id]            BIGINT NOT NULL
 );
+
+-- ///////////////////////////////////////////
+-- FOREIGN KEYS
+-- ///////////////////////////////////////////
+
+ALTER TABLE [acreditacion].[gestion_usuarios] ADD CONSTRAINT [FK_gestion_usuarios_teacher]
+    FOREIGN KEY ([teacher_id]) REFERENCES [acreditacion].[datos_generales] ([id]);
+
+ALTER TABLE [acreditacion].[estudios_academicos] ADD CONSTRAINT [FK_estudios_teacher]
+    FOREIGN KEY ([teacher_id]) REFERENCES [acreditacion].[datos_generales] ([id]);
+ALTER TABLE [acreditacion].[estudios_academicos] ADD CONSTRAINT [FK_estudios_country]
+    FOREIGN KEY ([country_id]) REFERENCES [acreditacion].[catalogo_paises] ([id]);
+ALTER TABLE [acreditacion].[estudios_academicos] ADD CONSTRAINT [FK_estudios_edu_inst]
+    FOREIGN KEY ([educational_institution_id]) REFERENCES [acreditacion].[catalogo_instituciones_educativas] ([id]);
+ALTER TABLE [acreditacion].[estudios_academicos] ADD CONSTRAINT [FK_estudios_study_level]
+    FOREIGN KEY ([study_level_id]) REFERENCES [acreditacion].[catalogo_nivel_estudio] ([id]);
+
+ALTER TABLE [acreditacion].[capacitacion_actualizacion] ADD CONSTRAINT [FK_capacitacion_teacher]
+    FOREIGN KEY ([teacher_id]) REFERENCES [acreditacion].[datos_generales] ([id]);
+ALTER TABLE [acreditacion].[capacitacion_actualizacion] ADD CONSTRAINT [FK_capacitacion_country]
+    FOREIGN KEY ([country_id]) REFERENCES [acreditacion].[catalogo_paises] ([id]);
+ALTER TABLE [acreditacion].[capacitacion_actualizacion] ADD CONSTRAINT [FK_capacitacion_edu_inst]
+    FOREIGN KEY ([educational_institution_id]) REFERENCES [acreditacion].[catalogo_instituciones_educativas] ([id]);
+ALTER TABLE [acreditacion].[capacitacion_actualizacion] ADD CONSTRAINT [FK_capacitacion_course_type]
+    FOREIGN KEY ([course_type_id]) REFERENCES [acreditacion].[catalogo_tipo_curso] ([id]);
+ALTER TABLE [acreditacion].[capacitacion_actualizacion] ADD CONSTRAINT [FK_capacitacion_training]
+    FOREIGN KEY ([training_id]) REFERENCES [acreditacion].[catalogo_capacitacion] ([id]);
+
+ALTER TABLE [acreditacion].[experiencia_laboral] ADD CONSTRAINT [FK_experiencia_teacher]
+    FOREIGN KEY ([teacher_id]) REFERENCES [acreditacion].[datos_generales] ([id]);
+ALTER TABLE [acreditacion].[experiencia_laboral] ADD CONSTRAINT [FK_experiencia_institution]
+    FOREIGN KEY ([institution_id]) REFERENCES [acreditacion].[catalogo_instituciones] ([id]);
+ALTER TABLE [acreditacion].[experiencia_laboral] ADD CONSTRAINT [FK_experiencia_work_exp]
+    FOREIGN KEY ([work_experience_id]) REFERENCES [acreditacion].[catalogo_experiencia_laboral] ([id]);
+
+ALTER TABLE [acreditacion].[productos_academicos] ADD CONSTRAINT [FK_productos_teacher]
+    FOREIGN KEY ([teacher_id]) REFERENCES [acreditacion].[datos_generales] ([id]);
+ALTER TABLE [acreditacion].[productos_academicos] ADD CONSTRAINT [FK_productos_edu_inst]
+    FOREIGN KEY ([educational_institution_id]) REFERENCES [acreditacion].[catalogo_instituciones_educativas] ([id]);
+
+ALTER TABLE [acreditacion].[logros_profesionales] ADD CONSTRAINT [FK_logros_teacher]
+    FOREIGN KEY ([teacher_id]) REFERENCES [acreditacion].[datos_generales] ([id]);
+ALTER TABLE [acreditacion].[logros_profesionales] ADD CONSTRAINT [FK_logros_institution]
+    FOREIGN KEY ([institution_id]) REFERENCES [acreditacion].[catalogo_instituciones] ([id]);
+
+ALTER TABLE [acreditacion].[organismos] ADD CONSTRAINT [FK_organismos_teacher]
+    FOREIGN KEY ([teacher_id]) REFERENCES [acreditacion].[datos_generales] ([id]);
+ALTER TABLE [acreditacion].[organismos] ADD CONSTRAINT [FK_organismos_organization]
+    FOREIGN KEY ([organization_id]) REFERENCES [acreditacion].[catalogo_organismos] ([id]);
+
+ALTER TABLE [acreditacion].[premios_distinciones] ADD CONSTRAINT [FK_premios_teacher]
+    FOREIGN KEY ([teacher_id]) REFERENCES [acreditacion].[datos_generales] ([id]);
 
 -- ///////////////////////////////////////////
 -- ÍNDICES
 -- ///////////////////////////////////////////
-CREATE INDEX IX_EstudiosAcademicos_IdProfesor ON estudios_academicos(id_profesor);
-CREATE INDEX IX_CapacitacionActualizacion_IdProfesor ON capacitacion_actualizacion(id_profesor);
-CREATE INDEX IX_ExperienciaLaboral_IdProfesor ON experiencia_laboral(id_profesor);
-CREATE INDEX IX_ProductosAcademicos_IdProfesor ON productos_academicos(id_profesor);
-CREATE INDEX IX_LogrosProfesionales_IdProfesor ON logros_profesionales(id_profesor);
-CREATE INDEX IX_Organismos_IdProfesor ON organismos(id_profesor);
-CREATE INDEX IX_PremiosDistinciones_IdProfesor ON premios_distinciones(id_profesor);
 
--- Índices en FKs de catálogos
-CREATE INDEX IX_EstudiosAcademicos_NivelEstudio ON estudios_academicos(id_nivel_estudio);
-CREATE INDEX IX_EstudiosAcademicos_InstEducativa ON estudios_academicos(id_institucion_educativa);
-CREATE INDEX IX_EstudiosAcademicos_Pais ON estudios_academicos(id_pais);
-CREATE INDEX IX_Capacitacion_TipoCapacitacion ON capacitacion_actualizacion(id_tipo_capacitacion);
-CREATE INDEX IX_Capacitacion_InstEducativa ON capacitacion_actualizacion(id_institucion_educativa);
-CREATE INDEX IX_Capacitacion_TipoCurso ON capacitacion_actualizacion(id_tipo_curso);
-CREATE INDEX IX_Capacitacion_Pais ON capacitacion_actualizacion(id_pais);
-CREATE INDEX IX_DatosGenerales_Puesto ON datos_generales(id_puesto);
-CREATE INDEX IX_ExperienciaLaboral_Institucion ON experiencia_laboral(id_institucion);
-CREATE INDEX IX_ExperienciaLaboral_TipoExp ON experiencia_laboral(id_tipo_experiencia);
-CREATE INDEX IX_ProductosAcademicos_InstEducativa ON productos_academicos(id_institucion_educativa);
-CREATE INDEX IX_LogrosProfesionales_Institucion ON logros_profesionales(id_institucion);
-CREATE INDEX IX_Organismos_Organismo ON organismos(id_organismo);
+CREATE INDEX [IX_gestion_usuarios_teacher] ON [acreditacion].[gestion_usuarios] ([teacher_id]);
+CREATE INDEX [IX_estudios_teacher] ON [acreditacion].[estudios_academicos] ([teacher_id]);
+CREATE INDEX [IX_estudios_country] ON [acreditacion].[estudios_academicos] ([country_id]);
+CREATE INDEX [IX_estudios_edu_inst] ON [acreditacion].[estudios_academicos] ([educational_institution_id]);
+CREATE INDEX [IX_estudios_study_level] ON [acreditacion].[estudios_academicos] ([study_level_id]);
+CREATE INDEX [IX_capacitacion_teacher] ON [acreditacion].[capacitacion_actualizacion] ([teacher_id]);
+CREATE INDEX [IX_capacitacion_country] ON [acreditacion].[capacitacion_actualizacion] ([country_id]);
+CREATE INDEX [IX_capacitacion_edu_inst] ON [acreditacion].[capacitacion_actualizacion] ([educational_institution_id]);
+CREATE INDEX [IX_capacitacion_course_type] ON [acreditacion].[capacitacion_actualizacion] ([course_type_id]);
+CREATE INDEX [IX_capacitacion_training] ON [acreditacion].[capacitacion_actualizacion] ([training_id]);
+CREATE INDEX [IX_experiencia_teacher] ON [acreditacion].[experiencia_laboral] ([teacher_id]);
+CREATE INDEX [IX_experiencia_institution] ON [acreditacion].[experiencia_laboral] ([institution_id]);
+CREATE INDEX [IX_experiencia_work_exp] ON [acreditacion].[experiencia_laboral] ([work_experience_id]);
+CREATE INDEX [IX_productos_teacher] ON [acreditacion].[productos_academicos] ([teacher_id]);
+CREATE INDEX [IX_productos_edu_inst] ON [acreditacion].[productos_academicos] ([educational_institution_id]);
+CREATE INDEX [IX_logros_teacher] ON [acreditacion].[logros_profesionales] ([teacher_id]);
+CREATE INDEX [IX_logros_institution] ON [acreditacion].[logros_profesionales] ([institution_id]);
+CREATE INDEX [IX_organismos_teacher] ON [acreditacion].[organismos] ([teacher_id]);
+CREATE INDEX [IX_organismos_organization] ON [acreditacion].[organismos] ([organization_id]);
+CREATE INDEX [IX_premios_teacher] ON [acreditacion].[premios_distinciones] ([teacher_id]);
+
+COMMIT;

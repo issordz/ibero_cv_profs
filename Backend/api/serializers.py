@@ -1,191 +1,188 @@
 """
-Serializers for all IBERO Portal de gestión para acreditaciones models.
+Serializers for IBERO Portal de gestión para acreditaciones.
 """
 
 from rest_framework import serializers
 from .models import (
-    CatalogoInstitucion, CatalogoInstitucionEducativa, CatalogoNivelEstudio,
-    CatalogoCarrera, CatalogoPais, CatalogoTipoCurso, CatalogoCapacitacion,
-    CatalogoExperienciaLaboral, CatalogoOrganismo, CatalogoPuestoInstitucional,
-    DatosGenerales, GestionUsuario,
-    EstudioAcademico, CapacitacionActualizacion, ExperienciaLaboral,
-    ProductoAcademico, LogroProfesional, Organismo, PremioDistincion,
+    Career, Country, CourseType, EducationalInstitution, Institution,
+    InstitutionalPosition, Organization, StudyLevel, Training,
+    WorkExperienceType, Teacher, User,
+    Education, Certification, WorkExperience, Resource,
+    Achievement, Affiliation, Award,
 )
 
 
 # --- Catálogos ---
 
-class CatalogoInstitucionSerializer(serializers.ModelSerializer):
+class CareerSerializer(serializers.ModelSerializer):
     class Meta:
-        model = CatalogoInstitucion
+        model = Career
         fields = '__all__'
         read_only_fields = ['fecha_carga', 'fecha_actualizacion']
 
 
-class CatalogoInstitucionEducativaSerializer(serializers.ModelSerializer):
+class CountrySerializer(serializers.ModelSerializer):
     class Meta:
-        model = CatalogoInstitucionEducativa
+        model = Country
         fields = '__all__'
         read_only_fields = ['fecha_carga', 'fecha_actualizacion']
 
 
-class CatalogoNivelEstudioSerializer(serializers.ModelSerializer):
+class CourseTypeSerializer(serializers.ModelSerializer):
     class Meta:
-        model = CatalogoNivelEstudio
+        model = CourseType
         fields = '__all__'
         read_only_fields = ['fecha_carga', 'fecha_actualizacion']
 
 
-class CatalogoCarreraSerializer(serializers.ModelSerializer):
+class EducationalInstitutionSerializer(serializers.ModelSerializer):
     class Meta:
-        model = CatalogoCarrera
+        model = EducationalInstitution
         fields = '__all__'
         read_only_fields = ['fecha_carga', 'fecha_actualizacion']
 
 
-class CatalogoPaisSerializer(serializers.ModelSerializer):
+class InstitutionSerializer(serializers.ModelSerializer):
     class Meta:
-        model = CatalogoPais
+        model = Institution
         fields = '__all__'
         read_only_fields = ['fecha_carga', 'fecha_actualizacion']
 
 
-class CatalogoTipoCursoSerializer(serializers.ModelSerializer):
+class InstitutionalPositionSerializer(serializers.ModelSerializer):
     class Meta:
-        model = CatalogoTipoCurso
+        model = InstitutionalPosition
         fields = '__all__'
         read_only_fields = ['fecha_carga', 'fecha_actualizacion']
 
 
-class CatalogoCapacitacionSerializer(serializers.ModelSerializer):
+class OrganizationSerializer(serializers.ModelSerializer):
     class Meta:
-        model = CatalogoCapacitacion
+        model = Organization
         fields = '__all__'
         read_only_fields = ['fecha_carga', 'fecha_actualizacion']
 
 
-class CatalogoExperienciaLaboralSerializer(serializers.ModelSerializer):
+class StudyLevelSerializer(serializers.ModelSerializer):
     class Meta:
-        model = CatalogoExperienciaLaboral
+        model = StudyLevel
         fields = '__all__'
         read_only_fields = ['fecha_carga', 'fecha_actualizacion']
 
 
-class CatalogoOrganismoSerializer(serializers.ModelSerializer):
+class TrainingSerializer(serializers.ModelSerializer):
     class Meta:
-        model = CatalogoOrganismo
+        model = Training
         fields = '__all__'
         read_only_fields = ['fecha_carga', 'fecha_actualizacion']
 
 
-class CatalogoPuestoInstitucionalSerializer(serializers.ModelSerializer):
+class WorkExperienceTypeSerializer(serializers.ModelSerializer):
     class Meta:
-        model = CatalogoPuestoInstitucional
+        model = WorkExperienceType
         fields = '__all__'
         read_only_fields = ['fecha_carga', 'fecha_actualizacion']
 
 
 # --- Tablas principales ---
 
-class DatosGeneralesSerializer(serializers.ModelSerializer):
-    puesto_institucional_nombre = serializers.CharField(
-        source='puesto_institucional.desc_puesto', read_only=True, default=None)
-
+class TeacherSerializer(serializers.ModelSerializer):
     class Meta:
-        model = DatosGenerales
+        model = Teacher
         fields = '__all__'
         read_only_fields = ['fecha_carga', 'fecha_actualizacion']
 
 
-class GestionUsuarioSerializer(serializers.ModelSerializer):
-    profesor_nombre = serializers.SerializerMethodField(read_only=True)
+class UserSerializer(serializers.ModelSerializer):
+    teacher_nombre = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
-        model = GestionUsuario
-        fields = ['id', 'profesor', 'profesor_nombre', 'correo', 'rol', 'activo', 'fecha_carga', 'fecha_actualizacion']
+        model = User
+        fields = ['id', 'teacher', 'teacher_nombre', 'correo', 'rol', 'activo',
+                  'fecha_carga', 'fecha_actualizacion']
         read_only_fields = ['fecha_carga', 'fecha_actualizacion']
 
-    def get_profesor_nombre(self, obj):
-        if obj.profesor:
-            return f"{obj.profesor.nombres} {obj.profesor.apellido_paterno}"
+    def get_teacher_nombre(self, obj):
+        if obj.teacher:
+            return f"{obj.teacher.nombres} {obj.teacher.apellido_paterno}"
         return None
 
 
-class EstudioAcademicoSerializer(serializers.ModelSerializer):
-    institucion_nombre = serializers.CharField(
-        source='institucion_educativa.nombre_institucion', read_only=True, default=None)
-    nivel_estudio_nombre = serializers.CharField(
-        source='nivel_estudio.desc_nivel_estudio', read_only=True, default=None)
-    pais_nombre = serializers.CharField(
-        source='pais.nombre_pais', read_only=True, default=None)
+class EducationSerializer(serializers.ModelSerializer):
+    country_nombre = serializers.CharField(
+        source='country.nombre_pais', read_only=True, default=None)
+    educational_institution_nombre = serializers.CharField(
+        source='educational_institution.nombre_institucion', read_only=True, default=None)
+    study_level_nombre = serializers.CharField(
+        source='study_level.desc_nivel_estudio', read_only=True, default=None)
 
     class Meta:
-        model = EstudioAcademico
+        model = Education
         fields = '__all__'
         read_only_fields = ['fecha_carga', 'fecha_actualizacion']
 
 
-class CapacitacionActualizacionSerializer(serializers.ModelSerializer):
-    institucion_nombre = serializers.CharField(
-        source='institucion_educativa.nombre_institucion', read_only=True, default=None)
-    tipo_capacitacion_nombre = serializers.CharField(
-        source='tipo_capacitacion.desc_tipo_capacitacion', read_only=True, default=None)
-    tipo_curso_nombre = serializers.CharField(
-        source='tipo_curso.desc_tipo_curso', read_only=True, default=None)
-    pais_nombre = serializers.CharField(
-        source='pais.nombre_pais', read_only=True, default=None)
+class CertificationSerializer(serializers.ModelSerializer):
+    country_nombre = serializers.CharField(
+        source='country.nombre_pais', read_only=True, default=None)
+    course_type_nombre = serializers.CharField(
+        source='course_type.desc_tipo_curso', read_only=True, default=None)
+    educational_institution_nombre = serializers.CharField(
+        source='educational_institution.nombre_institucion', read_only=True, default=None)
+    training_nombre = serializers.CharField(
+        source='training.desc_tipo_capacitacion', read_only=True, default=None)
 
     class Meta:
-        model = CapacitacionActualizacion
+        model = Certification
         fields = '__all__'
         read_only_fields = ['fecha_carga', 'fecha_actualizacion']
 
 
-class ExperienciaLaboralSerializer(serializers.ModelSerializer):
-    institucion_nombre = serializers.CharField(
-        source='institucion.nombre_institucion', read_only=True, default=None)
-    tipo_experiencia_nombre = serializers.CharField(
-        source='tipo_experiencia.desc_tipo_experiencia', read_only=True, default=None)
+class WorkExperienceSerializer(serializers.ModelSerializer):
+    institution_nombre = serializers.CharField(
+        source='institution.nombre_institucion', read_only=True, default=None)
+    work_experience_nombre = serializers.CharField(
+        source='work_experience.desc_tipo_experiencia', read_only=True, default=None)
 
     class Meta:
-        model = ExperienciaLaboral
+        model = WorkExperience
         fields = '__all__'
         read_only_fields = ['fecha_carga', 'fecha_actualizacion']
 
 
-class ProductoAcademicoSerializer(serializers.ModelSerializer):
-    institucion_nombre = serializers.CharField(
-        source='institucion_educativa.nombre_institucion', read_only=True, default=None)
+class ResourceSerializer(serializers.ModelSerializer):
+    educational_institution_nombre = serializers.CharField(
+        source='educational_institution.nombre_institucion', read_only=True, default=None)
 
     class Meta:
-        model = ProductoAcademico
+        model = Resource
         fields = '__all__'
         read_only_fields = ['fecha_carga', 'fecha_actualizacion']
 
 
-class LogroProfesionalSerializer(serializers.ModelSerializer):
-    institucion_nombre = serializers.CharField(
-        source='institucion.nombre_institucion', read_only=True, default=None)
+class AchievementSerializer(serializers.ModelSerializer):
+    institution_nombre = serializers.CharField(
+        source='institution.nombre_institucion', read_only=True, default=None)
 
     class Meta:
-        model = LogroProfesional
+        model = Achievement
         fields = '__all__'
         read_only_fields = ['fecha_carga', 'fecha_actualizacion']
 
 
-class OrganismoSerializer(serializers.ModelSerializer):
-    organismo_nombre = serializers.CharField(
-        source='organismo.nombre_organismo', read_only=True, default=None)
+class AffiliationSerializer(serializers.ModelSerializer):
+    organization_nombre = serializers.CharField(
+        source='organization.nombre_organismo', read_only=True, default=None)
 
     class Meta:
-        model = Organismo
+        model = Affiliation
         fields = '__all__'
         read_only_fields = ['fecha_carga', 'fecha_actualizacion']
 
 
-class PremioDistincionSerializer(serializers.ModelSerializer):
+class AwardSerializer(serializers.ModelSerializer):
     class Meta:
-        model = PremioDistincion
+        model = Award
         fields = '__all__'
         read_only_fields = ['fecha_carga', 'fecha_actualizacion']
 

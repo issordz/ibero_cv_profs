@@ -1,74 +1,36 @@
 """
-Models matching the IBERO Portal de gestión para acreditaciones database schema.
-All tables from schema.sql are represented here.
+Models for IBERO Portal de gestión para acreditaciones.
+Schema: [acreditacion] en SQL Server.
+Genera migrations compatibles con SQL Server 2019.
 """
 
 from django.db import models
 
 
 # ///////////////////////////////////////////
+# MODELO BASE ABSTRACTO
+# ///////////////////////////////////////////
+
+class BaseModel(models.Model):
+    """Campos comunes de auditoría para todos los modelos."""
+    activo = models.BooleanField(default=True)
+    fecha_carga = models.DateTimeField(auto_now_add=True)
+    fecha_actualizacion = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        abstract = True
+
+
+# ///////////////////////////////////////////
 # CATÁLOGOS
 # ///////////////////////////////////////////
 
-class CatalogoInstitucion(models.Model):
-    """Catálogo de instituciones (empresas, organismos generales)."""
-    id_institucion = models.AutoField(primary_key=True)
-    nombre_institucion = models.CharField(max_length=300)
-    activo = models.PositiveSmallIntegerField(default=1)
-    fecha_carga = models.DateTimeField(auto_now_add=True)
-    fecha_actualizacion = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        db_table = 'catalogo_instituciones'
-        verbose_name = 'Institución'
-        verbose_name_plural = 'Catálogo de Instituciones'
-
-    def __str__(self):
-        return self.nombre_institucion
-
-
-class CatalogoInstitucionEducativa(models.Model):
-    """Catálogo de instituciones educativas."""
-    id_institucion_educativa = models.AutoField(primary_key=True)
-    nombre_institucion = models.CharField(max_length=300)
-    activo = models.PositiveSmallIntegerField(default=1)
-    fecha_carga = models.DateTimeField(auto_now_add=True)
-    fecha_actualizacion = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        db_table = 'catalogo_instituciones_educativas'
-        verbose_name = 'Institución Educativa'
-        verbose_name_plural = 'Catálogo de Instituciones Educativas'
-
-    def __str__(self):
-        return self.nombre_institucion
-
-
-class CatalogoNivelEstudio(models.Model):
-    """Catálogo de niveles de estudio."""
-    id_nivel_estudio = models.AutoField(primary_key=True)
-    desc_nivel_estudio = models.CharField(max_length=200)
-    fecha_carga = models.DateTimeField(auto_now_add=True)
-    fecha_actualizacion = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        db_table = 'catalogo_nivel_estudio'
-        verbose_name = 'Nivel de Estudio'
-        verbose_name_plural = 'Catálogo de Nivel de Estudio'
-
-    def __str__(self):
-        return self.desc_nivel_estudio
-
-
-class CatalogoCarrera(models.Model):
+class Career(BaseModel):
     """Catálogo de carreras."""
-    id_carrera = models.AutoField(primary_key=True)
     nombre_carrera = models.CharField(max_length=300)
-    fecha_carga = models.DateTimeField(auto_now_add=True)
-    fecha_actualizacion = models.DateTimeField(auto_now=True)
 
     class Meta:
-        db_table = 'catalogo_carreras'
+        db_table = 'acreditacion].[catalogo_carreras'
         verbose_name = 'Carrera'
         verbose_name_plural = 'Catálogo de Carreras'
 
@@ -76,15 +38,12 @@ class CatalogoCarrera(models.Model):
         return self.nombre_carrera
 
 
-class CatalogoPais(models.Model):
+class Country(BaseModel):
     """Catálogo de países."""
-    id_pais = models.AutoField(primary_key=True)
     nombre_pais = models.CharField(max_length=150)
-    fecha_carga = models.DateTimeField(auto_now_add=True)
-    fecha_actualizacion = models.DateTimeField(auto_now=True)
 
     class Meta:
-        db_table = 'catalogo_paises'
+        db_table = 'acreditacion].[catalogo_paises'
         verbose_name = 'País'
         verbose_name_plural = 'Catálogo de Países'
 
@@ -92,63 +51,64 @@ class CatalogoPais(models.Model):
         return self.nombre_pais
 
 
-class CatalogoTipoCurso(models.Model):
-    """Catálogo de tipos de curso."""
-    id_tipo_curso = models.AutoField(primary_key=True)
+class CourseType(BaseModel):
+    """Catálogo de tipo de curso."""
     desc_tipo_curso = models.CharField(max_length=200)
-    fecha_carga = models.DateTimeField(auto_now_add=True)
-    fecha_actualizacion = models.DateTimeField(auto_now=True)
 
     class Meta:
-        db_table = 'catalogo_tipo_curso'
+        db_table = 'acreditacion].[catalogo_tipo_curso'
         verbose_name = 'Tipo de Curso'
-        verbose_name_plural = 'Catálogo de Tipo de Curso'
+        verbose_name_plural = 'Catálogo de Tipos de Curso'
 
     def __str__(self):
         return self.desc_tipo_curso
 
 
-class CatalogoCapacitacion(models.Model):
-    """Catálogo de tipos de capacitación."""
-    id_tipo_capacitacion = models.AutoField(primary_key=True)
-    desc_tipo_capacitacion = models.CharField(max_length=200)
-    fecha_carga = models.DateTimeField(auto_now_add=True)
-    fecha_actualizacion = models.DateTimeField(auto_now=True)
+class EducationalInstitution(BaseModel):
+    """Catálogo de instituciones educativas."""
+    nombre_institucion = models.CharField(max_length=300)
 
     class Meta:
-        db_table = 'catalogo_capacitacion'
-        verbose_name = 'Tipo de Capacitación'
-        verbose_name_plural = 'Catálogo de Capacitación'
+        db_table = 'acreditacion].[catalogo_instituciones_educativas'
+        verbose_name = 'Institución Educativa'
+        verbose_name_plural = 'Catálogo de Instituciones Educativas'
 
     def __str__(self):
-        return self.desc_tipo_capacitacion
+        return self.nombre_institucion
 
 
-class CatalogoExperienciaLaboral(models.Model):
-    """Catálogo de tipos de experiencia laboral."""
-    id_tipo_experiencia = models.AutoField(primary_key=True)
-    desc_tipo_experiencia = models.CharField(max_length=200)
-    fecha_carga = models.DateTimeField(auto_now_add=True)
-    fecha_actualizacion = models.DateTimeField(auto_now=True)
+class Institution(BaseModel):
+    """Catálogo de instituciones (empresas, organismos generales)."""
+    nombre_institucion = models.CharField(max_length=300)
 
     class Meta:
-        db_table = 'catalogo_experiencia_laboral'
-        verbose_name = 'Tipo de Experiencia Laboral'
-        verbose_name_plural = 'Catálogo de Experiencia Laboral'
+        db_table = 'acreditacion].[catalogo_instituciones'
+        verbose_name = 'Institución'
+        verbose_name_plural = 'Catálogo de Instituciones'
 
     def __str__(self):
-        return self.desc_tipo_experiencia
+        return self.nombre_institucion
 
 
-class CatalogoOrganismo(models.Model):
+class InstitutionalPosition(BaseModel):
+    """Catálogo de puesto institucional."""
+    desc_puesto = models.CharField(max_length=200)
+
+    class Meta:
+        db_table = 'acreditacion].[catalogo_puesto_institucional'
+        verbose_name = 'Puesto Institucional'
+        verbose_name_plural = 'Catálogo de Puestos Institucionales'
+
+    def __str__(self):
+        return self.desc_puesto
+
+
+class Organization(BaseModel):
     """Catálogo de organismos."""
-    id_organismo = models.AutoField(primary_key=True)
     nombre_organismo = models.CharField(max_length=300)
-    fecha_carga = models.DateTimeField(auto_now_add=True)
-    fecha_actualizacion = models.DateTimeField(auto_now=True)
 
     class Meta:
-        db_table = 'catalogo_organismos'
+        db_table = 'acreditacion].[catalogo_organismos'
         verbose_name = 'Organismo'
         verbose_name_plural = 'Catálogo de Organismos'
 
@@ -156,44 +116,60 @@ class CatalogoOrganismo(models.Model):
         return self.nombre_organismo
 
 
-class CatalogoPuestoInstitucional(models.Model):
-    """Catálogo de puestos institucionales."""
-    id_puesto = models.AutoField(primary_key=True)
-    desc_puesto = models.CharField(max_length=200)
-    fecha_carga = models.DateTimeField(auto_now_add=True)
-    fecha_actualizacion = models.DateTimeField(auto_now=True)
+class StudyLevel(BaseModel):
+    """Catálogo de nivel de estudio."""
+    desc_nivel_estudio = models.CharField(max_length=200)
 
     class Meta:
-        db_table = 'catalogo_puesto_institucional'
-        verbose_name = 'Puesto Institucional'
-        verbose_name_plural = 'Catálogo de Puesto Institucional'
+        db_table = 'acreditacion].[catalogo_nivel_estudio'
+        verbose_name = 'Nivel de Estudio'
+        verbose_name_plural = 'Catálogo de Niveles de Estudio'
 
     def __str__(self):
-        return self.desc_puesto
+        return self.desc_nivel_estudio
+
+
+class Training(BaseModel):
+    """Catálogo de tipo de capacitación."""
+    desc_tipo_capacitacion = models.CharField(max_length=200)
+
+    class Meta:
+        db_table = 'acreditacion].[catalogo_capacitacion'
+        verbose_name = 'Tipo de Capacitación'
+        verbose_name_plural = 'Catálogo de Capacitación'
+
+    def __str__(self):
+        return self.desc_tipo_capacitacion
+
+
+class WorkExperienceType(BaseModel):
+    """Catálogo de tipo de experiencia laboral."""
+    desc_tipo_experiencia = models.CharField(max_length=200)
+
+    class Meta:
+        db_table = 'acreditacion].[catalogo_experiencia_laboral'
+        verbose_name = 'Tipo de Experiencia Laboral'
+        verbose_name_plural = 'Catálogo de Experiencia Laboral'
+
+    def __str__(self):
+        return self.desc_tipo_experiencia
 
 
 # ///////////////////////////////////////////
 # TABLAS PRINCIPALES
 # ///////////////////////////////////////////
 
-class DatosGenerales(models.Model):
-    """Registro único por profesor."""
-    id_profesor = models.CharField(max_length=10, primary_key=True)
-    nombres = models.CharField(max_length=100)
-    apellido_paterno = models.CharField(max_length=100)
+class Teacher(BaseModel):
+    """Datos generales del profesor (registro único)."""
     apellido_materno = models.CharField(max_length=100, blank=True, null=True)
+    apellido_paterno = models.CharField(max_length=100)
     fecha_de_nacimiento = models.DateField(blank=True, null=True)
-    puesto_institucional = models.ForeignKey(
-        CatalogoPuestoInstitucional, on_delete=models.SET_NULL,
-        blank=True, null=True, db_column='id_puesto'
-    )
+    nombres = models.CharField(max_length=100)
+    puesto_institucional = models.CharField(max_length=200, blank=True, null=True)
     resumen_profesional = models.TextField(blank=True, null=True)
-    activo = models.PositiveSmallIntegerField(default=1)
-    fecha_carga = models.DateTimeField(auto_now_add=True)
-    fecha_actualizacion = models.DateTimeField(auto_now=True)
 
     class Meta:
-        db_table = 'datos_generales'
+        db_table = 'acreditacion].[datos_generales'
         verbose_name = 'Datos Generales'
         verbose_name_plural = 'Datos Generales'
 
@@ -201,25 +177,15 @@ class DatosGenerales(models.Model):
         return f"{self.nombres} {self.apellido_paterno}"
 
 
-class GestionUsuario(models.Model):
-    """Gestión de usuarios (login del sistema)."""
-    profesor = models.ForeignKey(
-        DatosGenerales, on_delete=models.SET_NULL,
-        blank=True, null=True, related_name='usuario',
-        db_column='id_profesor'
-    )
-    correo = models.CharField(max_length=200, unique=True)
+class User(BaseModel):
+    """Gestión de usuarios del portal."""
     contrasena = models.CharField(max_length=255)
-    rol = models.CharField(max_length=50, default='profesor', choices=[
-        ('profesor', 'Profesor'),
-        ('admin', 'Administrador'),
-    ])
-    activo = models.PositiveSmallIntegerField(default=1)
-    fecha_carga = models.DateTimeField(auto_now_add=True)
-    fecha_actualizacion = models.DateTimeField(auto_now=True)
+    correo = models.CharField(max_length=200, unique=True)
+    rol = models.CharField(max_length=50)
+    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
 
     class Meta:
-        db_table = 'gestion_usuarios'
+        db_table = 'acreditacion].[gestion_usuarios'
         verbose_name = 'Usuario'
         verbose_name_plural = 'Gestión de Usuarios'
 
@@ -227,32 +193,19 @@ class GestionUsuario(models.Model):
         return self.correo
 
 
-class EstudioAcademico(models.Model):
+class Education(BaseModel):
     """Estudios académicos (N por profesor)."""
-    profesor = models.ForeignKey(
-        DatosGenerales, on_delete=models.CASCADE,
-        related_name='estudios_academicos', db_column='id_profesor'
-    )
-    nivel_estudio = models.ForeignKey(
-        CatalogoNivelEstudio, on_delete=models.SET_NULL,
-        blank=True, null=True, db_column='id_nivel_estudio'
-    )
-    titulo_estudio = models.CharField(max_length=300)
-    institucion_educativa = models.ForeignKey(
-        CatalogoInstitucionEducativa, on_delete=models.SET_NULL,
-        blank=True, null=True, db_column='id_institucion_educativa'
-    )
-    pais = models.ForeignKey(
-        CatalogoPais, on_delete=models.SET_NULL,
-        blank=True, null=True, db_column='id_pais'
-    )
     anio_obtencion = models.IntegerField(blank=True, null=True)
     cedula = models.CharField(max_length=50, blank=True, null=True)
-    fecha_carga = models.DateTimeField(auto_now_add=True)
-    fecha_actualizacion = models.DateTimeField(auto_now=True)
+    titulo_estudio = models.CharField(max_length=300)
+    country = models.ForeignKey(Country, on_delete=models.SET_NULL, blank=True, null=True)
+    educational_institution = models.ForeignKey(
+        EducationalInstitution, on_delete=models.SET_NULL, blank=True, null=True)
+    study_level = models.ForeignKey(StudyLevel, on_delete=models.SET_NULL, blank=True, null=True)
+    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
 
     class Meta:
-        db_table = 'estudios_academicos'
+        db_table = 'acreditacion].[estudios_academicos'
         verbose_name = 'Estudio Académico'
         verbose_name_plural = 'Estudios Académicos'
 
@@ -260,37 +213,21 @@ class EstudioAcademico(models.Model):
         return self.titulo_estudio
 
 
-class CapacitacionActualizacion(models.Model):
+class Certification(BaseModel):
     """Capacitación / Actualización Docente (N por profesor)."""
-    profesor = models.ForeignKey(
-        DatosGenerales, on_delete=models.CASCADE,
-        related_name='capacitacion_actualizacion', db_column='id_profesor'
-    )
-    nombre_capacitacion = models.CharField(max_length=300)
-    tipo_capacitacion = models.ForeignKey(
-        CatalogoCapacitacion, on_delete=models.SET_NULL,
-        blank=True, null=True, db_column='id_tipo_capacitacion'
-    )
-    institucion_educativa = models.ForeignKey(
-        CatalogoInstitucionEducativa, on_delete=models.SET_NULL,
-        blank=True, null=True, db_column='id_institucion_educativa'
-    )
-    tipo_curso = models.ForeignKey(
-        CatalogoTipoCurso, on_delete=models.SET_NULL,
-        blank=True, null=True, db_column='id_tipo_curso'
-    )
-    pais = models.ForeignKey(
-        CatalogoPais, on_delete=models.SET_NULL,
-        blank=True, null=True, db_column='id_pais'
-    )
     anio_obtencion = models.IntegerField(blank=True, null=True)
     horas = models.IntegerField(blank=True, null=True)
+    nombre_capacitacion = models.CharField(max_length=300)
     vigencia = models.CharField(max_length=100, blank=True, null=True)
-    fecha_carga = models.DateTimeField(auto_now_add=True)
-    fecha_actualizacion = models.DateTimeField(auto_now=True)
+    country = models.ForeignKey(Country, on_delete=models.SET_NULL, blank=True, null=True)
+    course_type = models.ForeignKey(CourseType, on_delete=models.SET_NULL, blank=True, null=True)
+    educational_institution = models.ForeignKey(
+        EducationalInstitution, on_delete=models.SET_NULL, blank=True, null=True)
+    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
+    training = models.ForeignKey(Training, on_delete=models.SET_NULL, blank=True, null=True)
 
     class Meta:
-        db_table = 'capacitacion_actualizacion'
+        db_table = 'acreditacion].[capacitacion_actualizacion'
         verbose_name = 'Capacitación / Actualización'
         verbose_name_plural = 'Capacitación / Actualización'
 
@@ -298,29 +235,19 @@ class CapacitacionActualizacion(models.Model):
         return self.nombre_capacitacion
 
 
-class ExperienciaLaboral(models.Model):
+class WorkExperience(BaseModel):
     """Experiencia laboral (N por profesor)."""
-    profesor = models.ForeignKey(
-        DatosGenerales, on_delete=models.CASCADE,
-        related_name='experiencia_laboral', db_column='id_profesor'
-    )
     actividad_puesto = models.CharField(max_length=300)
-    institucion = models.ForeignKey(
-        CatalogoInstitucion, on_delete=models.SET_NULL,
-        blank=True, null=True, db_column='id_institucion'
-    )
-    inicio_mes_anio = models.CharField(max_length=50, blank=True, null=True)
     fin_mes_anio = models.CharField(max_length=50, blank=True, null=True)
-    tipo_experiencia = models.ForeignKey(
-        CatalogoExperienciaLaboral, on_delete=models.SET_NULL,
-        blank=True, null=True, db_column='id_tipo_experiencia'
-    )
+    inicio_mes_anio = models.CharField(max_length=50, blank=True, null=True)
     nivel_experiencia = models.CharField(max_length=100, blank=True, null=True)
-    fecha_carga = models.DateTimeField(auto_now_add=True)
-    fecha_actualizacion = models.DateTimeField(auto_now=True)
+    institution = models.ForeignKey(Institution, on_delete=models.SET_NULL, blank=True, null=True)
+    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
+    work_experience = models.ForeignKey(
+        WorkExperienceType, on_delete=models.SET_NULL, blank=True, null=True)
 
     class Meta:
-        db_table = 'experiencia_laboral'
+        db_table = 'acreditacion].[experiencia_laboral'
         verbose_name = 'Experiencia Laboral'
         verbose_name_plural = 'Experiencia Laboral'
 
@@ -328,23 +255,16 @@ class ExperienciaLaboral(models.Model):
         return self.actividad_puesto
 
 
-class ProductoAcademico(models.Model):
+class Resource(BaseModel):
     """Productos académicos (N por profesor)."""
-    profesor = models.ForeignKey(
-        DatosGenerales, on_delete=models.CASCADE,
-        related_name='productos_academicos', db_column='id_profesor'
-    )
-    descripcion_producto_academico = models.TextField(blank=True, null=True)
-    institucion_educativa = models.ForeignKey(
-        CatalogoInstitucionEducativa, on_delete=models.SET_NULL,
-        blank=True, null=True, db_column='id_institucion_educativa'
-    )
     anio_producto = models.IntegerField(blank=True, null=True)
-    fecha_carga = models.DateTimeField(auto_now_add=True)
-    fecha_actualizacion = models.DateTimeField(auto_now=True)
+    descripcion_producto_academico = models.TextField(blank=True, null=True)
+    educational_institution = models.ForeignKey(
+        EducationalInstitution, on_delete=models.SET_NULL, blank=True, null=True)
+    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
 
     class Meta:
-        db_table = 'productos_academicos'
+        db_table = 'acreditacion].[productos_academicos'
         verbose_name = 'Producto Académico'
         verbose_name_plural = 'Productos Académicos'
 
@@ -352,23 +272,15 @@ class ProductoAcademico(models.Model):
         return (self.descripcion_producto_academico or '')[:80]
 
 
-class LogroProfesional(models.Model):
-    """Logros profesionales - no académicos (N por profesor)."""
-    profesor = models.ForeignKey(
-        DatosGenerales, on_delete=models.CASCADE,
-        related_name='logros_profesionales', db_column='id_profesor'
-    )
-    desc_logro = models.TextField()
-    institucion = models.ForeignKey(
-        CatalogoInstitucion, on_delete=models.SET_NULL,
-        blank=True, null=True, db_column='id_institucion'
-    )
+class Achievement(BaseModel):
+    """Logros profesionales no académicos (N por profesor)."""
     anio_obtencion = models.IntegerField(blank=True, null=True)
-    fecha_carga = models.DateTimeField(auto_now_add=True)
-    fecha_actualizacion = models.DateTimeField(auto_now=True)
+    desc_logro = models.TextField()
+    institution = models.ForeignKey(Institution, on_delete=models.SET_NULL, blank=True, null=True)
+    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
 
     class Meta:
-        db_table = 'logros_profesionales'
+        db_table = 'acreditacion].[logros_profesionales'
         verbose_name = 'Logro Profesional'
         verbose_name_plural = 'Logros Profesionales'
 
@@ -376,45 +288,32 @@ class LogroProfesional(models.Model):
         return self.desc_logro[:80]
 
 
-class Organismo(models.Model):
-    """Membresía / Participación en Organismos."""
-    profesor = models.ForeignKey(
-        DatosGenerales, on_delete=models.CASCADE,
-        related_name='organismos', db_column='id_profesor'
-    )
-    organismo = models.ForeignKey(
-        CatalogoOrganismo, on_delete=models.SET_NULL,
-        blank=True, null=True, db_column='id_organismo'
-    )
-    anio_inicio = models.IntegerField(blank=True, null=True)
+class Affiliation(BaseModel):
+    """Membresía / Participación en organismos (N por profesor)."""
     anio_fin = models.IntegerField(blank=True, null=True)
+    anio_inicio = models.IntegerField(blank=True, null=True)
     nivel_experiencia = models.CharField(max_length=100, blank=True, null=True)
-    fecha_carga = models.DateTimeField(auto_now_add=True)
-    fecha_actualizacion = models.DateTimeField(auto_now=True)
+    organization = models.ForeignKey(Organization, on_delete=models.SET_NULL, blank=True, null=True)
+    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
 
     class Meta:
-        db_table = 'organismos'
+        db_table = 'acreditacion].[organismos'
         verbose_name = 'Organismo'
         verbose_name_plural = 'Organismos'
 
     def __str__(self):
-        return str(self.organismo) if self.organismo else f"Organismo #{self.pk}"
+        return str(self.organization) if self.organization else f"Membresía #{self.pk}"
 
 
-class PremioDistincion(models.Model):
-    """Premios, distinciones y becas o comisión académica (N por profesor)."""
-    profesor = models.ForeignKey(
-        DatosGenerales, on_delete=models.CASCADE,
-        related_name='premios_distinciones', db_column='id_profesor'
-    )
-    desc_premio = models.TextField()
+class Award(BaseModel):
+    """Premios, distinciones y becas (N por profesor)."""
     anio_obtencion = models.IntegerField(blank=True, null=True)
-    fecha_carga = models.DateTimeField(auto_now_add=True)
-    fecha_actualizacion = models.DateTimeField(auto_now=True)
+    desc_premio = models.TextField()
+    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
 
     class Meta:
-        db_table = 'premios_distinciones'
-        verbose_name = 'Premio o Distinción'
+        db_table = 'acreditacion].[premios_distinciones'
+        verbose_name = 'Premio / Distinción'
         verbose_name_plural = 'Premios y Distinciones'
 
     def __str__(self):

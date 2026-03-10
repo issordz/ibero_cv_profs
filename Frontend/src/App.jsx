@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import Login from './components/Login'
@@ -15,6 +16,44 @@ const ProtectedRoute = ({ children }) => {
   return isAuthenticated ? children : <Navigate to="/" replace />
 }
 
+const RECAPTCHA_SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY
+
+const RecaptchaBadgeController = () => {
+  const { isAuthenticated } = useAuth()
+
+  // Cargar el script de reCAPTCHA v3 dinámicamente
+  useEffect(() => {
+    const scriptId = 'recaptcha-script'
+    if (!document.getElementById(scriptId)) {
+      const script = document.createElement('script')
+      script.id = scriptId
+      script.src = `https://www.google.com/recaptcha/api.js?render=${RECAPTCHA_SITE_KEY}`
+      script.async = true
+      document.head.appendChild(script)
+    }
+  }, [])
+
+  // Controlar visibilidad del badge
+  useEffect(() => {
+    const styleId = 'recaptcha-badge-style'
+    let style = document.getElementById(styleId)
+    if (!style) {
+      style = document.createElement('style')
+      style.id = styleId
+      document.head.appendChild(style)
+    }
+    style.textContent = isAuthenticated
+      ? '.grecaptcha-badge { visibility: hidden !important; }'
+      : ''
+    return () => {
+      const el = document.getElementById(styleId)
+      if (el) el.remove()
+    }
+  }, [isAuthenticated])
+
+  return null
+}
+
 const RoleBasedRedirect = () => {
   const { user } = useAuth()
   if (user?.role === 'admin') {
@@ -27,9 +66,10 @@ function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
+        <RecaptchaBadgeController />
         <Routes>
           <Route path="/" element={<Login />} />
-          
+
           {/* Role-based redirect after login */}
           <Route path="/home" element={
             <ProtectedRoute><RoleBasedRedirect /></ProtectedRoute>

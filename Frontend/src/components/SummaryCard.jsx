@@ -21,22 +21,26 @@ const SummaryCard = ({ title, subtitle, details, onEdit, onDelete, readOnly = fa
           )}
         </div>
         
-        {!readOnly && (
+        {!readOnly && (onEdit || onDelete) && (
           <div className="flex items-center gap-1 ml-4">
-            <button
-              onClick={onEdit}
-              className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-              title="Editar"
-            >
-              <Edit2 size={16} />
-            </button>
-            <button
-              onClick={onDelete}
-              className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-              title="Eliminar"
-            >
-              <Trash2 size={16} />
-            </button>
+            {onEdit && (
+              <button
+                onClick={onEdit}
+                className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                title="Editar"
+              >
+                <Edit2 size={16} />
+              </button>
+            )}
+            {onDelete && (
+              <button
+                onClick={onDelete}
+                className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                title="Eliminar"
+              >
+                <Trash2 size={16} />
+              </button>
+            )}
           </div>
         )}
       </div>

@@ -1,82 +1,145 @@
 import { useState } from 'react'
-import { Trophy } from 'lucide-react'
+import { Trophy, Plus } from 'lucide-react'
 import SummaryCard from '../../../components/SummaryCard'
-import AddItemButton from '../../../components/AddItemButton'
 import SlideOverPanel from '../../../components/SlideOverPanel'
-import EditableField from '../../../components/EditableField'
+import { apiPost, apiPut, apiDelete } from '../../../services/api'
 import Swal from 'sweetalert2'
 
-const PremiosDistincionesSection = ({ items: initialItems, onSave }) => {
-  const [items, setItems] = useState(initialItems)
-  const [isPanelOpen, setIsPanelOpen] = useState(false)
-  const [editing, setEditing] = useState(null)
-  const [formData, setFormData] = useState({ descPremio: '', anioObtencion: '' })
+const PremiosDistincionesSection = ({ items, cuenta, onReload }) => {
+  const [panelOpen, setPanelOpen] = useState(false)
+  const [editingItem, setEditingItem] = useState(null)
+  const [form, setForm] = useState({ descPremio: '', anioObtencion: '' })
+  const [saving, setSaving] = useState(false)
 
-  const handleAdd = () => {
-    setEditing(null)
-    setFormData({ descPremio: '', anioObtencion: '' })
-    setIsPanelOpen(true)
+  const openCreate = () => {
+    setEditingItem(null)
+    setForm({ descPremio: '', anioObtencion: '' })
+    setPanelOpen(true)
   }
 
-  const handleEdit = (item) => {
-    setEditing(item)
-    setFormData({ descPremio: item.descPremio || '', anioObtencion: item.anioObtencion?.toString() || '' })
-    setIsPanelOpen(true)
+  const openEdit = (item) => {
+    setEditingItem(item)
+    setForm({ descPremio: item.descPremio || '', anioObtencion: item.anioObtencion || '' })
+    setPanelOpen(true)
   }
 
-  const handleDelete = async (id) => {
-    const result = await Swal.fire({ icon: 'warning', title: '¿Eliminar premio?', text: 'Esta acción no se puede deshacer.', showCancelButton: true, confirmButtonColor: '#C41E3A', cancelButtonColor: '#6B7280', confirmButtonText: 'Sí, eliminar', cancelButtonText: 'Cancelar' })
-    if (result.isConfirmed) {
-      setItems(prev => prev.filter(i => i.id !== id))
-      Swal.fire({ icon: 'success', title: 'Eliminado', timer: 1500, showConfirmButton: false })
+  const handleDelete = async (item) => {
+    const result = await Swal.fire({
+      icon: 'warning',
+      title: '¿Eliminar premio?',
+      text: `"${item.descPremio}" será eliminado permanentemente.`,
+      showCancelButton: true,
+      confirmButtonColor: '#C41E3A',
+      cancelButtonColor: '#6B7280',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    })
+    if (!result.isConfirmed) return
+    try {
+      await apiDelete(`api/PremiosDistinciones/${item.id}`)
+      Swal.fire({ icon: 'success', title: 'Premio eliminado', timer: 1500, showConfirmButton: false })
+      if (onReload) onReload()
+    } catch (error) {
+      Swal.fire({ icon: 'error', title: 'Error', text: error.message || 'No se pudo eliminar.', confirmButtonColor: '#C41E3A' })
     }
   }
 
-  const handleSaveForm = () => {
-    if (!formData.descPremio) {
-      Swal.fire({ icon: 'warning', title: 'Campos requeridos', text: 'La descripción del premio es obligatoria', confirmButtonColor: '#C41E3A' })
+  const handleSave = async () => {
+    if (!form.descPremio.trim()) {
+      Swal.fire({ icon: 'warning', title: 'Campo requerido', text: 'Ingresa la descripción del premio.', confirmButtonColor: '#C41E3A' })
       return
     }
-    const parsed = { ...formData, anioObtencion: parseInt(formData.anioObtencion) || null }
-    if (editing) {
-      setItems(prev => prev.map(i => i.id === editing.id ? { ...i, ...parsed } : i))
-    } else {
-      setItems(prev => [...prev, { id: Date.now(), ...parsed }])
+    setSaving(true)
+    try {
+      const body = {
+        descPremio: form.descPremio,
+        anioObtencion: form.anioObtencion ? parseInt(form.anioObtencion) : null,
+        cuenta: parseInt(cuenta)
+      }
+      if (editingItem) {
+        await apiPut(`api/PremiosDistinciones/${editingItem.id}`, body)
+        Swal.fire({ icon: 'success', title: 'Premio actualizado', timer: 1500, showConfirmButton: false })
+      } else {
+        await apiPost('api/PremiosDistinciones', body)
+        Swal.fire({ icon: 'success', title: 'Premio creado', timer: 1500, showConfirmButton: false })
+      }
+      setPanelOpen(false)
+      if (onReload) onReload()
+    } catch (error) {
+      Swal.fire({ icon: 'error', title: 'Error', text: error.message || 'No se pudo guardar.', confirmButtonColor: '#C41E3A' })
+    } finally {
+      setSaving(false)
     }
-    setIsPanelOpen(false)
-    Swal.fire({ icon: 'success', title: editing ? 'Actualizado' : 'Agregado', timer: 1500, showConfirmButton: false })
   }
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center gap-3 mb-6">
-        <Trophy className="text-slate-400" size={24} />
-        <p className="text-slate-500">Registra tus premios, distinciones y reconocimientos.</p>
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-3">
+          <Trophy className="text-slate-400" size={24} />
+          <p className="text-slate-500">Premios, distinciones y reconocimientos.</p>
+        </div>
+        <button
+          onClick={openCreate}
+          className="flex items-center gap-2 px-4 py-2 bg-red-700 hover:bg-red-800 text-white text-sm font-medium rounded-lg transition-colors"
+        >
+          <Plus size={16} />
+          Agregar premio
+        </button>
       </div>
 
-      <div className="space-y-3">
-        {items.map((item) => (
-          <SummaryCard
-            key={item.id}
-            title={item.descPremio}
-            subtitle={item.anioObtencion?.toString() || ''}
-            details={[]}
-            onEdit={() => handleEdit(item)}
-            onDelete={() => handleDelete(item.id)}
-          />
-        ))}
-      </div>
+      {items.length === 0 ? (
+        <p className="text-gray-400 italic">No hay premios o distinciones registrados.</p>
+      ) : (
+        <div className="space-y-3">
+          {items.map((item, idx) => (
+            <SummaryCard
+              key={item.id || idx}
+              title={item.descPremio || 'Sin descripción'}
+              subtitle={''}
+              details={[item.anioObtencion?.toString()].filter(Boolean)}
+              onEdit={() => openEdit(item)}
+              onDelete={() => handleDelete(item)}
+            />
+          ))}
+        </div>
+      )}
 
-      <AddItemButton label="Agregar premio o distinción" onClick={handleAdd} />
-
-      <SlideOverPanel isOpen={isPanelOpen} onClose={() => setIsPanelOpen(false)} title={editing ? 'Editar premio' : 'Agregar premio o distinción'}>
-        <div className="space-y-4">
-          <EditableField label="Descripción del premio / distinción *" value={formData.descPremio} onChange={(val) => setFormData(prev => ({ ...prev, descPremio: val }))} rows={3} placeholder="Descripción completa del premio o distinción" />
-          <EditableField label="Año de obtención" value={formData.anioObtencion} onChange={(val) => setFormData(prev => ({ ...prev, anioObtencion: val }))} type="number" placeholder="Ej., 2023" />
-          <div className="pt-4 flex gap-3">
-            <button onClick={() => setIsPanelOpen(false)} className="flex-1 px-4 py-3 border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50">Cancelar</button>
-            <button onClick={handleSaveForm} className="flex-1 px-4 py-3 bg-red-700 hover:bg-red-800 text-white rounded-lg">{editing ? 'Actualizar' : 'Agregar'}</button>
+      <SlideOverPanel
+        isOpen={panelOpen}
+        onClose={() => setPanelOpen(false)}
+        title={editingItem ? 'Editar premio / distinción' : 'Nuevo premio / distinción'}
+      >
+        <div className="space-y-5">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Descripción del premio</label>
+            <textarea
+              value={form.descPremio}
+              onChange={(e) => setForm(f => ({ ...f, descPremio: e.target.value }))}
+              rows={3}
+              placeholder="Describe el premio o distinción..."
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500 resize-y"
+            />
           </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Año de obtención</label>
+            <input
+              type="number"
+              value={form.anioObtencion}
+              onChange={(e) => setForm(f => ({ ...f, anioObtencion: e.target.value }))}
+              placeholder="Ej: 2022"
+              min="1950"
+              max={new Date().getFullYear()}
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
+            />
+          </div>
+          <button
+            onClick={handleSave}
+            disabled={saving}
+            className="w-full py-2.5 bg-red-700 hover:bg-red-800 text-white font-medium rounded-lg disabled:opacity-50 transition-colors"
+          >
+            {saving ? 'Guardando...' : (editingItem ? 'Actualizar' : 'Crear')}
+          </button>
         </div>
       </SlideOverPanel>
     </div>

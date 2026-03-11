@@ -1,91 +1,181 @@
-import { useState } from 'react'
-import { Users } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { Users, Plus } from 'lucide-react'
 import SummaryCard from '../../../components/SummaryCard'
-import AddItemButton from '../../../components/AddItemButton'
 import SlideOverPanel from '../../../components/SlideOverPanel'
-import EditableField from '../../../components/EditableField'
-import CatalogoSelect from '../../../components/InstitucionSelect'
-import { getOrganismoNombre } from '../../../data/users'
+import SearchableSelect from '../../../components/SearchableSelect'
+import { apiPost, apiPut, apiDelete } from '../../../services/api'
+import { fetchCatalog } from '../../../services/catalogService'
 import Swal from 'sweetalert2'
 
-const OrganismosSection = ({ items: initialItems, onSave }) => {
-  const [items, setItems] = useState(initialItems)
-  const [isPanelOpen, setIsPanelOpen] = useState(false)
-  const [editing, setEditing] = useState(null)
-  const [formData, setFormData] = useState({
-    idOrganismo: '', anioInicio: '', anioFin: '', nivelExperiencia: ''
-  })
+const OrganismosSection = ({ items, cuenta, onReload }) => {
+  const [panelOpen, setPanelOpen] = useState(false)
+  const [editingItem, setEditingItem] = useState(null)
+  const [form, setForm] = useState({ organismoId: '', anioInicio: '', anioFin: '', nivelExperiencia: '' })
+  const [saving, setSaving] = useState(false)
+  const [organismos, setOrganismos] = useState([])
 
-  const handleAdd = () => {
-    setEditing(null)
-    setFormData({ idOrganismo: '', anioInicio: '', anioFin: '', nivelExperiencia: '' })
-    setIsPanelOpen(true)
+  useEffect(() => {
+    fetchCatalog('organismos').then(setOrganismos)
+  }, [])
+
+  const openCreate = () => {
+    setEditingItem(null)
+    setForm({ organismoId: '', anioInicio: '', anioFin: '', nivelExperiencia: '' })
+    setPanelOpen(true)
   }
 
-  const handleEdit = (item) => {
-    setEditing(item)
-    setFormData({
-      idOrganismo: item.idOrganismo || '', anioInicio: item.anioInicio?.toString() || '',
-      anioFin: item.anioFin?.toString() || '', nivelExperiencia: item.nivelExperiencia || ''
+  const openEdit = (item) => {
+    setEditingItem(item)
+    setForm({
+      organismoId: item.organismoId || '',
+      anioInicio: item.anioInicio || '',
+      anioFin: item.anioFin || '',
+      nivelExperiencia: item.nivelExperiencia || ''
     })
-    setIsPanelOpen(true)
+    setPanelOpen(true)
   }
 
-  const handleDelete = async (id) => {
-    const result = await Swal.fire({ icon: 'warning', title: '¿Eliminar organismo?', text: 'Esta acción no se puede deshacer.', showCancelButton: true, confirmButtonColor: '#C41E3A', cancelButtonColor: '#6B7280', confirmButtonText: 'Sí, eliminar', cancelButtonText: 'Cancelar' })
-    if (result.isConfirmed) {
-      setItems(prev => prev.filter(i => i.id !== id))
-      Swal.fire({ icon: 'success', title: 'Eliminado', timer: 1500, showConfirmButton: false })
+  const handleDelete = async (item) => {
+    const result = await Swal.fire({
+      icon: 'warning',
+      title: '¿Eliminar organismo?',
+      text: `"${item.organismo?.nombre || 'Este registro'}" será eliminado permanentemente.`,
+      showCancelButton: true,
+      confirmButtonColor: '#C41E3A',
+      cancelButtonColor: '#6B7280',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    })
+    if (!result.isConfirmed) return
+    try {
+      await apiDelete(`api/Organismo/${item.id}`)
+      Swal.fire({ icon: 'success', title: 'Organismo eliminado', timer: 1500, showConfirmButton: false })
+      if (onReload) onReload()
+    } catch (error) {
+      Swal.fire({ icon: 'error', title: 'Error', text: error.message || 'No se pudo eliminar.', confirmButtonColor: '#C41E3A' })
     }
   }
 
-  const handleSaveForm = () => {
-    if (!formData.idOrganismo) {
-      Swal.fire({ icon: 'warning', title: 'Campos requeridos', text: 'La institución/organismo es obligatoria', confirmButtonColor: '#C41E3A' })
+  const handleSave = async () => {
+    if (!form.organismoId || !form.anioInicio) {
+      Swal.fire({ icon: 'warning', title: 'Campos requeridos', text: 'Selecciona un organismo e ingresa el año de inicio.', confirmButtonColor: '#C41E3A' })
       return
     }
-    const parsed = { ...formData, anioInicio: parseInt(formData.anioInicio) || null, anioFin: formData.anioFin ? parseInt(formData.anioFin) : null }
-    if (editing) {
-      setItems(prev => prev.map(i => i.id === editing.id ? { ...i, ...parsed } : i))
-    } else {
-      setItems(prev => [...prev, { id: Date.now(), ...parsed }])
+    setSaving(true)
+    try {
+      const body = {
+        organismoId: parseInt(form.organismoId),
+        anioInicio: parseInt(form.anioInicio),
+        anioFin: form.anioFin ? parseInt(form.anioFin) : null,
+        nivelExperiencia: form.nivelExperiencia || null,
+        cuenta: parseInt(cuenta)
+      }
+      if (editingItem) {
+        await apiPut(`api/Organismo/${editingItem.id}`, body)
+        Swal.fire({ icon: 'success', title: 'Organismo actualizado', timer: 1500, showConfirmButton: false })
+      } else {
+        await apiPost('api/Organismo', body)
+        Swal.fire({ icon: 'success', title: 'Organismo creado', timer: 1500, showConfirmButton: false })
+      }
+      setPanelOpen(false)
+      if (onReload) onReload()
+    } catch (error) {
+      Swal.fire({ icon: 'error', title: 'Error', text: error.message || 'No se pudo guardar.', confirmButtonColor: '#C41E3A' })
+    } finally {
+      setSaving(false)
     }
-    setIsPanelOpen(false)
-    Swal.fire({ icon: 'success', title: editing ? 'Actualizado' : 'Agregado', timer: 1500, showConfirmButton: false })
   }
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center gap-3 mb-6">
-        <Users className="text-slate-400" size={24} />
-        <p className="text-slate-500">Membresías y participación en organismos profesionales.</p>
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-3">
+          <Users className="text-slate-400" size={24} />
+          <p className="text-slate-500">Membresías y participación en organismos profesionales.</p>
+        </div>
+        <button
+          onClick={openCreate}
+          className="flex items-center gap-2 px-4 py-2 bg-red-700 hover:bg-red-800 text-white text-sm font-medium rounded-lg transition-colors"
+        >
+          <Plus size={16} />
+          Agregar organismo
+        </button>
       </div>
 
-      <div className="space-y-3">
-        {items.map((item) => (
-          <SummaryCard
-            key={item.id}
-            title={getOrganismoNombre(item.idOrganismo)}
-            subtitle={item.nivelExperiencia}
-            details={[`${item.anioInicio || '?'} - ${item.anioFin || 'Actual'}`]}
-            onEdit={() => handleEdit(item)}
-            onDelete={() => handleDelete(item.id)}
+      {items.length === 0 ? (
+        <p className="text-gray-400 italic">No hay organismos registrados.</p>
+      ) : (
+        <div className="space-y-3">
+          {items.map((item, idx) => (
+            <SummaryCard
+              key={item.id || idx}
+              title={item.organismo?.nombre || 'Sin organismo'}
+              subtitle={item.nivelExperiencia || ''}
+              details={[`${item.anioInicio || '?'} – ${item.anioFin || 'Actual'}`]}
+              onEdit={() => openEdit(item)}
+              onDelete={() => handleDelete(item)}
+            />
+          ))}
+        </div>
+      )}
+
+      <SlideOverPanel
+        isOpen={panelOpen}
+        onClose={() => setPanelOpen(false)}
+        title={editingItem ? 'Editar organismo' : 'Nuevo organismo'}
+      >
+        <div className="space-y-5">
+          <SearchableSelect
+            items={organismos}
+            idKey="id"
+            nameKey="nombre"
+            value={form.organismoId}
+            onChange={(v) => setForm(f => ({ ...f, organismoId: v }))}
+            label="Organismo"
+            placeholder="Buscar organismo..."
+            disabled={organismos.length === 0}
           />
-        ))}
-      </div>
-
-      <AddItemButton label="Agregar organismo" onClick={handleAdd} />
-
-      <SlideOverPanel isOpen={isPanelOpen} onClose={() => setIsPanelOpen(false)} title={editing ? 'Editar organismo' : 'Agregar organismo'}>
-        <div className="space-y-4">
-          <CatalogoSelect value={formData.idOrganismo} onChange={(val) => setFormData(prev => ({ ...prev, idOrganismo: val }))} label="Organismo *" catalog="organismos" placeholder="Seleccionar organismo..." />
-          <EditableField label="Año de inicio" value={formData.anioInicio} onChange={(val) => setFormData(prev => ({ ...prev, anioInicio: val }))} type="number" placeholder="Ej., 2015" />
-          <EditableField label="Año de fin" value={formData.anioFin} onChange={(val) => setFormData(prev => ({ ...prev, anioFin: val }))} type="number" placeholder="Dejar vacío si es actual" />
-          <EditableField label="Nivel de experiencia / Rol" value={formData.nivelExperiencia} onChange={(val) => setFormData(prev => ({ ...prev, nivelExperiencia: val }))} placeholder="Ej., Miembro Titular, Fellow" />
-          <div className="pt-4 flex gap-3">
-            <button onClick={() => setIsPanelOpen(false)} className="flex-1 px-4 py-3 border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50">Cancelar</button>
-            <button onClick={handleSaveForm} className="flex-1 px-4 py-3 bg-red-700 hover:bg-red-800 text-white rounded-lg">{editing ? 'Actualizar' : 'Agregar'}</button>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Año de inicio</label>
+            <input
+              type="number"
+              value={form.anioInicio}
+              onChange={(e) => setForm(f => ({ ...f, anioInicio: e.target.value }))}
+              placeholder="Ej: 2018"
+              min="1950"
+              max={new Date().getFullYear()}
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
+            />
           </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Año de fin <span className="text-gray-400 font-normal">(dejar vacío si vigente)</span></label>
+            <input
+              type="number"
+              value={form.anioFin}
+              onChange={(e) => setForm(f => ({ ...f, anioFin: e.target.value }))}
+              placeholder="Ej: 2023"
+              min="1950"
+              max={new Date().getFullYear() + 10}
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Nivel / Categoría</label>
+            <input
+              type="text"
+              value={form.nivelExperiencia}
+              onChange={(e) => setForm(f => ({ ...f, nivelExperiencia: e.target.value }))}
+              placeholder="Ej: Nivel II"
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
+            />
+          </div>
+          <button
+            onClick={handleSave}
+            disabled={saving}
+            className="w-full py-2.5 bg-red-700 hover:bg-red-800 text-white font-medium rounded-lg disabled:opacity-50 transition-colors"
+          >
+            {saving ? 'Guardando...' : (editingItem ? 'Actualizar' : 'Crear')}
+          </button>
         </div>
       </SlideOverPanel>
     </div>

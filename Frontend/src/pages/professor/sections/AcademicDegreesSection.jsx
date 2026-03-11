@@ -1,100 +1,222 @@
-import { useState } from 'react'
-import { GraduationCap } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { GraduationCap, Plus } from 'lucide-react'
 import SummaryCard from '../../../components/SummaryCard'
-import AddItemButton from '../../../components/AddItemButton'
 import SlideOverPanel from '../../../components/SlideOverPanel'
-import EditableField from '../../../components/EditableField'
-import CatalogoSelect from '../../../components/InstitucionSelect'
-import { getInstitucionEducativaNombre, getNivelEstudioNombre } from '../../../data/users'
+import SearchableSelect from '../../../components/SearchableSelect'
+import { apiPost, apiPut, apiDelete } from '../../../services/api'
+import { fetchCatalog } from '../../../services/catalogService'
 import Swal from 'sweetalert2'
 
-const AcademicDegreesSection = ({ degrees: initialDegrees, onSave }) => {
-  const [degrees, setDegrees] = useState(initialDegrees)
-  const [isPanelOpen, setIsPanelOpen] = useState(false)
-  const [editingDegree, setEditingDegree] = useState(null)
-  const [formData, setFormData] = useState({
-    idNivelEstudio: '', tituloEstudio: '', idInstitucionEducativa: '', pais: '', anioObtencion: '', cedula: ''
-  })
+const AcademicDegreesSection = ({ degrees, cuenta, onReload }) => {
+  const [panelOpen, setPanelOpen] = useState(false)
+  const [editingItem, setEditingItem] = useState(null)
+  const [form, setForm] = useState({ anioObtencion: '', cedula: '', pais: '484', idInstitucionEducativa: '', idNivelEstudio: '', carreraId: '' })
+  const [saving, setSaving] = useState(false)
+  const [educativas, setEducativas] = useState([])
+  const [carreras, setCarreras] = useState([])
+  const [nivelesEstudio, setNivelesEstudio] = useState([])
+  const [paises, setPaises] = useState([])
 
-  const handleAdd = () => {
-    setEditingDegree(null)
-    setFormData({ idNivelEstudio: '', tituloEstudio: '', idInstitucionEducativa: '', pais: '', anioObtencion: '', cedula: '' })
-    setIsPanelOpen(true)
+  useEffect(() => {
+    fetchCatalog('educativas').then(setEducativas)
+    fetchCatalog('carreras').then(setCarreras)
+    fetchCatalog('nivelEstudio').then(setNivelesEstudio)
+    fetchCatalog('paises').then(setPaises)
+  }, [])
+
+  const openCreate = () => {
+    setEditingItem(null)
+    setForm({ anioObtencion: '', cedula: '', pais: '484', idInstitucionEducativa: '', idNivelEstudio: '', carreraId: '' })
+    setPanelOpen(true)
   }
 
-  const handleEdit = (degree) => {
-    setEditingDegree(degree)
-    setFormData({
-      idNivelEstudio: degree.idNivelEstudio || '',
-      tituloEstudio: degree.tituloEstudio,
-      idInstitucionEducativa: degree.idInstitucionEducativa || '',
-      pais: degree.pais || '',
-      anioObtencion: degree.anioObtencion?.toString() || '',
-      cedula: degree.cedula || ''
+  const openEdit = (item) => {
+    setEditingItem(item)
+    setForm({
+      anioObtencion: item.anioObtencion || '',
+      cedula: item.cedula || '',
+      pais: item.pais?.id || item.paisId || '484',
+      idInstitucionEducativa: item.institucionEducativa?.id || item.institucionEducativaId || '',
+      idNivelEstudio: item.nivelEstudio?.id || item.nivelEstudioId || '',
+      carreraId: item.carrera?.id || item.carreraId || ''
     })
-    setIsPanelOpen(true)
+    setPanelOpen(true)
   }
 
-  const handleDelete = async (degreeId) => {
+  const handleDelete = async (item) => {
     const result = await Swal.fire({
-      icon: 'warning', title: '¿Eliminar estudio?', text: 'Esta acción no se puede deshacer.',
-      showCancelButton: true, confirmButtonColor: '#C41E3A', cancelButtonColor: '#6B7280',
-      confirmButtonText: 'Sí, eliminar', cancelButtonText: 'Cancelar', customClass: { popup: 'rounded-lg' }
+      icon: 'warning',
+      title: '¿Eliminar estudio académico?',
+      text: `"${item.carrera?.nombre || 'Este estudio'}" será eliminado permanentemente.`,
+      showCancelButton: true,
+      confirmButtonColor: '#C41E3A',
+      cancelButtonColor: '#6B7280',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
     })
-    if (result.isConfirmed) {
-      setDegrees(prev => prev.filter(d => d.id !== degreeId))
-      Swal.fire({ icon: 'success', title: 'Eliminado', timer: 1500, showConfirmButton: false })
+    if (!result.isConfirmed) return
+    try {
+      await apiDelete(`api/EstudiosAcademico/${item.id}`)
+      Swal.fire({ icon: 'success', title: 'Estudio eliminado', timer: 1500, showConfirmButton: false })
+      if (onReload) onReload()
+    } catch (error) {
+      Swal.fire({ icon: 'error', title: 'Error', text: error.message || 'No se pudo eliminar.', confirmButtonColor: '#C41E3A' })
     }
   }
 
-  const handleSaveForm = () => {
-    if (!formData.tituloEstudio) {
-      Swal.fire({ icon: 'warning', title: 'Campos requeridos', text: 'El título del estudio es obligatorio', confirmButtonColor: '#C41E3A' })
+  const handleSave = async () => {
+    if (!form.carreraId) {
+      Swal.fire({ icon: 'warning', title: 'Campo requerido', text: 'Selecciona una carrera.', confirmButtonColor: '#C41E3A' })
       return
     }
-    if (editingDegree) {
-      setDegrees(prev => prev.map(d => d.id === editingDegree.id ? { ...d, ...formData, anioObtencion: parseInt(formData.anioObtencion) || null } : d))
-    } else {
-      setDegrees(prev => [...prev, { id: Date.now(), ...formData, anioObtencion: parseInt(formData.anioObtencion) || null }])
+    setSaving(true)
+    try {
+      const body = {
+        tituloEstudio: 'NA',
+        anioObtencion: form.anioObtencion ? parseInt(form.anioObtencion) : null,
+        cedula: form.cedula || null,
+        pais: form.pais || null,
+        idInstitucionEducativa: form.idInstitucionEducativa ? parseInt(form.idInstitucionEducativa) : null,
+        idNivelEstudio: form.idNivelEstudio ? parseInt(form.idNivelEstudio) : null,
+        carreraId: parseInt(form.carreraId),
+        cuenta: parseInt(cuenta)
+      }
+      if (editingItem) {
+        await apiPut(`api/EstudiosAcademico/${editingItem.id}`, body)
+        Swal.fire({ icon: 'success', title: 'Estudio actualizado', timer: 1500, showConfirmButton: false })
+      } else {
+        await apiPost('api/EstudiosAcademico', body)
+        Swal.fire({ icon: 'success', title: 'Estudio creado', timer: 1500, showConfirmButton: false })
+      }
+      setPanelOpen(false)
+      if (onReload) onReload()
+    } catch (error) {
+      Swal.fire({ icon: 'error', title: 'Error', text: error.message || 'No se pudo guardar.', confirmButtonColor: '#C41E3A' })
+    } finally {
+      setSaving(false)
     }
-    setIsPanelOpen(false)
-    Swal.fire({ icon: 'success', title: editingDegree ? 'Actualizado' : 'Agregado', timer: 1500, showConfirmButton: false })
   }
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center gap-3 mb-6">
-        <GraduationCap className="text-slate-400" size={24} />
-        <p className="text-slate-500">Lista todos tus estudios académicos, comenzando por el más alto.</p>
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-3">
+          <GraduationCap className="text-slate-400" size={24} />
+          <p className="text-slate-500">Lista de estudios académicos registrados.</p>
+        </div>
+        <button
+          onClick={openCreate}
+          className="flex items-center gap-2 px-4 py-2 bg-red-700 hover:bg-red-800 text-white text-sm font-medium rounded-lg transition-colors"
+        >
+          <Plus size={16} />
+          Agregar estudio
+        </button>
       </div>
 
-      <div className="space-y-3">
-        {degrees.map((d) => (
-          <SummaryCard
-            key={d.id}
-            title={d.tituloEstudio}
-            subtitle={`${getNivelEstudioNombre(d.idNivelEstudio)} — ${getInstitucionEducativaNombre(d.idInstitucionEducativa)}`}
-            details={[d.anioObtencion?.toString(), d.pais, d.cedula ? `Cédula: ${d.cedula}` : null].filter(Boolean)}
-            onEdit={() => handleEdit(d)}
-            onDelete={() => handleDelete(d.id)}
-          />
-        ))}
-      </div>
+      {degrees.length === 0 ? (
+        <p className="text-gray-400 italic">No hay estudios académicos registrados.</p>
+      ) : (
+        <div className="space-y-3">
+          {degrees.map((d, idx) => (
+            <SummaryCard
+              key={d.id || idx}
+              title={d.carrera?.nombre || 'Sin carrera'}
+              subtitle={d.nivelEstudio?.nombre || ''}
+              details={[
+                d.institucionEducativa?.nombre,
+                d.anioObtencion?.toString(),
+                d.cedula ? `Cédula: ${d.cedula}` : null
+              ].filter(Boolean)}
+              onEdit={() => openEdit(d)}
+              onDelete={() => handleDelete(d)}
+            />
+          ))}
+        </div>
+      )}
 
-      <AddItemButton label="Agregar estudio académico" onClick={handleAdd} />
-
-      <SlideOverPanel isOpen={isPanelOpen} onClose={() => setIsPanelOpen(false)} title={editingDegree ? 'Editar estudio' : 'Agregar estudio académico'}>
-        <div className="space-y-4">
-          <CatalogoSelect label="Nivel de estudio" value={formData.idNivelEstudio} onChange={(val) => setFormData(prev => ({ ...prev, idNivelEstudio: val }))} catalog="nivelEstudio" placeholder="Seleccionar nivel..." />
-          <EditableField label="Título del estudio *" value={formData.tituloEstudio} onChange={(val) => setFormData(prev => ({ ...prev, tituloEstudio: val }))} placeholder="Ej., Doctorado en Ingeniería" />
-          <CatalogoSelect label="Institución Educativa" value={formData.idInstitucionEducativa} onChange={(val) => setFormData(prev => ({ ...prev, idInstitucionEducativa: val }))} catalog="educativas" placeholder="Seleccionar institución educativa..." />
-          <EditableField label="País" value={formData.pais} onChange={(val) => setFormData(prev => ({ ...prev, pais: val }))} placeholder="Ej., México" />
-          <EditableField label="Año de obtención" value={formData.anioObtencion} onChange={(val) => setFormData(prev => ({ ...prev, anioObtencion: val }))} type="number" placeholder="Ej., 2020" />
-          <EditableField label="Cédula profesional" value={formData.cedula} onChange={(val) => setFormData(prev => ({ ...prev, cedula: val }))} placeholder="Ej., 12345678" />
-          <div className="pt-4 flex gap-3">
-            <button onClick={() => setIsPanelOpen(false)} className="flex-1 px-4 py-3 border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50">Cancelar</button>
-            <button onClick={handleSaveForm} className="flex-1 px-4 py-3 bg-red-700 hover:bg-red-800 text-white rounded-lg">{editingDegree ? 'Actualizar' : 'Agregar'}</button>
+      <SlideOverPanel
+        isOpen={panelOpen}
+        onClose={() => setPanelOpen(false)}
+        title={editingItem ? 'Editar estudio académico' : 'Nuevo estudio académico'}
+      >
+        <div className="space-y-5">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Nivel de estudio</label>
+            <select
+              value={form.idNivelEstudio}
+              onChange={(e) => setForm(f => ({ ...f, idNivelEstudio: e.target.value }))}
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
+            >
+              <option value="">Seleccionar...</option>
+              {nivelesEstudio.map(n => (
+                <option key={n.idNivelEstudio} value={n.idNivelEstudio}>{n.descNivelEstudio}</option>
+              ))}
+            </select>
           </div>
+          <SearchableSelect
+            items={carreras}
+            idKey="idCarrera"
+            nameKey="descCarrera"
+            value={form.carreraId}
+            onChange={(v) => setForm(f => ({ ...f, carreraId: v }))}
+            label="Carrera"
+            placeholder="Buscar carrera..."
+            disabled={carreras.length === 0}
+          />
+          <SearchableSelect
+            items={educativas}
+            idKey="idInstitucionEducativa"
+            nameKey="nombreInstitucion"
+            value={form.idInstitucionEducativa}
+            onChange={(v) => setForm(f => ({ ...f, idInstitucionEducativa: v }))}
+            label="Institución educativa"
+            placeholder="Buscar institución..."
+            disabled={educativas.length === 0}
+          />
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">País</label>
+            <select
+              value={form.pais}
+              onChange={(e) => setForm(f => ({ ...f, pais: e.target.value }))}
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
+            >
+              <option value="">Seleccionar...</option>
+              {paises.map(p => (
+                <option key={p.idPais} value={p.idPais}>{p.nombrePais}</option>
+              ))}
+            </select>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Año de obtención</label>
+              <input
+                type="number"
+                value={form.anioObtencion}
+                onChange={(e) => setForm(f => ({ ...f, anioObtencion: e.target.value }))}
+                placeholder="Ej: 2015"
+                min="1950"
+                max={new Date().getFullYear()}
+                className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Cédula profesional</label>
+              <input
+                type="text"
+                value={form.cedula}
+                onChange={(e) => setForm(f => ({ ...f, cedula: e.target.value }))}
+                placeholder="Ej: 12345678"
+                className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
+              />
+            </div>
+          </div>
+          <button
+            onClick={handleSave}
+            disabled={saving}
+            className="w-full py-2.5 bg-red-700 hover:bg-red-800 text-white font-medium rounded-lg disabled:opacity-50 transition-colors"
+          >
+            {saving ? 'Guardando...' : (editingItem ? 'Actualizar' : 'Crear')}
+          </button>
         </div>
       </SlideOverPanel>
     </div>

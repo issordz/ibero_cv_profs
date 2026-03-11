@@ -24,7 +24,7 @@ import {
   X,
   RefreshCw
 } from 'lucide-react'
-import { formSections, sectionStatus } from '../data/users'
+import { formSections } from '../data/users'
 
 const Layout = () => {
   const { user, logout } = useAuth()
@@ -65,8 +65,8 @@ const Layout = () => {
     }
   ]
 
-  // Obtener estado de secciones para profesor
-  const professorSections = user?.facultyId ? sectionStatus[user.facultyId] : null
+  // Estado de secciones (se puede calcular dinámicamente cuando se conecte la API de cada sección)
+  const professorSections = null
 
   // Calcular progreso del profesor
   const calculateProgress = () => {
@@ -305,11 +305,11 @@ const Layout = () => {
                   className="flex items-center gap-3 hover:opacity-80 transition-opacity"
                 >
                   <div className="text-right hidden sm:flex flex-col justify-center" style={{ gap: '1px' }}>
-                    <p className="text-sm font-semibold" style={{ color: '#181112', lineHeight: '1.1', margin: 0 }}>{user?.nombres} {user?.apellidoPaterno}</p>
-                    <p className="text-[11px]" style={{ color: '#896169', lineHeight: '1.1', margin: 0 }}>{user?.puestoInstitucional}</p>
+                    <p className="text-sm font-semibold" style={{ color: '#181112', lineHeight: '1.1', margin: 0 }}>{user?.userName || 'Usuario'}</p>
+                    <p className="text-[11px]" style={{ color: '#896169', lineHeight: '1.1', margin: 0 }}>{user?.profile || user?.comunidadUsuario || ''}</p>
                   </div>
                   <div className="h-10 w-10 overflow-hidden rounded-full bg-gray-200 flex items-center justify-center font-bold text-sm" style={{ color: '#4b5563' }}>
-                    {user?.avatar || 'U'}
+                    {user?.userName ? user.userName.split(' ').map(n => n[0]).slice(0, 2).join('') : 'U'}
                   </div>
                 </button>
 
@@ -322,8 +322,8 @@ const Layout = () => {
                     />
                     <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-1.5 z-50" style={{ border: '1px solid #e5e7eb' }}>
                       <div className="px-4 py-2 sm:hidden" style={{ borderBottom: '1px solid #e5e7eb' }}>
-                        <p className="text-sm font-semibold" style={{ color: '#181112' }}>{user?.nombres} {user?.apellidoPaterno}</p>
-                        <p className="text-xs" style={{ color: '#896169' }}>{user?.puestoInstitucional}</p>
+                        <p className="text-sm font-semibold" style={{ color: '#181112' }}>{user?.userName || 'Usuario'}</p>
+                        <p className="text-xs" style={{ color: '#896169' }}>{user?.profile || ''}</p>
                       </div>
                       <button
                         onClick={() => { handleLogout(); setUserMenuOpen(false); }}

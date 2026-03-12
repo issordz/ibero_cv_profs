@@ -4,7 +4,7 @@ import SummaryCard from '../../../components/SummaryCard'
 import SlideOverPanel from '../../../components/SlideOverPanel'
 import SearchableSelect from '../../../components/SearchableSelect'
 import { apiPost, apiPut, apiDelete } from '../../../services/api'
-import { fetchCatalog } from '../../../services/catalogService'
+import { fetchCatalog, addCatalogItem } from '../../../services/catalogService'
 import Swal from 'sweetalert2'
 
 const OrganismosSection = ({ items, cuenta, onReload }) => {
@@ -27,12 +27,29 @@ const OrganismosSection = ({ items, cuenta, onReload }) => {
   const openEdit = (item) => {
     setEditingItem(item)
     setForm({
-      organismoId: item.organismoId || '',
+      organismoId: item.organismo?.id || item.organismoId || '',
       anioInicio: item.anioInicio || '',
       anioFin: item.anioFin || '',
       nivelExperiencia: item.nivelExperiencia || ''
     })
     setPanelOpen(true)
+  }
+
+  const handleCreateOrganismo = async (nombre) => {
+    try {
+      await addCatalogItem('organismos', { nombreOrganismo: nombre })
+      const updatedList = await fetchCatalog('organismos', true)
+      setOrganismos(updatedList)
+      const found = updatedList.find(i =>
+        (i.nombreOrganismo || '').toLowerCase() === nombre.toLowerCase()
+      )
+      if (found) {
+        setForm(f => ({ ...f, organismoId: found.idOrganismo }))
+      }
+      Swal.fire({ icon: 'success', title: 'Organismo creado', text: `"${nombre}" fue agregado al catálogo.`, timer: 1800, showConfirmButton: false })
+    } catch (error) {
+      Swal.fire({ icon: 'error', title: 'Error', text: error.message || 'No se pudo crear el organismo.', confirmButtonColor: '#C41E3A' })
+    }
   }
 
   const handleDelete = async (item) => {
@@ -127,13 +144,14 @@ const OrganismosSection = ({ items, cuenta, onReload }) => {
         <div className="space-y-5">
           <SearchableSelect
             items={organismos}
-            idKey="id"
-            nameKey="nombre"
+            idKey="idOrganismo"
+            nameKey="nombreOrganismo"
             value={form.organismoId}
             onChange={(v) => setForm(f => ({ ...f, organismoId: v }))}
             label="Organismo"
-            placeholder="Buscar organismo..."
-            disabled={organismos.length === 0}
+            placeholder="Buscar o agregar organismo..."
+            disabled={false}
+            onCreateNew={handleCreateOrganismo}
           />
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Año de inicio</label>

@@ -119,7 +119,7 @@ const LogrosProfesionalesSection = ({ items, cuenta, onReload }) => {
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
           <Award className="text-slate-400" size={24} />
-          <p className="text-slate-500">Logros y reconocimientos profesionales.</p>
+          <p className="text-slate-500">Logros y reconocimientos profesionales que no se encuentren dentro del ámbito académico.</p>
         </div>
         <button
           onClick={openCreate}

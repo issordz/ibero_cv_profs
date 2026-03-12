@@ -3,7 +3,7 @@ import { Briefcase, Plus } from 'lucide-react'
 import SummaryCard from '../../../components/SummaryCard'
 import SlideOverPanel from '../../../components/SlideOverPanel'
 import SearchableSelect from '../../../components/SearchableSelect'
-import { apiPost, apiPut, apiDelete } from '../../../services/api'
+import { apiPost, apiPut, apiDelete, catalogoPost } from '../../../services/api'
 import { fetchCatalog } from '../../../services/catalogService'
 import Swal from 'sweetalert2'
 
@@ -14,11 +14,64 @@ const ExperienciaLaboralSection = ({ items, cuenta, onReload }) => {
   const [saving, setSaving] = useState(false)
   const [instituciones, setInstituciones] = useState([])
   const [tiposExperiencia, setTiposExperiencia] = useState([])
+  const [puestosGenerales, setPuestosGenerales] = useState([])
 
   useEffect(() => {
     fetchCatalog('instituciones').then(setInstituciones)
     fetchCatalog('tipoExperiencia').then(setTiposExperiencia)
+    fetchCatalog('puestoGeneral').then(setPuestosGenerales)
   }, [])
+
+  const handleCreatePuesto = async (nombre) => {
+    try {
+      await catalogoPost('puesto-general', { descripcion: nombre })
+      const updatedList = await fetchCatalog('puestoGeneral', true)
+      setPuestosGenerales(updatedList)
+      const found = updatedList.find(i =>
+        (i.descripcion || '').toLowerCase() === nombre.toLowerCase()
+      )
+      if (found) {
+        setForm(f => ({ ...f, puestoId: found.idPuestoGeneral }))
+      }
+      Swal.fire({ icon: 'success', title: 'Puesto creado', text: `"${nombre}" fue agregado al catálogo.`, timer: 1800, showConfirmButton: false })
+    } catch (error) {
+      Swal.fire({ icon: 'error', title: 'Error', text: error.message || 'No se pudo crear el puesto.', confirmButtonColor: '#C41E3A' })
+    }
+  }
+
+  const handleCreateInstitucion = async (nombre) => {
+    try {
+      await catalogoPost('institucione', { descripcion: nombre })
+      const updatedList = await fetchCatalog('instituciones', true)
+      setInstituciones(updatedList)
+      const found = updatedList.find(i =>
+        (i.nombreInstitucion || '').toLowerCase() === nombre.toLowerCase()
+      )
+      if (found) {
+        setForm(f => ({ ...f, institucionId: found.idInstitucion }))
+      }
+      Swal.fire({ icon: 'success', title: 'Institución creada', text: `"${nombre}" fue agregada al catálogo.`, timer: 1800, showConfirmButton: false })
+    } catch (error) {
+      Swal.fire({ icon: 'error', title: 'Error', text: error.message || 'No se pudo crear la institución.', confirmButtonColor: '#C41E3A' })
+    }
+  }
+
+  const handleCreateTipoExperiencia = async (nombre) => {
+    try {
+      await catalogoPost('experiencia-laboral', { descTipoExperiencia: nombre })
+      const updatedList = await fetchCatalog('tipoExperiencia', true)
+      setTiposExperiencia(updatedList)
+      const found = updatedList.find(i =>
+        (i.descTipoExperiencia || '').toLowerCase() === nombre.toLowerCase()
+      )
+      if (found) {
+        setForm(f => ({ ...f, experienciaLaboralTipo: found.idTipoExperiencia }))
+      }
+      Swal.fire({ icon: 'success', title: 'Tipo creado', text: `"${nombre}" fue agregado al catálogo.`, timer: 1800, showConfirmButton: false })
+    } catch (error) {
+      Swal.fire({ icon: 'error', title: 'Error', text: error.message || 'No se pudo crear el tipo de experiencia.', confirmButtonColor: '#C41E3A' })
+    }
+  }
 
   const handleDateInput = (rawValue, field) => {
     const digits = rawValue.replace(/\D/g, '').substring(0, 6)
@@ -38,7 +91,7 @@ const ExperienciaLaboralSection = ({ items, cuenta, onReload }) => {
   const openEdit = (item) => {
     setEditingItem(item)
     setForm({
-      puestoId: item.puestoId || '',
+      puestoId: item.puesto?.id || item.puestoId || '',
       institucionId: item.institucion?.id || item.institucionId || '',
       experienciaLaboralTipo: item.tipoExperiencia?.id || item.experienciaLaboralTipo || '',
       inicioMesAnio: item.inicioMesAnio || '',
@@ -70,16 +123,16 @@ const ExperienciaLaboralSection = ({ items, cuenta, onReload }) => {
   }
 
   const handleSave = async () => {
-    if (!form.puestoId.trim()) {
-      Swal.fire({ icon: 'warning', title: 'Campo requerido', text: 'Ingresa el puesto o actividad.', confirmButtonColor: '#C41E3A' })
+    if (!form.puestoId) {
+      Swal.fire({ icon: 'warning', title: 'Campo requerido', text: 'Selecciona el puesto o actividad.', confirmButtonColor: '#C41E3A' })
       return
     }
     setSaving(true)
     try {
       const body = {
         cuenta: parseInt(cuenta),
-        puestoId: form.puestoId,
-        actividadPuesto: form.puestoId,
+        puestoId: form.puestoId ? parseInt(form.puestoId) : null,
+        actividadPuesto: form.puestoId ? parseInt(form.puestoId) : null,
         InstitucionId: form.institucionId ? parseInt(form.institucionId) : null,
         ExperienciaLaboralTipo: form.experienciaLaboralTipo ? parseInt(form.experienciaLaboralTipo) : null,
         inicioMesAnio: form.inicioMesAnio || null,
@@ -125,7 +178,7 @@ const ExperienciaLaboralSection = ({ items, cuenta, onReload }) => {
           {items.map((item, idx) => (
             <SummaryCard
               key={item.id || idx}
-              title={item.puesto?.nombre || item.puestoId || 'Sin puesto'}
+              title={item.puesto?.descripcion || item.puesto?.nombre || 'Sin puesto'}
               subtitle={item.tipoExperiencia?.nombre || item.nivelExperiencia || ''}
               details={[
                 item.institucion?.nombre,
@@ -145,16 +198,17 @@ const ExperienciaLaboralSection = ({ items, cuenta, onReload }) => {
         title={editingItem ? 'Editar experiencia laboral' : 'Nueva experiencia laboral'}
       >
         <div className="space-y-5">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Puesto / Actividad</label>
-            <input
-              type="text"
-              value={form.puestoId}
-              onChange={(e) => setForm(f => ({ ...f, puestoId: e.target.value }))}
-              placeholder="Ej: Profesor Investigador"
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
-            />
-          </div>
+          <SearchableSelect
+            items={puestosGenerales}
+            idKey="idPuestoGeneral"
+            nameKey="descripcion"
+            value={form.puestoId}
+            onChange={(v) => setForm(f => ({ ...f, puestoId: v }))}
+            label="Puesto / Actividad"
+            placeholder="Buscar o agregar puesto..."
+            disabled={false}
+            onCreateNew={handleCreatePuesto}
+          />
           <SearchableSelect
             items={instituciones}
             idKey="idInstitucion"
@@ -162,22 +216,21 @@ const ExperienciaLaboralSection = ({ items, cuenta, onReload }) => {
             value={form.institucionId}
             onChange={(v) => setForm(f => ({ ...f, institucionId: v }))}
             label="Institución"
-            placeholder="Buscar institución..."
-            disabled={instituciones.length === 0}
+            placeholder="Buscar o agregar institución..."
+            disabled={false}
+            onCreateNew={handleCreateInstitucion}
           />
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Tipo de experiencia</label>
-            <select
-              value={form.experienciaLaboralTipo}
-              onChange={(e) => setForm(f => ({ ...f, experienciaLaboralTipo: e.target.value }))}
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
-            >
-              <option value="">Seleccionar...</option>
-              {tiposExperiencia.map(t => (
-                <option key={t.idTipoExperiencia} value={t.idTipoExperiencia}>{t.descTipoExperiencia}</option>
-              ))}
-            </select>
-          </div>
+          <SearchableSelect
+            items={tiposExperiencia}
+            idKey="idTipoExperiencia"
+            nameKey="descTipoExperiencia"
+            value={form.experienciaLaboralTipo}
+            onChange={(v) => setForm(f => ({ ...f, experienciaLaboralTipo: v }))}
+            label="Tipo de experiencia"
+            placeholder="Buscar o agregar tipo de experiencia..."
+            disabled={false}
+            onCreateNew={handleCreateTipoExperiencia}
+          />
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Inicio</label>

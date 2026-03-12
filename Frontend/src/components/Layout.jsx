@@ -17,8 +17,6 @@ import {
   ClipboardList,
   UserCog,
   BarChart3,
-  CheckCircle2,
-  Circle,
   Bell,
   ChevronRight,
   X,
@@ -64,17 +62,6 @@ const Layout = () => {
       ]
     }
   ]
-
-  // Estado de secciones (se puede calcular dinámicamente cuando se conecte la API de cada sección)
-  const professorSections = null
-
-  // Calcular progreso del profesor
-  const calculateProgress = () => {
-    if (!professorSections) return 0
-    const total = Object.keys(professorSections).length
-    const complete = Object.values(professorSections).filter(s => s === 'complete').length
-    return Math.round((complete / total) * 100)
-  }
 
   // Breadcrumb helper
   const getBreadcrumb = () => {
@@ -195,50 +182,24 @@ const Layout = () => {
               </p>
               {formSections.map((section) => {
                 const IconComponent = sectionIcons[section.icon]
-                const status = professorSections?.[section.id]
                 const active = location.pathname.includes(section.id)
                 return (
                   <NavLink
                     key={section.id}
                     to={`/profile/${section.id}`}
                     onClick={() => setSidebarOpen(false)}
-                    className="flex items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium transition-colors"
+                    className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors"
                     style={{
                       backgroundColor: active ? '#ffffff' : 'transparent',
                       color: active ? '#e00034' : 'rgba(255,255,255,0.85)',
                     }}
                   >
-                    <div className="flex items-center gap-3">
-                      {IconComponent && <IconComponent size={18} className="flex-shrink-0" />}
-                      <span className="leading-tight">{section.label}</span>
-                    </div>
-                    {status === 'complete' ? (
-                      <CheckCircle2 size={15} className="flex-shrink-0" style={{ color: active ? '#16a34a' : 'rgba(255,255,255,0.7)' }} />
-                    ) : (
-                      <Circle size={15} className="flex-shrink-0" style={{ color: active ? '#9ca3af' : 'rgba(255,255,255,0.4)' }} />
-                    )}
+                    {IconComponent && <IconComponent size={18} className="flex-shrink-0" />}
+                    <span className="leading-tight">{section.label}</span>
                   </NavLink>
                 )
               })}
 
-              {/* Professor Progress */}
-              <div className="mt-6 px-1">
-                <div className="rounded-lg p-3" style={{ backgroundColor: 'rgba(0,0,0,0.15)' }}>
-                  <div className="flex items-center justify-between text-xs mb-2">
-                    <span style={{ color: 'rgba(255,255,255,0.8)' }}>Completado</span>
-                    <span className="font-bold" style={{ color: '#ffffff' }}>{calculateProgress()}%</span>
-                  </div>
-                  <div className="w-full rounded-full h-1.5" style={{ backgroundColor: 'rgba(0,0,0,0.2)' }}>
-                    <div 
-                      className="h-1.5 rounded-full transition-all duration-500"
-                      style={{ width: `${calculateProgress()}%`, backgroundColor: '#ffffff' }}
-                    />
-                  </div>
-                  <p className="text-[11px] mt-2" style={{ color: 'rgba(255,255,255,0.6)' }}>
-                    {Object.values(professorSections || {}).filter(s => s !== 'complete').length} secciones pendientes
-                  </p>
-                </div>
-              </div>
             </>
           )}
         </nav>
@@ -341,21 +302,6 @@ const Layout = () => {
           </div>
         </header>
 
-        {/* Professor Progress Bar - mobile */}
-        {user?.role === 'professor' && (
-          <div className="px-4 py-3 bg-white lg:hidden" style={{ borderBottom: '1px solid #e6dbdd' }}>
-            <div className="flex items-center justify-between text-xs mb-1">
-              <span style={{ color: '#896169' }}>Completado</span>
-              <span className="font-bold" style={{ color: '#c40e2f' }}>{calculateProgress()}%</span>
-            </div>
-            <div className="w-full bg-gray-100 rounded-full h-1.5">
-              <div 
-                className="h-1.5 rounded-full transition-all duration-300"
-                style={{ width: `${calculateProgress()}%`, backgroundColor: '#c40e2f' }}
-              />
-            </div>
-          </div>
-        )}
 
         {/* Scrollable Page Content */}
         <main className="flex-1 overflow-y-auto p-4 lg:p-8" style={{ backgroundColor: '#f8f6f6' }}>

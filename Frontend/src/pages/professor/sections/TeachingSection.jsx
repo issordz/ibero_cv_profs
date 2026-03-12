@@ -3,7 +3,7 @@ import { BookOpen, Plus } from 'lucide-react'
 import SummaryCard from '../../../components/SummaryCard'
 import SlideOverPanel from '../../../components/SlideOverPanel'
 import SearchableSelect from '../../../components/SearchableSelect'
-import { apiPost, apiPut, apiDelete } from '../../../services/api'
+import { apiPost, apiPut, apiDelete, catalogoPost } from '../../../services/api'
 import { fetchCatalog } from '../../../services/catalogService'
 import Swal from 'sweetalert2'
 
@@ -24,6 +24,40 @@ const CapacitacionSection = ({ items, cuenta, onReload }) => {
     fetchCatalog('paises').then(setPaises)
   }, [])
 
+  const handleCreateInstitucionEducativa = async (nombre) => {
+    try {
+      await catalogoPost('institucion-educativa', { nombreInstitucion: nombre })
+      const updatedList = await fetchCatalog('educativas', true)
+      setEducativas(updatedList)
+      const found = updatedList.find(i =>
+        (i.nombreInstitucion || '').toLowerCase() === nombre.toLowerCase()
+      )
+      if (found) {
+        setForm(f => ({ ...f, idInstitucionEducativa: found.idInstitucionEducativa }))
+      }
+      Swal.fire({ icon: 'success', title: 'Institución creada', text: `"${nombre}" fue agregada al catálogo.`, timer: 1800, showConfirmButton: false })
+    } catch (error) {
+      Swal.fire({ icon: 'error', title: 'Error', text: error.message || 'No se pudo crear la institución.', confirmButtonColor: '#C41E3A' })
+    }
+  }
+
+  const handleCreateTipoCapacitacion = async (nombre) => {
+    try {
+      await catalogoPost('capacitacion', { descTipoCapacitacion: nombre })
+      const updatedList = await fetchCatalog('tipoCapacitacion', true)
+      setTiposCapacitacion(updatedList)
+      const found = updatedList.find(i =>
+        (i.descTipoCapacitacion || '').toLowerCase() === nombre.toLowerCase()
+      )
+      if (found) {
+        setForm(f => ({ ...f, idTipoCapacitacion: found.idTipoCapacitacion }))
+      }
+      Swal.fire({ icon: 'success', title: 'Tipo creado', text: `"${nombre}" fue agregado al catálogo.`, timer: 1800, showConfirmButton: false })
+    } catch (error) {
+      Swal.fire({ icon: 'error', title: 'Error', text: error.message || 'No se pudo crear el tipo de capacitación.', confirmButtonColor: '#C41E3A' })
+    }
+  }
+
   const openCreate = () => {
     setEditingItem(null)
     setForm({ nombreCapacitacion: '', idTipoCapacitacion: '', idInstitucionEducativa: '', idTipoCurso: '', pais: '484', anioObtencion: '', horas: '', vigencia: '' })
@@ -34,9 +68,9 @@ const CapacitacionSection = ({ items, cuenta, onReload }) => {
     setEditingItem(item)
     setForm({
       nombreCapacitacion: item.nombreCapacitacion || '',
-      idTipoCapacitacion: item.idTipoCapacitacion || '',
+      idTipoCapacitacion: item.capacitacion?.id || item.idTipoCapacitacion || '',
       idInstitucionEducativa: item.idInstitucionEducativa || '',
-      idTipoCurso: item.idTipoCurso || '',
+      idTipoCurso: item.tipoCurso?.id || item.idTipoCurso || '',
       pais: item.pais?.id || '',
       anioObtencion: item.anioObtencion || '',
       horas: item.horas || '',
@@ -124,8 +158,15 @@ const CapacitacionSection = ({ items, cuenta, onReload }) => {
             <SummaryCard
               key={item.id || idx}
               title={item.nombreCapacitacion || 'Sin nombre'}
-              subtitle={item.tipoCurso?.nombre || item.capacitacion?.nombre || ''}
-              details={[item.anioObtencion?.toString(), item.horas ? `${item.horas} hrs` : null, item.pais?.nombre].filter(Boolean)}
+              subtitle={[
+                item.capacitacion?.nombre || null,
+                item.tipoCurso?.nombre || null
+              ].filter(Boolean).join(' · ')}
+              details={[
+                educativas.find(e => e.idInstitucionEducativa === item.idInstitucionEducativa)?.nombreInstitucion || null,
+                item.anioObtencion?.toString() || null,
+                item.pais?.nombre || null
+              ].filter(Boolean)}
               onEdit={() => openEdit(item)}
               onDelete={() => handleDelete(item)}
             />
@@ -149,19 +190,17 @@ const CapacitacionSection = ({ items, cuenta, onReload }) => {
               className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
             />
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Tipo de capacitación</label>
-            <select
-              value={form.idTipoCapacitacion}
-              onChange={(e) => setForm(f => ({ ...f, idTipoCapacitacion: e.target.value }))}
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
-            >
-              <option value="">Seleccionar...</option>
-              {tiposCapacitacion.map(t => (
-                <option key={t.idTipoCapacitacion} value={t.idTipoCapacitacion}>{t.descTipoCapacitacion}</option>
-              ))}
-            </select>
-          </div>
+          <SearchableSelect
+            items={tiposCapacitacion}
+            idKey="idTipoCapacitacion"
+            nameKey="descTipoCapacitacion"
+            value={form.idTipoCapacitacion}
+            onChange={(v) => setForm(f => ({ ...f, idTipoCapacitacion: v }))}
+            label="Tipo de capacitación"
+            placeholder="Buscar o agregar tipo de capacitación..."
+            disabled={false}
+            onCreateNew={handleCreateTipoCapacitacion}
+          />
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Tipo de curso</label>
             <select
@@ -182,8 +221,9 @@ const CapacitacionSection = ({ items, cuenta, onReload }) => {
             value={form.idInstitucionEducativa}
             onChange={(v) => setForm(f => ({ ...f, idInstitucionEducativa: v }))}
             label="Institución educativa"
-            placeholder="Buscar institución..."
-            disabled={educativas.length === 0}
+            placeholder="Buscar o agregar institución..."
+            disabled={false}
+            onCreateNew={handleCreateInstitucionEducativa}
           />
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">País</label>

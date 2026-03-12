@@ -42,13 +42,18 @@ const CATALOG_CONFIG = {
   },
   organismos: {
     endpoint: 'organismo',
-    idKey: 'id',
-    nameKey: 'nombre'
+    idKey: 'idOrganismo',
+    nameKey: 'nombreOrganismo'
   },
   puestoInstitucional: {
     endpoint: 'puesto-institucional',
     idKey: 'id',
     nameKey: 'nombre'
+  },
+  puestoGeneral: {
+    endpoint: 'puesto-general',
+    idKey: 'idPuestoGeneral',
+    nameKey: 'descripcion'
   },
   carreras: {
     endpoint: 'carrera',

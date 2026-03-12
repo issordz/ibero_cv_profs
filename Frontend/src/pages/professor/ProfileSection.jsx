@@ -68,7 +68,7 @@ const ProfileSection = () => {
     'informacion-academica': 'Estudios Académicos',
     'experiencia-laboral': 'Experiencia Laboral',
     'capacitacion-actualizacion': 'Capacitación / Actualización',
-    'logros-profesionales': 'Logros Profesionales',
+    'logros-profesionales': 'Logros Profesionales (No académicos)',
     'organismos': 'Organismos',
     'premios-distinciones': 'Premios y Distinciones',
     'productos-academicos': 'Productos Académicos'

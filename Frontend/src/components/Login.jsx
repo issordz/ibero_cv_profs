@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Eye, EyeOff } from 'lucide-react'
+import { Eye, EyeOff, Info } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import Swal from 'sweetalert2'
 
@@ -98,6 +98,24 @@ const Login = () => {
                 </div>
               </div>
 
+              {/* Password info */}
+              <div
+                className="flex items-start gap-2 mb-6 px-3 py-2.5 rounded-lg cursor-pointer select-none"
+                style={{ backgroundColor: '#eff6ff', border: '1px solid #bfdbfe' }}
+                onClick={() => Swal.fire({
+                  icon: 'info',
+                  title: 'Tu contraseña de acceso',
+                  html: `<p style="text-align:left;font-size:14px">La contraseña que debes usar es la misma que utilizas en <strong>Control Escolar</strong> (SIIA / portal institucional).</p><p style="text-align:left;font-size:14px;margin-top:10px">Si no la recuerdas, deberás restablecerla directamente desde <strong>Control Escolar</strong>. Este portal no gestiona contraseñas de forma independiente.</p>`,
+                  confirmButtonColor: '#C41E3A',
+                  confirmButtonText: 'Entendido'
+                })}
+              >
+                <Info size={15} className="flex-shrink-0 mt-0.5" style={{ color: '#2563eb' }} />
+                <p className="text-xs" style={{ color: '#1e40af' }}>
+                  Usa la contraseña de <strong>Control Escolar</strong>. ¿Olvidaste tu contraseña? Recupérala desde el portal de Control Escolar.
+                </p>
+              </div>
+
               {/* Submit */}
               <button
                 type="submit"
@@ -108,12 +126,6 @@ const Login = () => {
               </button>
             </form>
 
-            {/* Forgot password */}
-            <div className="text-center mt-5">
-              <a href="#" className="text-sm text-blue-600 hover:text-blue-800 no-underline">
-                ¿Olvidaste tu contraseña?
-              </a>
-            </div>
           </div>
         </div>
       </div>

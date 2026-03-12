@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { Search } from 'lucide-react'
 
-const SearchableSelect = ({ items = [], idKey = 'id', nameKey = 'nombre', value, onChange, label, placeholder = 'Buscar...', disabled = false }) => {
+const SearchableSelect = ({ items = [], idKey = 'id', nameKey = 'nombre', value, onChange, label, placeholder = 'Buscar...', disabled = false, onCreateNew }) => {
   const [search, setSearch] = useState('')
   const [showDropdown, setShowDropdown] = useState(false)
   const dropdownRef = useRef(null)
@@ -48,20 +48,41 @@ const SearchableSelect = ({ items = [], idKey = 'id', nameKey = 'nombre', value,
       {showDropdown && !disabled && (
         <div className="absolute z-20 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg max-h-48 overflow-y-auto">
           {filtered.length === 0 ? (
-            <div className="px-3 py-2 text-sm text-gray-400">Sin resultados</div>
-          ) : (
-            filtered.map((item) => (
+            onCreateNew && search.trim() ? (
               <button
-                key={item[idKey]}
                 type="button"
-                onClick={() => { setSearch(item[nameKey]); onChange(item[idKey]); setShowDropdown(false) }}
-                className={`block w-full text-left px-3 py-2 text-sm hover:bg-red-50 hover:text-red-700 ${
-                  value?.toString() === item[idKey]?.toString() ? 'bg-red-50 text-red-700 font-medium' : 'text-gray-700'
-                }`}
+                onClick={() => { onCreateNew(search.trim()); setShowDropdown(false) }}
+                className="block w-full text-left px-3 py-2 text-sm text-red-700 hover:bg-red-50 font-medium"
               >
-                {item[nameKey]}
+                + Crear: "{search.trim()}"
               </button>
-            ))
+            ) : (
+              <div className="px-3 py-2 text-sm text-gray-400">Sin resultados</div>
+            )
+          ) : (
+            <>
+              {filtered.map((item) => (
+                <button
+                  key={item[idKey]}
+                  type="button"
+                  onClick={() => { setSearch(item[nameKey]); onChange(item[idKey]); setShowDropdown(false) }}
+                  className={`block w-full text-left px-3 py-2 text-sm hover:bg-red-50 hover:text-red-700 ${
+                    value?.toString() === item[idKey]?.toString() ? 'bg-red-50 text-red-700 font-medium' : 'text-gray-700'
+                  }`}
+                >
+                  {item[nameKey]}
+                </button>
+              ))}
+              {onCreateNew && search.trim() && !filtered.some(i => i[nameKey]?.toLowerCase() === search.trim().toLowerCase()) && (
+                <button
+                  type="button"
+                  onClick={() => { onCreateNew(search.trim()); setShowDropdown(false) }}
+                  className="block w-full text-left px-3 py-2 text-sm text-red-700 hover:bg-red-50 font-medium border-t border-gray-100"
+                >
+                  + Crear: "{search.trim()}"
+                </button>
+              )}
+            </>
           )}
         </div>
       )}

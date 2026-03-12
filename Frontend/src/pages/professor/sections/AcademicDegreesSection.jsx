@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
-import { GraduationCap, Plus } from 'lucide-react'
+import { GraduationCap, Plus, AlertTriangle } from 'lucide-react'
 import SummaryCard from '../../../components/SummaryCard'
 import SlideOverPanel from '../../../components/SlideOverPanel'
 import SearchableSelect from '../../../components/SearchableSelect'
-import { apiPost, apiPut, apiDelete } from '../../../services/api'
+import { apiPost, apiPut, apiDelete, catalogoPost } from '../../../services/api'
 import { fetchCatalog } from '../../../services/catalogService'
 import Swal from 'sweetalert2'
 
@@ -23,6 +23,40 @@ const AcademicDegreesSection = ({ degrees, cuenta, onReload }) => {
     fetchCatalog('nivelEstudio').then(setNivelesEstudio)
     fetchCatalog('paises').then(setPaises)
   }, [])
+
+  const handleCreateInstitucionEducativa = async (nombre) => {
+    try {
+      await catalogoPost('institucion-educativa', { nombreInstitucion: nombre })
+      const updatedList = await fetchCatalog('educativas', true)
+      setEducativas(updatedList)
+      const found = updatedList.find(i =>
+        (i.nombreInstitucion || '').toLowerCase() === nombre.toLowerCase()
+      )
+      if (found) {
+        setForm(f => ({ ...f, idInstitucionEducativa: found.idInstitucionEducativa }))
+      }
+      Swal.fire({ icon: 'success', title: 'Institución creada', text: `"${nombre}" fue agregada al catálogo.`, timer: 1800, showConfirmButton: false })
+    } catch (error) {
+      Swal.fire({ icon: 'error', title: 'Error', text: error.message || 'No se pudo crear la institución.', confirmButtonColor: '#C41E3A' })
+    }
+  }
+
+  const handleCreateCarrera = async (nombre) => {
+    try {
+      await catalogoPost('carrera', { descripcion: nombre, nivel: null, idCoordinacion: 1, carrera: nombre, idGrado: null })
+      const updatedList = await fetchCatalog('carreras', true)
+      setCarreras(updatedList)
+      const found = updatedList.find(i =>
+        (i.descCarrera || '').toLowerCase() === nombre.toLowerCase()
+      )
+      if (found) {
+        setForm(f => ({ ...f, carreraId: found.idCarrera }))
+      }
+      Swal.fire({ icon: 'success', title: 'Carrera creada', text: `"${nombre}" fue agregada al catálogo.`, timer: 1800, showConfirmButton: false })
+    } catch (error) {
+      Swal.fire({ icon: 'error', title: 'Error', text: error.message || 'No se pudo crear la carrera.', confirmButtonColor: '#C41E3A' })
+    }
+  }
 
   const openCreate = () => {
     setEditingItem(null)
@@ -117,20 +151,31 @@ const AcademicDegreesSection = ({ degrees, cuenta, onReload }) => {
         <p className="text-gray-400 italic">No hay estudios académicos registrados.</p>
       ) : (
         <div className="space-y-3">
-          {degrees.map((d, idx) => (
-            <SummaryCard
-              key={d.id || idx}
-              title={d.carrera?.nombre || 'Sin carrera'}
-              subtitle={d.nivelEstudio?.nombre || ''}
-              details={[
-                d.institucionEducativa?.nombre,
-                d.anioObtencion?.toString(),
-                d.cedula ? `Cédula: ${d.cedula}` : null
-              ].filter(Boolean)}
-              onEdit={() => openEdit(d)}
-              onDelete={() => handleDelete(d)}
-            />
-          ))}
+          {degrees.map((d, idx) => {
+            const carreraVacia = d.carrera?.id === 0 || d.carrera?.idCarrera === 0
+            return (
+              <div key={d.id || idx}>
+                <SummaryCard
+                  title={carreraVacia ? 'Sin información de carrera' : (d.carrera?.nombre || 'Sin carrera')}
+                  subtitle={d.nivelEstudio?.nombre || ''}
+                  details={[
+                    d.institucionEducativa?.nombre,
+                    d.anioObtencion?.toString(),
+                    d.cedula ? `Cédula: ${d.cedula}` : null
+                  ].filter(Boolean)}
+                  onEdit={() => openEdit(d)}
+                  onDelete={() => handleDelete(d)}
+                />
+                {carreraVacia && (
+                  <div className="flex items-center gap-2 px-3 py-2 rounded-b-lg -mt-1 text-sm"
+                    style={{ backgroundColor: '#fefce8', borderLeft: '3px solid #eab308', color: '#854d0e' }}>
+                    <AlertTriangle size={14} className="flex-shrink-0" style={{ color: '#ca8a04' }} />
+                    <span>Este registro no tiene carrera asignada. Haz clic en <strong>Editar</strong> para actualizarlo.</span>
+                  </div>
+                )}
+              </div>
+            )
+          })}
         </div>
       )}
 
@@ -160,8 +205,9 @@ const AcademicDegreesSection = ({ degrees, cuenta, onReload }) => {
             value={form.carreraId}
             onChange={(v) => setForm(f => ({ ...f, carreraId: v }))}
             label="Carrera"
-            placeholder="Buscar carrera..."
-            disabled={carreras.length === 0}
+            placeholder="Buscar o agregar carrera..."
+            disabled={false}
+            onCreateNew={handleCreateCarrera}
           />
           <SearchableSelect
             items={educativas}
@@ -170,8 +216,9 @@ const AcademicDegreesSection = ({ degrees, cuenta, onReload }) => {
             value={form.idInstitucionEducativa}
             onChange={(v) => setForm(f => ({ ...f, idInstitucionEducativa: v }))}
             label="Institución educativa"
-            placeholder="Buscar institución..."
-            disabled={educativas.length === 0}
+            placeholder="Buscar o agregar institución..."
+            disabled={false}
+            onCreateNew={handleCreateInstitucionEducativa}
           />
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">País</label>

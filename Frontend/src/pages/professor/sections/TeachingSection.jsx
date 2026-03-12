@@ -169,6 +169,7 @@ const CapacitacionSection = ({ items, cuenta, onReload }) => {
               ].filter(Boolean)}
               onEdit={() => openEdit(item)}
               onDelete={() => handleDelete(item)}
+              hasWarning={item.capacitacion?.id === 0 || item.tipoCurso?.id === 0}
             />
           ))}
         </div>
@@ -197,9 +198,8 @@ const CapacitacionSection = ({ items, cuenta, onReload }) => {
             value={form.idTipoCapacitacion}
             onChange={(v) => setForm(f => ({ ...f, idTipoCapacitacion: v }))}
             label="Tipo de capacitación"
-            placeholder="Buscar o agregar tipo de capacitación..."
+            placeholder="Buscar tipo de capacitación..."
             disabled={false}
-            onCreateNew={handleCreateTipoCapacitacion}
           />
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Tipo de curso</label>

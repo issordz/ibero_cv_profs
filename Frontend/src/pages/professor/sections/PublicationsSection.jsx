@@ -103,11 +103,12 @@ const ProductosAcademicosSection = ({ items, cuenta, onReload }) => {
           {items.map((item, idx) => (
             <SummaryCard
               key={item.id || idx}
-              title={item.descripcionProductoAcademico?.substring(0, 80) || 'Sin descripción'}
+              title={item.descripcionProductoAcademico || 'Sin descripción'}
               subtitle={item.institucion?.nombre || ''}
               details={[item.anioProducto?.toString()].filter(Boolean)}
               onEdit={() => openEdit(item)}
               onDelete={() => handleDelete(item)}
+              hasWarning={item.institucion?.id === 0}
             />
           ))}
         </div>

@@ -112,7 +112,7 @@ const Login = () => {
               >
                 <Info size={15} className="flex-shrink-0 mt-0.5" style={{ color: '#2563eb' }} />
                 <p className="text-xs" style={{ color: '#1e40af' }}>
-                  Usa la contraseña de <strong>Control Escolar</strong>. ¿Olvidaste tu contraseña? Recupérala desde el portal de Control Escolar.
+                  Utiliza la contraseña de <strong>Control Escolar</strong>.<br />¿Olvidaste tu contraseña? <br />Recupérala desde el portal de Control Escolar.
                 </p>
               </div>
 

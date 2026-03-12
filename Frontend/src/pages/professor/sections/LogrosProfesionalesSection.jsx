@@ -1,8 +1,9 @@
-import { useState, useEffect, useRef } from 'react'
-import { Award, Plus, Search } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { Award, Plus } from 'lucide-react'
 import SummaryCard from '../../../components/SummaryCard'
 import SlideOverPanel from '../../../components/SlideOverPanel'
-import { apiPost, apiPut, apiDelete } from '../../../services/api'
+import SearchableSelect from '../../../components/SearchableSelect'
+import { apiPost, apiPut, apiDelete, catalogoPost } from '../../../services/api'
 import { fetchCatalog } from '../../../services/catalogService'
 import Swal from 'sweetalert2'
 
@@ -12,32 +13,31 @@ const LogrosProfesionalesSection = ({ items, cuenta, onReload }) => {
   const [form, setForm] = useState({ descLogro: '', idInstitucion: '', anioObtencion: '' })
   const [saving, setSaving] = useState(false)
   const [instituciones, setInstituciones] = useState([])
-  const [instSearch, setInstSearch] = useState('')
-  const [showInstDropdown, setShowInstDropdown] = useState(false)
-  const dropdownRef = useRef(null)
 
   useEffect(() => {
     fetchCatalog('instituciones').then(setInstituciones)
   }, [])
 
-  useEffect(() => {
-    const handleClick = (e) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
-        setShowInstDropdown(false)
+  const handleCreateInstitucion = async (nombre) => {
+    try {
+      await catalogoPost('institucione', { descripcion: nombre })
+      const updatedList = await fetchCatalog('instituciones', true)
+      setInstituciones(updatedList)
+      const found = updatedList.find(i =>
+        (i.nombreInstitucion || '').toLowerCase() === nombre.toLowerCase()
+      )
+      if (found) {
+        setForm(f => ({ ...f, idInstitucion: found.idInstitucion }))
       }
+      Swal.fire({ icon: 'success', title: 'Institución creada', text: `"${nombre}" fue agregada al catálogo.`, timer: 1800, showConfirmButton: false })
+    } catch (error) {
+      Swal.fire({ icon: 'error', title: 'Error', text: error.message || 'No se pudo crear la institución.', confirmButtonColor: '#C41E3A' })
     }
-    document.addEventListener('mousedown', handleClick)
-    return () => document.removeEventListener('mousedown', handleClick)
-  }, [])
-
-  const filteredInst = instituciones.filter(i =>
-    i.nombreInstitucion?.toLowerCase().includes(instSearch.toLowerCase())
-  )
+  }
 
   const openCreate = () => {
     setEditingItem(null)
     setForm({ descLogro: '', idInstitucion: '', anioObtencion: '' })
-    setInstSearch('')
     setPanelOpen(true)
   }
 
@@ -48,16 +48,7 @@ const LogrosProfesionalesSection = ({ items, cuenta, onReload }) => {
       idInstitucion: item.idInstitucion || item.institucion?.id || '',
       anioObtencion: item.anioObtencion || ''
     })
-    const instName = item.institucion?.nombre ||
-      instituciones.find(i => i.idInstitucion === (item.idInstitucion || item.institucion?.id))?.nombreInstitucion || ''
-    setInstSearch(instName)
     setPanelOpen(true)
-  }
-
-  const handleSelectInst = (inst) => {
-    setForm(f => ({ ...f, idInstitucion: inst.idInstitucion }))
-    setInstSearch(inst.nombreInstitucion)
-    setShowInstDropdown(false)
   }
 
   const handleDelete = async (item) => {
@@ -142,6 +133,7 @@ const LogrosProfesionalesSection = ({ items, cuenta, onReload }) => {
               details={[item.anioObtencion?.toString()].filter(Boolean)}
               onEdit={() => openEdit(item)}
               onDelete={() => handleDelete(item)}
+              hasWarning={item.institucion?.id === 0}
             />
           ))}
         </div>
@@ -164,38 +156,17 @@ const LogrosProfesionalesSection = ({ items, cuenta, onReload }) => {
             />
           </div>
 
-          <div ref={dropdownRef} className="relative">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Institución</label>
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
-              <input
-                type="text"
-                value={instSearch}
-                onChange={(e) => { setInstSearch(e.target.value); setShowInstDropdown(true); setForm(f => ({ ...f, idInstitucion: '' })) }}
-                onFocus={() => setShowInstDropdown(true)}
-                placeholder="Buscar institución..."
-                className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
-              />
-            </div>
-            {showInstDropdown && (
-              <div className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg max-h-48 overflow-y-auto">
-                {filteredInst.length === 0 ? (
-                  <div className="px-3 py-2 text-sm text-gray-400">Sin resultados</div>
-                ) : (
-                  filteredInst.slice(0, 50).map((inst) => (
-                    <button
-                      key={inst.idInstitucion}
-                      type="button"
-                      onClick={() => handleSelectInst(inst)}
-                      className={`block w-full text-left px-3 py-2 text-sm hover:bg-red-50 hover:text-red-700 ${form.idInstitucion === inst.idInstitucion ? 'bg-red-50 text-red-700 font-medium' : 'text-gray-700'}`}
-                    >
-                      {inst.nombreInstitucion}
-                    </button>
-                  ))
-                )}
-              </div>
-            )}
-          </div>
+          <SearchableSelect
+            items={instituciones}
+            idKey="idInstitucion"
+            nameKey="nombreInstitucion"
+            value={form.idInstitucion}
+            onChange={(v) => setForm(f => ({ ...f, idInstitucion: v }))}
+            label="Institución"
+            placeholder="Buscar o agregar institución..."
+            disabled={false}
+            onCreateNew={handleCreateInstitucion}
+          />
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Año de obtención</label>

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { GraduationCap, Plus, AlertTriangle } from 'lucide-react'
+import { GraduationCap, Plus } from 'lucide-react'
 import SummaryCard from '../../../components/SummaryCard'
 import SlideOverPanel from '../../../components/SlideOverPanel'
 import SearchableSelect from '../../../components/SearchableSelect'
@@ -152,28 +152,23 @@ const AcademicDegreesSection = ({ degrees, cuenta, onReload }) => {
       ) : (
         <div className="space-y-3">
           {degrees.map((d, idx) => {
-            const carreraVacia = d.carrera?.id === 0 || d.carrera?.idCarrera === 0
+            const hasWarning = d.carrera?.id === 0 || d.carrera?.idCarrera === 0
+              || d.nivelEstudio?.id === 0
+              || d.institucionEducativa?.id === 0
             return (
-              <div key={d.id || idx}>
-                <SummaryCard
-                  title={carreraVacia ? 'Sin información de carrera' : (d.carrera?.nombre || 'Sin carrera')}
-                  subtitle={d.nivelEstudio?.nombre || ''}
-                  details={[
-                    d.institucionEducativa?.nombre,
-                    d.anioObtencion?.toString(),
-                    d.cedula ? `Cédula: ${d.cedula}` : null
-                  ].filter(Boolean)}
-                  onEdit={() => openEdit(d)}
-                  onDelete={() => handleDelete(d)}
-                />
-                {carreraVacia && (
-                  <div className="flex items-center gap-2 px-3 py-2 rounded-b-lg -mt-1 text-sm"
-                    style={{ backgroundColor: '#fefce8', borderLeft: '3px solid #eab308', color: '#854d0e' }}>
-                    <AlertTriangle size={14} className="flex-shrink-0" style={{ color: '#ca8a04' }} />
-                    <span>Este registro no tiene carrera asignada. Haz clic en <strong>Editar</strong> para actualizarlo.</span>
-                  </div>
-                )}
-              </div>
+              <SummaryCard
+                key={d.id || idx}
+                title={d.carrera?.nombre || 'Sin carrera'}
+                subtitle={d.nivelEstudio?.nombre || ''}
+                details={[
+                  d.institucionEducativa?.nombre,
+                  d.anioObtencion?.toString(),
+                  d.cedula ? `Cédula: ${d.cedula}` : null
+                ].filter(Boolean)}
+                onEdit={() => openEdit(d)}
+                onDelete={() => handleDelete(d)}
+                hasWarning={hasWarning}
+              />
             )
           })}
         </div>
@@ -193,7 +188,7 @@ const AcademicDegreesSection = ({ degrees, cuenta, onReload }) => {
               className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
             >
               <option value="">Seleccionar...</option>
-              {nivelesEstudio.map(n => (
+              {nivelesEstudio.filter(n => n.idNivelEstudio >= 4).map(n => (
                 <option key={n.idNivelEstudio} value={n.idNivelEstudio}>{n.descNivelEstudio}</option>
               ))}
             </select>

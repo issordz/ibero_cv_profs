@@ -187,6 +187,7 @@ const ExperienciaLaboralSection = ({ items, cuenta, onReload }) => {
               ].filter(Boolean)}
               onEdit={() => openEdit(item)}
               onDelete={() => handleDelete(item)}
+              hasWarning={item.puesto?.id === 0 || item.institucion?.id === 0}
             />
           ))}
         </div>
@@ -227,10 +228,19 @@ const ExperienciaLaboralSection = ({ items, cuenta, onReload }) => {
             value={form.experienciaLaboralTipo}
             onChange={(v) => setForm(f => ({ ...f, experienciaLaboralTipo: v }))}
             label="Tipo de experiencia"
-            placeholder="Buscar o agregar tipo de experiencia..."
+            placeholder="Buscar tipo de experiencia..."
             disabled={false}
-            onCreateNew={handleCreateTipoExperiencia}
           />
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Nivel de experiencia</label>
+            <input
+              type="text"
+              value={form.nivelExperiencia}
+              onChange={(e) => setForm(f => ({ ...f, nivelExperiencia: e.target.value }))}
+              placeholder="Ej: Senior"
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
+            />
+          </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Inicio</label>
@@ -253,17 +263,8 @@ const ExperienciaLaboralSection = ({ items, cuenta, onReload }) => {
                 maxLength={7}
                 className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
               />
+              <p className="mt-1 text-xs text-gray-400">Deja vacío si es tu trabajo actual.</p>
             </div>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Nivel de experiencia</label>
-            <input
-              type="text"
-              value={form.nivelExperiencia}
-              onChange={(e) => setForm(f => ({ ...f, nivelExperiencia: e.target.value }))}
-              placeholder="Ej: Senior"
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
-            />
           </div>
           <button
             onClick={handleSave}

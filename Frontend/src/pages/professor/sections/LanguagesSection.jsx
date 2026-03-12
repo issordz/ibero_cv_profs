@@ -131,6 +131,7 @@ const OrganismosSection = ({ items, cuenta, onReload }) => {
               details={[`${item.anioInicio || '?'} – ${item.anioFin || 'Actual'}`]}
               onEdit={() => openEdit(item)}
               onDelete={() => handleDelete(item)}
+              hasWarning={item.organismo?.id === 0}
             />
           ))}
         </div>

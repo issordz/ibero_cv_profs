@@ -29,6 +29,25 @@ const Login = () => {
     }
 
     setIsLoading(true)
+
+        let recaptchaToken
+    try {
+      recaptchaToken = await window.grecaptcha.execute(
+        import.meta.env.VITE_RECAPTCHA_SITE_KEY,
+        { action: 'login' }
+      )
+    } catch {
+      setIsLoading(false)
+      Swal.fire({
+        icon: 'error',
+        title: 'Error de verificación',
+        text: 'No se pudo verificar reCAPTCHA. Intenta de nuevo.',
+        confirmButtonColor: '#C41E3A',
+        customClass: { popup: 'rounded-xl' }
+      })
+      return
+    }
+    
     const result = await login(account, password)
     setIsLoading(false)
 

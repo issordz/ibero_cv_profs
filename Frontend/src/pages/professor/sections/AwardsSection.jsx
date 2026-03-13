@@ -112,7 +112,7 @@ const PremiosDistincionesSection = ({ items, cuenta, onReload }) => {
       >
         <div className="space-y-5">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Descripción del premio</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Descripción del premio<span className="text-red-500 ml-0.5">*</span></label>
             <textarea
               value={form.descPremio}
               onChange={(e) => setForm(f => ({ ...f, descPremio: e.target.value }))}

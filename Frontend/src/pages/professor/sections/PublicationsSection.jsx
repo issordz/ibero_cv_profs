@@ -56,6 +56,10 @@ const ProductosAcademicosSection = ({ items, cuenta, onReload }) => {
   }
 
   const handleSave = async () => {
+    if (!form.descripcionProductoAcademico.trim()) {
+      Swal.fire({ icon: 'warning', title: 'Campos requeridos', text: 'Ingresa la descripción del producto académico.', confirmButtonColor: '#C41E3A' })
+      return
+    }
     setSaving(true)
     try {
       const body = {
@@ -121,7 +125,7 @@ const ProductosAcademicosSection = ({ items, cuenta, onReload }) => {
       >
         <div className="space-y-5">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Descripción</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Descripción<span className="text-red-500 ml-0.5">*</span></label>
             <textarea
               value={form.descripcionProductoAcademico}
               onChange={(e) => setForm(f => ({ ...f, descripcionProductoAcademico: e.target.value }))}

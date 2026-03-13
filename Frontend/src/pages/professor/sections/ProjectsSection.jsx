@@ -124,7 +124,19 @@ const ExperienciaLaboralSection = ({ items, cuenta, onReload }) => {
 
   const handleSave = async () => {
     if (!form.puestoId) {
-      Swal.fire({ icon: 'warning', title: 'Campo requerido', text: 'Selecciona el puesto o actividad.', confirmButtonColor: '#C41E3A' })
+      Swal.fire({ icon: 'warning', title: 'Campos requeridos', text: 'Selecciona el puesto o actividad.', confirmButtonColor: '#C41E3A' })
+      return
+    }
+    if (!form.institucionId) {
+      Swal.fire({ icon: 'warning', title: 'Campos requeridos', text: 'Selecciona la institución.', confirmButtonColor: '#C41E3A' })
+      return
+    }
+    if (form.experienciaLaboralTipo === '' || form.experienciaLaboralTipo === null || form.experienciaLaboralTipo === undefined) {
+      Swal.fire({ icon: 'warning', title: 'Campos requeridos', text: 'Selecciona el tipo de experiencia.', confirmButtonColor: '#C41E3A' })
+      return
+    }
+    if (!form.inicioMesAnio) {
+      Swal.fire({ icon: 'warning', title: 'Campos requeridos', text: 'Ingresa la fecha de inicio.', confirmButtonColor: '#C41E3A' })
       return
     }
     setSaving(true)
@@ -134,7 +146,7 @@ const ExperienciaLaboralSection = ({ items, cuenta, onReload }) => {
         puestoId: form.puestoId ? parseInt(form.puestoId) : null,
         actividadPuesto: form.puestoId ? parseInt(form.puestoId) : null,
         InstitucionId: form.institucionId ? parseInt(form.institucionId) : null,
-        ExperienciaLaboralTipo: form.experienciaLaboralTipo ? parseInt(form.experienciaLaboralTipo) : null,
+        ExperienciaLaboralTipo: (form.experienciaLaboralTipo !== '' && form.experienciaLaboralTipo != null) ? parseInt(form.experienciaLaboralTipo) : null,
         inicioMesAnio: form.inicioMesAnio || null,
         finMesAnio: form.finMesAnio || null,
         nivelExperiencia: form.nivelExperiencia || null
@@ -206,6 +218,7 @@ const ExperienciaLaboralSection = ({ items, cuenta, onReload }) => {
             value={form.puestoId}
             onChange={(v) => setForm(f => ({ ...f, puestoId: v }))}
             label="Puesto / Actividad"
+            required
             placeholder="Buscar o agregar puesto..."
             disabled={false}
             onCreateNew={handleCreatePuesto}
@@ -217,33 +230,37 @@ const ExperienciaLaboralSection = ({ items, cuenta, onReload }) => {
             value={form.institucionId}
             onChange={(v) => setForm(f => ({ ...f, institucionId: v }))}
             label="Institución"
+            required
             placeholder="Buscar o agregar institución..."
             disabled={false}
             onCreateNew={handleCreateInstitucion}
           />
-          <SearchableSelect
-            items={tiposExperiencia}
-            idKey="idTipoExperiencia"
-            nameKey="descTipoExperiencia"
-            value={form.experienciaLaboralTipo}
-            onChange={(v) => setForm(f => ({ ...f, experienciaLaboralTipo: v }))}
-            label="Tipo de experiencia"
-            placeholder="Buscar tipo de experiencia..."
-            disabled={false}
-          />
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Tipo de experiencia<span className="text-red-500 ml-0.5">*</span></label>
+            <select
+              value={form.experienciaLaboralTipo}
+              onChange={(e) => setForm(f => ({ ...f, experienciaLaboralTipo: e.target.value }))}
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
+            >
+              <option value="">Seleccionar...</option>
+              {tiposExperiencia.map(t => (
+                <option key={t.idTipoExperiencia} value={t.idTipoExperiencia}>{t.descTipoExperiencia}</option>
+              ))}
+            </select>
+          </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Nivel de experiencia</label>
             <input
               type="text"
               value={form.nivelExperiencia}
               onChange={(e) => setForm(f => ({ ...f, nivelExperiencia: e.target.value }))}
-              placeholder="Ej: Senior"
+              placeholder="Junior, Mid, Senior"
               className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
             />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Inicio</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Inicio<span className="text-red-500 ml-0.5">*</span></label>
               <input
                 type="text"
                 value={form.inicioMesAnio}

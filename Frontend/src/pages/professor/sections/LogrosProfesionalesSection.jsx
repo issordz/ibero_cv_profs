@@ -146,7 +146,7 @@ const LogrosProfesionalesSection = ({ items, cuenta, onReload }) => {
       >
         <div className="space-y-5">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Descripción del logro</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Descripción del logro<span className="text-red-500 ml-0.5">*</span></label>
             <textarea
               value={form.descLogro}
               onChange={(e) => setForm(f => ({ ...f, descLogro: e.target.value }))}

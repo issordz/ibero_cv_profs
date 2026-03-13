@@ -150,12 +150,13 @@ const OrganismosSection = ({ items, cuenta, onReload }) => {
             value={form.organismoId}
             onChange={(v) => setForm(f => ({ ...f, organismoId: v }))}
             label="Organismo"
+            required
             placeholder="Buscar o agregar organismo..."
             disabled={false}
             onCreateNew={handleCreateOrganismo}
           />
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Año de inicio</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Año de inicio<span className="text-red-500 ml-0.5">*</span></label>
             <input
               type="number"
               value={form.anioInicio}

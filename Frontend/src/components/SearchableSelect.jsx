@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { Search } from 'lucide-react'
 
-const SearchableSelect = ({ items = [], idKey = 'id', nameKey = 'nombre', value, onChange, label, placeholder = 'Buscar...', disabled = false, onCreateNew }) => {
+const SearchableSelect = ({ items = [], idKey = 'id', nameKey = 'nombre', value, onChange, label, placeholder = 'Buscar...', disabled = false, onCreateNew, required = false }) => {
   const [search, setSearch] = useState('')
   const [showDropdown, setShowDropdown] = useState(false)
   const dropdownRef = useRef(null)
@@ -32,7 +32,7 @@ const SearchableSelect = ({ items = [], idKey = 'id', nameKey = 'nombre', value,
 
   return (
     <div ref={dropdownRef} className="relative">
-      {label && <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>}
+      {label && <label className="block text-sm font-medium text-gray-700 mb-1">{label}{required && <span className="text-red-500 ml-0.5">*</span>}</label>}
       <div className="relative">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
         <input

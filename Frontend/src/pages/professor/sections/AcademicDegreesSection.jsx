@@ -99,8 +99,24 @@ const AcademicDegreesSection = ({ degrees, cuenta, onReload }) => {
   }
 
   const handleSave = async () => {
+    if (!form.idNivelEstudio) {
+      Swal.fire({ icon: 'warning', title: 'Campos requeridos', text: 'Selecciona el nivel de estudio.', confirmButtonColor: '#C41E3A' })
+      return
+    }
     if (!form.carreraId) {
-      Swal.fire({ icon: 'warning', title: 'Campo requerido', text: 'Selecciona una carrera.', confirmButtonColor: '#C41E3A' })
+      Swal.fire({ icon: 'warning', title: 'Campos requeridos', text: 'Selecciona una carrera.', confirmButtonColor: '#C41E3A' })
+      return
+    }
+    if (!form.idInstitucionEducativa) {
+      Swal.fire({ icon: 'warning', title: 'Campos requeridos', text: 'Selecciona la institución educativa.', confirmButtonColor: '#C41E3A' })
+      return
+    }
+    if (!form.pais || parseInt(form.pais) === 0) {
+      Swal.fire({ icon: 'warning', title: 'Campos requeridos', text: 'Selecciona el país.', confirmButtonColor: '#C41E3A' })
+      return
+    }
+    if (!form.anioObtencion) {
+      Swal.fire({ icon: 'warning', title: 'Campos requeridos', text: 'Ingresa el año de obtención.', confirmButtonColor: '#C41E3A' })
       return
     }
     setSaving(true)
@@ -155,6 +171,7 @@ const AcademicDegreesSection = ({ degrees, cuenta, onReload }) => {
             const hasWarning = d.carrera?.id === 0 || d.carrera?.idCarrera === 0
               || d.nivelEstudio?.id === 0
               || d.institucionEducativa?.id === 0
+              || parseInt(d.pais?.id) === 0
             return (
               <SummaryCard
                 key={d.id || idx}
@@ -162,6 +179,7 @@ const AcademicDegreesSection = ({ degrees, cuenta, onReload }) => {
                 subtitle={d.nivelEstudio?.nombre || ''}
                 details={[
                   d.institucionEducativa?.nombre,
+                  d.pais?.nombre,
                   d.anioObtencion?.toString(),
                   d.cedula ? `Cédula: ${d.cedula}` : null
                 ].filter(Boolean)}
@@ -181,7 +199,7 @@ const AcademicDegreesSection = ({ degrees, cuenta, onReload }) => {
       >
         <div className="space-y-5">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Nivel de estudio</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Nivel de estudio<span className="text-red-500 ml-0.5">*</span></label>
             <select
               value={form.idNivelEstudio}
               onChange={(e) => setForm(f => ({ ...f, idNivelEstudio: e.target.value }))}
@@ -200,6 +218,7 @@ const AcademicDegreesSection = ({ degrees, cuenta, onReload }) => {
             value={form.carreraId}
             onChange={(v) => setForm(f => ({ ...f, carreraId: v }))}
             label="Carrera"
+            required
             placeholder="Buscar o agregar carrera..."
             disabled={false}
             onCreateNew={handleCreateCarrera}
@@ -211,26 +230,30 @@ const AcademicDegreesSection = ({ degrees, cuenta, onReload }) => {
             value={form.idInstitucionEducativa}
             onChange={(v) => setForm(f => ({ ...f, idInstitucionEducativa: v }))}
             label="Institución educativa"
+            required
             placeholder="Buscar o agregar institución..."
             disabled={false}
             onCreateNew={handleCreateInstitucionEducativa}
           />
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">País</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">País<span className="text-red-500 ml-0.5">*</span></label>
             <select
               value={form.pais}
               onChange={(e) => setForm(f => ({ ...f, pais: e.target.value }))}
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
+              className={`w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500 ${parseInt(form.pais) === 0 ? 'border-yellow-400 bg-yellow-50' : 'border-gray-200'}`}
             >
               <option value="">Seleccionar...</option>
               {paises.map(p => (
                 <option key={p.idPais} value={p.idPais}>{p.nombrePais}</option>
               ))}
             </select>
+            {parseInt(form.pais) === 0 && (
+              <p className="mt-1 text-xs text-amber-600">El país de este registro no está identificado. Selecciona el país correcto.</p>
+            )}
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Año de obtención</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Año de obtención<span className="text-red-500 ml-0.5">*</span></label>
               <input
                 type="number"
                 value={form.anioObtencion}

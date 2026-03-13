@@ -102,7 +102,23 @@ const CapacitacionSection = ({ items, cuenta, onReload }) => {
 
   const handleSave = async () => {
     if (!form.nombreCapacitacion.trim()) {
-      Swal.fire({ icon: 'warning', title: 'Campo requerido', text: 'Ingresa el nombre de la capacitación.', confirmButtonColor: '#C41E3A' })
+      Swal.fire({ icon: 'warning', title: 'Campos requeridos', text: 'Ingresa el nombre de la capacitación.', confirmButtonColor: '#C41E3A' })
+      return
+    }
+    if (!form.idTipoCapacitacion) {
+      Swal.fire({ icon: 'warning', title: 'Campos requeridos', text: 'Selecciona el tipo de capacitación.', confirmButtonColor: '#C41E3A' })
+      return
+    }
+    if (!form.pais || parseInt(form.pais) === 0) {
+      Swal.fire({ icon: 'warning', title: 'Campos requeridos', text: 'Selecciona el país.', confirmButtonColor: '#C41E3A' })
+      return
+    }
+    if (!form.idTipoCurso) {
+      Swal.fire({ icon: 'warning', title: 'Campos requeridos', text: 'Selecciona el tipo de curso.', confirmButtonColor: '#C41E3A' })
+      return
+    }
+    if (!form.anioObtencion) {
+      Swal.fire({ icon: 'warning', title: 'Campos requeridos', text: 'Ingresa el año de obtención.', confirmButtonColor: '#C41E3A' })
       return
     }
     setSaving(true)
@@ -169,7 +185,7 @@ const CapacitacionSection = ({ items, cuenta, onReload }) => {
               ].filter(Boolean)}
               onEdit={() => openEdit(item)}
               onDelete={() => handleDelete(item)}
-              hasWarning={item.capacitacion?.id === 0 || item.tipoCurso?.id === 0}
+              hasWarning={item.capacitacion?.id === 0 || item.tipoCurso?.id === 0 || parseInt(item.pais?.id) === 0}
             />
           ))}
         </div>
@@ -182,7 +198,7 @@ const CapacitacionSection = ({ items, cuenta, onReload }) => {
       >
         <div className="space-y-5">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Nombre de la capacitación</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Nombre de la capacitación<span className="text-red-500 ml-0.5">*</span></label>
             <input
               type="text"
               value={form.nombreCapacitacion}
@@ -191,25 +207,28 @@ const CapacitacionSection = ({ items, cuenta, onReload }) => {
               className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
             />
           </div>
-          <SearchableSelect
-            items={tiposCapacitacion}
-            idKey="idTipoCapacitacion"
-            nameKey="descTipoCapacitacion"
-            value={form.idTipoCapacitacion}
-            onChange={(v) => setForm(f => ({ ...f, idTipoCapacitacion: v }))}
-            label="Tipo de capacitación"
-            placeholder="Buscar tipo de capacitación..."
-            disabled={false}
-          />
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Tipo de curso</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Tipo de capacitación<span className="text-red-500 ml-0.5">*</span></label>
+            <select
+              value={form.idTipoCapacitacion}
+              onChange={(e) => setForm(f => ({ ...f, idTipoCapacitacion: e.target.value }))}
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
+            >
+              <option value="">Seleccionar...</option>
+              {tiposCapacitacion.filter(t => t.idTipoCapacitacion !== 0).map(t => (
+                <option key={t.idTipoCapacitacion} value={t.idTipoCapacitacion}>{t.descTipoCapacitacion}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Tipo de curso<span className="text-red-500 ml-0.5">*</span></label>
             <select
               value={form.idTipoCurso}
               onChange={(e) => setForm(f => ({ ...f, idTipoCurso: e.target.value }))}
               className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
             >
               <option value="">Seleccionar...</option>
-              {tiposCurso.map(t => (
+              {tiposCurso.filter(t => t.idTipoCurso !== 0).map(t => (
                 <option key={t.idTipoCurso} value={t.idTipoCurso}>{t.descTipoCurso}</option>
               ))}
             </select>
@@ -226,21 +245,24 @@ const CapacitacionSection = ({ items, cuenta, onReload }) => {
             onCreateNew={handleCreateInstitucionEducativa}
           />
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">País</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">País<span className="text-red-500 ml-0.5">*</span></label>
             <select
               value={form.pais}
               onChange={(e) => setForm(f => ({ ...f, pais: e.target.value }))}
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
+              className={`w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500 ${parseInt(form.pais) === 0 ? 'border-yellow-400 bg-yellow-50' : 'border-gray-200'}`}
             >
               <option value="">Seleccionar...</option>
               {paises.map(p => (
                 <option key={p.idPais} value={p.idPais}>{p.nombrePais}</option>
               ))}
             </select>
+            {parseInt(form.pais) === 0 && (
+              <p className="mt-1 text-xs text-amber-600">El país de este registro no está identificado. Selecciona el país correcto.</p>
+            )}
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Año de obtención</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Año de obtención<span className="text-red-500 ml-0.5">*</span></label>
               <input
                 type="number"
                 value={form.anioObtencion}

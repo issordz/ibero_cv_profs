@@ -117,7 +117,7 @@ const PremiosDistincionesSection = ({ items, cuenta, onReload }) => {
               value={form.descPremio}
               onChange={(e) => setForm(f => ({ ...f, descPremio: e.target.value }))}
               rows={3}
-              placeholder="Describe el premio o distinción..."
+              placeholder="Describe el premio o distinción y especifica institución otorgante..."
               className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500 resize-y"
             />
           </div>

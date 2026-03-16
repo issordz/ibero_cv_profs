@@ -169,7 +169,7 @@ const LogrosProfesionalesSection = ({ items, cuenta, onReload }) => {
           />
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Año de obtención</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Año de obtención del logro</label>
             <input
               type="number"
               value={form.anioObtencion}

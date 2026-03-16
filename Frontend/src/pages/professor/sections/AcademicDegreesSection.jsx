@@ -116,7 +116,7 @@ const AcademicDegreesSection = ({ degrees, cuenta, onReload }) => {
       return
     }
     if (!form.anioObtencion) {
-      Swal.fire({ icon: 'warning', title: 'Campos requeridos', text: 'Ingresa el año de obtención.', confirmButtonColor: '#C41E3A' })
+      Swal.fire({ icon: 'warning', title: 'Campos requeridos', text: 'Ingresa el año de obtención del título.', confirmButtonColor: '#C41E3A' })
       return
     }
     setSaving(true)
@@ -253,7 +253,7 @@ const AcademicDegreesSection = ({ degrees, cuenta, onReload }) => {
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Año de obtención<span className="text-red-500 ml-0.5">*</span></label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Año de obtención del título<span className="text-red-500 ml-0.5">*</span></label>
               <input
                 type="number"
                 value={form.anioObtencion}

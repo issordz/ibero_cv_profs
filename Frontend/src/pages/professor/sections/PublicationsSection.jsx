@@ -10,7 +10,12 @@ import Swal from 'sweetalert2'
 const ProductosAcademicosSection = ({ items, cuenta, onReload }) => {
   const [panelOpen, setPanelOpen] = useState(false)
   const [editingItem, setEditingItem] = useState(null)
-  const [form, setForm] = useState({ descripcionProductoAcademico: '', anioProducto: '', institucionEducativaId: '' })
+  const parseDesc = (str) => {
+    const parts = (str || '').split(';')
+    return { tipo: parts[0] || '', titulo: parts[1] || '', publicacion: parts[2] || '', editorial: parts[3] || '' }
+  }
+
+  const [form, setForm] = useState({ tipo: '', titulo: '', publicacion: '', editorial: '', anioProducto: '', institucionEducativaId: '' })
   const [saving, setSaving] = useState(false)
   const [educativas, setEducativas] = useState([])
 
@@ -20,14 +25,18 @@ const ProductosAcademicosSection = ({ items, cuenta, onReload }) => {
 
   const openCreate = () => {
     setEditingItem(null)
-    setForm({ descripcionProductoAcademico: '', anioProducto: '', institucionEducativaId: '' })
+    setForm({ tipo: '', titulo: '', publicacion: '', editorial: '', anioProducto: '', institucionEducativaId: '' })
     setPanelOpen(true)
   }
 
   const openEdit = (item) => {
     setEditingItem(item)
+    const parsed = parseDesc(item.descripcionProductoAcademico)
     setForm({
-      descripcionProductoAcademico: item.descripcionProductoAcademico || '',
+      tipo: parsed.tipo,
+      titulo: parsed.titulo,
+      publicacion: parsed.publicacion,
+      editorial: parsed.editorial,
       anioProducto: item.anioProducto || '',
       institucionEducativaId: item.institucion?.id || item.institucionEducativaId || ''
     })
@@ -56,14 +65,19 @@ const ProductosAcademicosSection = ({ items, cuenta, onReload }) => {
   }
 
   const handleSave = async () => {
-    if (!form.descripcionProductoAcademico.trim()) {
-      Swal.fire({ icon: 'warning', title: 'Campos requeridos', text: 'Ingresa la descripción del producto académico.', confirmButtonColor: '#C41E3A' })
+    if (!form.tipo) {
+      Swal.fire({ icon: 'warning', title: 'Campos requeridos', text: 'Selecciona el tipo de producto.', confirmButtonColor: '#C41E3A' })
+      return
+    }
+    if (!form.titulo.trim()) {
+      Swal.fire({ icon: 'warning', title: 'Campos requeridos', text: 'Ingresa el título del producto académico.', confirmButtonColor: '#C41E3A' })
       return
     }
     setSaving(true)
     try {
+      const descripcion = [form.tipo, form.titulo, form.publicacion, form.editorial].join(';')
       const body = {
-        descripcionProductoAcademico: form.descripcionProductoAcademico || null,
+        descripcionProductoAcademico: descripcion,
         anioProducto: form.anioProducto ? parseInt(form.anioProducto) : null,
         institucionEducativaId: form.institucionEducativaId || null,
         cuenta: parseInt(cuenta)
@@ -107,9 +121,9 @@ const ProductosAcademicosSection = ({ items, cuenta, onReload }) => {
           {items.map((item, idx) => (
             <SummaryCard
               key={item.id || idx}
-              title={item.descripcionProductoAcademico || 'Sin descripción'}
-              subtitle={item.institucion?.nombre || ''}
-              details={[item.anioProducto?.toString()].filter(Boolean)}
+              title={item.descripcionProductoAcademico?.split(';')[1] || item.descripcionProductoAcademico || 'Sin título'}
+              subtitle={item.descripcionProductoAcademico?.split(';')[0] || ''}
+              details={[item.institucion?.nombre, item.anioProducto?.toString()].filter(Boolean)}
               onEdit={() => openEdit(item)}
               onDelete={() => handleDelete(item)}
               hasWarning={item.institucion?.id === 0}
@@ -125,24 +139,45 @@ const ProductosAcademicosSection = ({ items, cuenta, onReload }) => {
       >
         <div className="space-y-5">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Descripción<span className="text-red-500 ml-0.5">*</span></label>
-            <textarea
-              value={form.descripcionProductoAcademico}
-              onChange={(e) => setForm(f => ({ ...f, descripcionProductoAcademico: e.target.value }))}
-              rows={4}
-              placeholder="Describe el producto académico..."
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500 resize-y"
+            <label className="block text-sm font-medium text-gray-700 mb-1">Tipo<span className="text-red-500 ml-0.5">*</span></label>
+            <select
+              value={form.tipo}
+              onChange={(e) => setForm(f => ({ ...f, tipo: e.target.value }))}
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
+            >
+              <option value="">Seleccionar...</option>
+              <option value="Libro">Libro</option>
+              <option value="Capítulo">Capítulo</option>
+              <option value="Artículo">Artículo</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Título<span className="text-red-500 ml-0.5">*</span></label>
+            <input
+              type="text"
+              value={form.titulo}
+              onChange={(e) => setForm(f => ({ ...f, titulo: e.target.value }))}
+              placeholder="Título del libro, capítulo o artículo"
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Año</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Publicación</label>
             <input
-              type="number"
-              value={form.anioProducto}
-              onChange={(e) => setForm(f => ({ ...f, anioProducto: e.target.value }))}
-              placeholder="Ej: 2024"
-              min="1950"
-              max={new Date().getFullYear()}
+              type="text"
+              value={form.publicacion}
+              onChange={(e) => setForm(f => ({ ...f, publicacion: e.target.value }))}
+              placeholder="Nombre de la revista o publicación académica (si aplica)"
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Editorial</label>
+            <input
+              type="text"
+              value={form.editorial}
+              onChange={(e) => setForm(f => ({ ...f, editorial: e.target.value }))}
+              placeholder="Nombre de la editorial (si aplica)"
               className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
             />
           </div>
@@ -156,6 +191,18 @@ const ProductosAcademicosSection = ({ items, cuenta, onReload }) => {
             placeholder="Buscar institución..."
             disabled={educativas.length === 0}
           />
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Año</label>
+            <input
+              type="number"
+              value={form.anioProducto}
+              onChange={(e) => setForm(f => ({ ...f, anioProducto: e.target.value }))}
+              placeholder="Ej: 2024"
+              min="1950"
+              max={new Date().getFullYear()}
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
+            />
+          </div>
           <button
             onClick={handleSave}
             disabled={saving}

@@ -105,14 +105,14 @@ const Login = () => {
                 onClick={() => Swal.fire({
                   icon: 'info',
                   title: 'Tu contraseña de acceso',
-                  html: `<p style="text-align:left;font-size:14px">La contraseña que debes usar es la misma que utilizas en <strong>Control Escolar</strong> (SIIA / portal institucional).</p><p style="text-align:left;font-size:14px;margin-top:10px">Si no la recuerdas, deberás restablecerla directamente desde <strong>Control Escolar</strong>. Este portal no gestiona contraseñas de forma independiente.</p>`,
+                  html: `<p style="text-align:left;font-size:14px">La contraseña que debes usar es la misma que utilizas en <strong>Recursos humanos</strong> (SIIA / portal institucional).</p><p style="text-align:left;font-size:14px;margin-top:10px">Si no la recuerdas, deberás restablecerla directamente desde <strong>Recursos humanos</strong>. Este portal no gestiona contraseñas de forma independiente.</p>`,
                   confirmButtonColor: '#C41E3A',
                   confirmButtonText: 'Entendido'
                 })}
               >
                 <Info size={15} className="flex-shrink-0 mt-0.5" style={{ color: '#2563eb' }} />
                 <p className="text-xs" style={{ color: '#1e40af' }}>
-                  Utiliza la contraseña de <strong>Control Escolar</strong>.<br />¿Olvidaste tu contraseña? <br />Recupérala desde el portal de Control Escolar.
+                  Utiliza la contraseña de <strong>Recursos humanos</strong>.<br />¿Olvidaste tu contraseña? <br />Recupérala desde el portal de Recursos humanos.
                 </p>
               </div>
 

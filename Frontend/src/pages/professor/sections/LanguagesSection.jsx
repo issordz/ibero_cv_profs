@@ -10,7 +10,7 @@ import Swal from 'sweetalert2'
 const OrganismosSection = ({ items, cuenta, onReload }) => {
   const [panelOpen, setPanelOpen] = useState(false)
   const [editingItem, setEditingItem] = useState(null)
-  const [form, setForm] = useState({ organismoId: '', anioInicio: '', anioFin: '', nivelExperiencia: '' })
+  const [form, setForm] = useState({ organismoId: '', anioInicio: '', anioFin: '' })
   const [saving, setSaving] = useState(false)
   const [organismos, setOrganismos] = useState([])
 
@@ -20,7 +20,7 @@ const OrganismosSection = ({ items, cuenta, onReload }) => {
 
   const openCreate = () => {
     setEditingItem(null)
-    setForm({ organismoId: '', anioInicio: '', anioFin: '', nivelExperiencia: '' })
+    setForm({ organismoId: '', anioInicio: '', anioFin: '' })
     setPanelOpen(true)
   }
 
@@ -29,8 +29,7 @@ const OrganismosSection = ({ items, cuenta, onReload }) => {
     setForm({
       organismoId: item.organismo?.id || item.organismoId || '',
       anioInicio: item.anioInicio || '',
-      anioFin: item.anioFin || '',
-      nivelExperiencia: item.nivelExperiencia || ''
+      anioFin: item.anioFin || ''
     })
     setPanelOpen(true)
   }
@@ -84,7 +83,7 @@ const OrganismosSection = ({ items, cuenta, onReload }) => {
         organismoId: parseInt(form.organismoId),
         anioInicio: parseInt(form.anioInicio),
         anioFin: form.anioFin ? parseInt(form.anioFin) : null,
-        nivelExperiencia: form.nivelExperiencia || null,
+        nivelExperiencia: null,
         cuenta: parseInt(cuenta)
       }
       if (editingItem) {
@@ -127,7 +126,7 @@ const OrganismosSection = ({ items, cuenta, onReload }) => {
             <SummaryCard
               key={item.id || idx}
               title={item.organismo?.nombre || 'Sin organismo'}
-              subtitle={item.nivelExperiencia || ''}
+              subtitle={null}
               details={[`${item.anioInicio || '?'} – ${item.anioFin || 'Actual'}`]}
               onEdit={() => openEdit(item)}
               onDelete={() => handleDelete(item)}
@@ -176,16 +175,6 @@ const OrganismosSection = ({ items, cuenta, onReload }) => {
               placeholder="Ej: 2023"
               min="1950"
               max={new Date().getFullYear() + 10}
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Nivel / Categoría</label>
-            <input
-              type="text"
-              value={form.nivelExperiencia}
-              onChange={(e) => setForm(f => ({ ...f, nivelExperiencia: e.target.value }))}
-              placeholder="Ej: Nivel II"
               className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
             />
           </div>

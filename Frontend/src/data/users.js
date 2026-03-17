@@ -333,8 +333,8 @@ export const formSections = [
   { id: 'experiencia-laboral', label: 'Experiencia Laboral', icon: 'Briefcase' },
   { id: 'capacitacion-actualizacion', label: 'Capacitación / Actualización', icon: 'BookOpen' },
   { id: 'logros-profesionales', label: 'Logros Profesionales', icon: 'Award' },
-  { id: 'organismos', label: 'Organismos', icon: 'Users' },
   { id: 'premios-distinciones', label: 'Premios y Distinciones', icon: 'Trophy' },
+  { id: 'organismos', label: 'Organismos', icon: 'Users' },
   { id: 'productos-academicos', label: 'Productos Académicos', icon: 'FileText' }
 ]
 

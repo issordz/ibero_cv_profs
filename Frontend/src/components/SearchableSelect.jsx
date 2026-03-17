@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from 'react'
-import { Search } from 'lucide-react'
+import { Search, Info } from 'lucide-react'
 
 const SearchableSelect = ({ items = [], idKey = 'id', nameKey = 'nombre', value, onChange, label, placeholder = 'Buscar...', disabled = false, onCreateNew, required = false }) => {
   const [search, setSearch] = useState('')
   const [showDropdown, setShowDropdown] = useState(false)
+  const [showTooltip, setShowTooltip] = useState(false)
   const dropdownRef = useRef(null)
 
   useEffect(() => {
@@ -32,7 +33,22 @@ const SearchableSelect = ({ items = [], idKey = 'id', nameKey = 'nombre', value,
 
   return (
     <div ref={dropdownRef} className="relative">
-      {label && <label className="block text-sm font-medium text-gray-700 mb-1">{label}{required && <span className="text-red-500 ml-0.5">*</span>}</label>}
+      {label && (
+        <div className="flex items-center gap-1 mb-1">
+          <label className="block text-sm font-medium text-gray-700">{label}{required && <span className="text-red-500 ml-0.5">*</span>}</label>
+          {onCreateNew && (
+            <div className="relative" onMouseEnter={() => setShowTooltip(true)} onMouseLeave={() => setShowTooltip(false)}>
+              <Info size={13} className="text-blue-400 cursor-help flex-shrink-0" />
+              {showTooltip && (
+                <div className="absolute left-0 top-full mt-2 w-56 bg-red-700 text-white text-xs rounded-lg px-2.5 py-2 z-50 shadow-lg">
+                  <div className="absolute left-2 bottom-full w-0 h-0 border-x-4 border-x-transparent border-b-4 border-b-red-700"></div>
+                  Si el valor buscado no se encuentra, escríbelo y selecciona <span className="font-semibold text-yellow-300">"+ Crear"</span> para registrarlo.
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      )}
       <div className="relative">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
         <input

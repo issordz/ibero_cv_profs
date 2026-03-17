@@ -229,14 +229,14 @@ const ExperienciaLaboralSection = ({ items, cuenta, onReload }) => {
             nameKey="nombreInstitucion"
             value={form.institucionId}
             onChange={(v) => setForm(f => ({ ...f, institucionId: v }))}
-            label="Institución"
+            label="Nombre de empresa o institución"
             required
             placeholder="Buscar o agregar institución..."
             disabled={false}
             onCreateNew={handleCreateInstitucion}
           />
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Tipo de experiencia<span className="text-red-500 ml-0.5">*</span></label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">¿Corresponde a experiencia ingenieril?<span className="text-red-500 ml-0.5">*</span></label>
             <select
               value={form.experienciaLaboralTipo}
               onChange={(e) => setForm(f => ({ ...f, experienciaLaboralTipo: e.target.value }))}

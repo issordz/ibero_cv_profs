@@ -55,7 +55,7 @@ const GeneralDataSection = ({ faculty, cuenta }) => {
           value={resumen}
           onChange={(e) => setResumen(e.target.value)}
           rows={4}
-          placeholder="Escribe un breve resumen profesional..."
+          placeholder="Escribe un resumen ejecutivo de tu trayectoria profesional durante los últimos 5 años..."
           className="w-full px-4 py-3 border border-gray-200 rounded-lg text-gray-700 text-sm focus:outline-none focus:border-red-400 focus:ring-1 focus:ring-red-400 resize-y"
         />
 

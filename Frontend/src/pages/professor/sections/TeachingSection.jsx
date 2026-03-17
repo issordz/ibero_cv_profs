@@ -10,30 +10,30 @@ import Swal from 'sweetalert2'
 const CapacitacionSection = ({ items, cuenta, onReload }) => {
   const [panelOpen, setPanelOpen] = useState(false)
   const [editingItem, setEditingItem] = useState(null)
-  const [form, setForm] = useState({ nombreCapacitacion: '', idTipoCapacitacion: '', idInstitucionEducativa: '', idTipoCurso: '', pais: '', anioObtencion: '', horas: '', vigencia: '' })
+  const [form, setForm] = useState({ nombreCapacitacion: '', idTipoCapacitacion: '', institucionId: '', idTipoCurso: '', pais: '', anioObtencion: '', horas: '' })
   const [saving, setSaving] = useState(false)
-  const [educativas, setEducativas] = useState([])
+  const [instituciones, setInstituciones] = useState([])
   const [tiposCapacitacion, setTiposCapacitacion] = useState([])
   const [tiposCurso, setTiposCurso] = useState([])
   const [paises, setPaises] = useState([])
 
   useEffect(() => {
-    fetchCatalog('educativas').then(setEducativas)
+    fetchCatalog('instituciones').then(setInstituciones)
     fetchCatalog('tipoCapacitacion').then(setTiposCapacitacion)
     fetchCatalog('tipoCurso').then(setTiposCurso)
     fetchCatalog('paises').then(setPaises)
   }, [])
 
-  const handleCreateInstitucionEducativa = async (nombre) => {
+  const handleCreateInstitucion = async (nombre) => {
     try {
-      await catalogoPost('institucion-educativa', { nombreInstitucion: nombre })
-      const updatedList = await fetchCatalog('educativas', true)
-      setEducativas(updatedList)
+      await catalogoPost('institucione', { descripcion: nombre })
+      const updatedList = await fetchCatalog('instituciones', true)
+      setInstituciones(updatedList)
       const found = updatedList.find(i =>
         (i.nombreInstitucion || '').toLowerCase() === nombre.toLowerCase()
       )
       if (found) {
-        setForm(f => ({ ...f, idInstitucionEducativa: found.idInstitucionEducativa }))
+        setForm(f => ({ ...f, institucionId: found.idInstitucion }))
       }
       Swal.fire({ icon: 'success', title: 'Institución creada', text: `"${nombre}" fue agregada al catálogo.`, timer: 1800, showConfirmButton: false })
     } catch (error) {
@@ -60,7 +60,7 @@ const CapacitacionSection = ({ items, cuenta, onReload }) => {
 
   const openCreate = () => {
     setEditingItem(null)
-    setForm({ nombreCapacitacion: '', idTipoCapacitacion: '', idInstitucionEducativa: '', idTipoCurso: '', pais: '484', anioObtencion: '', horas: '', vigencia: '' })
+    setForm({ nombreCapacitacion: '', idTipoCapacitacion: '', institucionId: '', idTipoCurso: '', pais: '484', anioObtencion: '', horas: '' })
     setPanelOpen(true)
   }
 
@@ -69,12 +69,11 @@ const CapacitacionSection = ({ items, cuenta, onReload }) => {
     setForm({
       nombreCapacitacion: item.nombreCapacitacion || '',
       idTipoCapacitacion: item.capacitacion?.id || item.idTipoCapacitacion || '',
-      idInstitucionEducativa: item.idInstitucionEducativa || '',
+      institucionId: item.idInstitucionEducativa || '',
       idTipoCurso: item.tipoCurso?.id || item.idTipoCurso || '',
       pais: item.pais?.id || '',
       anioObtencion: item.anioObtencion || '',
-      horas: item.horas || '',
-      vigencia: item.vigencia ? item.vigencia.substring(0, 10) : ''
+      horas: item.horas || ''
     })
     setPanelOpen(true)
   }
@@ -102,7 +101,7 @@ const CapacitacionSection = ({ items, cuenta, onReload }) => {
 
   const handleSave = async () => {
     if (!form.nombreCapacitacion.trim()) {
-      Swal.fire({ icon: 'warning', title: 'Campos requeridos', text: 'Ingresa el nombre de la capacitación.', confirmButtonColor: '#C41E3A' })
+      Swal.fire({ icon: 'warning', title: 'Campos requeridos', text: 'Ingresa el nombre de la capacitación disciplinar.', confirmButtonColor: '#C41E3A' })
       return
     }
     if (!form.idTipoCapacitacion) {
@@ -118,7 +117,7 @@ const CapacitacionSection = ({ items, cuenta, onReload }) => {
       return
     }
     if (!form.anioObtencion) {
-      Swal.fire({ icon: 'warning', title: 'Campos requeridos', text: 'Ingresa el año de obtención.', confirmButtonColor: '#C41E3A' })
+      Swal.fire({ icon: 'warning', title: 'Campos requeridos', text: 'Ingresa el año de obtención del título.', confirmButtonColor: '#C41E3A' })
       return
     }
     setSaving(true)
@@ -127,12 +126,12 @@ const CapacitacionSection = ({ items, cuenta, onReload }) => {
         cuenta: parseInt(cuenta),
         nombreCapacitacion: form.nombreCapacitacion,
         idTipoCapacitacion: form.idTipoCapacitacion ? parseInt(form.idTipoCapacitacion) : null,
-        idInstitucionEducativa: form.idInstitucionEducativa ? parseInt(form.idInstitucionEducativa) : null,
+        idInstitucionEducativa: form.institucionId ? parseInt(form.institucionId) : null,
         idTipoCurso: form.idTipoCurso ? parseInt(form.idTipoCurso) : null,
         pais: form.pais || null,
         anioObtencion: form.anioObtencion ? parseInt(form.anioObtencion) : null,
         horas: form.horas ? parseInt(form.horas) : null,
-        vigencia: form.vigencia || null
+        vigencia: null
       }
       if (editingItem) {
         await apiPut(`api/CapacitacionActualizacion/${editingItem.id}`, body)
@@ -179,7 +178,7 @@ const CapacitacionSection = ({ items, cuenta, onReload }) => {
                 item.tipoCurso?.nombre || null
               ].filter(Boolean).join(' · ')}
               details={[
-                educativas.find(e => e.idInstitucionEducativa === item.idInstitucionEducativa)?.nombreInstitucion || null,
+                instituciones.find(e => e.idInstitucion?.toString() === item.idInstitucionEducativa?.toString())?.nombreInstitucion || null,
                 item.anioObtencion?.toString() || null,
                 item.pais?.nombre || null
               ].filter(Boolean)}
@@ -198,7 +197,7 @@ const CapacitacionSection = ({ items, cuenta, onReload }) => {
       >
         <div className="space-y-5">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Nombre de la capacitación<span className="text-red-500 ml-0.5">*</span></label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Nombre de la capacitación disciplinar<span className="text-red-500 ml-0.5">*</span></label>
             <input
               type="text"
               value={form.nombreCapacitacion}
@@ -234,15 +233,15 @@ const CapacitacionSection = ({ items, cuenta, onReload }) => {
             </select>
           </div>
           <SearchableSelect
-            items={educativas}
-            idKey="idInstitucionEducativa"
+            items={instituciones}
+            idKey="idInstitucion"
             nameKey="nombreInstitucion"
-            value={form.idInstitucionEducativa}
-            onChange={(v) => setForm(f => ({ ...f, idInstitucionEducativa: v }))}
-            label="Institución educativa"
+            value={form.institucionId}
+            onChange={(v) => setForm(f => ({ ...f, institucionId: v }))}
+            label="Institución"
             placeholder="Buscar o agregar institución..."
             disabled={false}
-            onCreateNew={handleCreateInstitucionEducativa}
+            onCreateNew={handleCreateInstitucion}
           />
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">País<span className="text-red-500 ml-0.5">*</span></label>
@@ -284,15 +283,6 @@ const CapacitacionSection = ({ items, cuenta, onReload }) => {
                 className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
               />
             </div>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Fecha de vigencia</label>
-            <input
-              type="date"
-              value={form.vigencia}
-              onChange={(e) => setForm(f => ({ ...f, vigencia: e.target.value }))}
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
-            />
           </div>
           <button
             onClick={handleSave}

@@ -10,15 +10,13 @@ import Swal from 'sweetalert2'
 const ExperienciaLaboralSection = ({ items, cuenta, onReload }) => {
   const [panelOpen, setPanelOpen] = useState(false)
   const [editingItem, setEditingItem] = useState(null)
-  const [form, setForm] = useState({ puestoId: '', institucionId: '', experienciaLaboralTipo: '', inicioMesAnio: '', finMesAnio: '', nivelExperiencia: '' })
+  const [form, setForm] = useState({ puestoId: '', institucionId: '', inicioMesAnio: '', finMesAnio: '', nivelExperiencia: '' })
   const [saving, setSaving] = useState(false)
   const [instituciones, setInstituciones] = useState([])
-  const [tiposExperiencia, setTiposExperiencia] = useState([])
   const [puestosGenerales, setPuestosGenerales] = useState([])
 
   useEffect(() => {
     fetchCatalog('instituciones').then(setInstituciones)
-    fetchCatalog('tipoExperiencia').then(setTiposExperiencia)
     fetchCatalog('puestoGeneral').then(setPuestosGenerales)
   }, [])
 
@@ -56,23 +54,6 @@ const ExperienciaLaboralSection = ({ items, cuenta, onReload }) => {
     }
   }
 
-  const handleCreateTipoExperiencia = async (nombre) => {
-    try {
-      await catalogoPost('experiencia-laboral', { descTipoExperiencia: nombre })
-      const updatedList = await fetchCatalog('tipoExperiencia', true)
-      setTiposExperiencia(updatedList)
-      const found = updatedList.find(i =>
-        (i.descTipoExperiencia || '').toLowerCase() === nombre.toLowerCase()
-      )
-      if (found) {
-        setForm(f => ({ ...f, experienciaLaboralTipo: found.idTipoExperiencia }))
-      }
-      Swal.fire({ icon: 'success', title: 'Tipo creado', text: `"${nombre}" fue agregado al catálogo.`, timer: 1800, showConfirmButton: false })
-    } catch (error) {
-      Swal.fire({ icon: 'error', title: 'Error', text: error.message || 'No se pudo crear el tipo de experiencia.', confirmButtonColor: '#C41E3A' })
-    }
-  }
-
   const handleDateInput = (rawValue, field) => {
     const digits = rawValue.replace(/\D/g, '').substring(0, 6)
     if (digits.length === 0) { setForm(f => ({ ...f, [field]: '' })); return }
@@ -84,7 +65,7 @@ const ExperienciaLaboralSection = ({ items, cuenta, onReload }) => {
 
   const openCreate = () => {
     setEditingItem(null)
-    setForm({ puestoId: '', institucionId: '', experienciaLaboralTipo: '', inicioMesAnio: '', finMesAnio: '', nivelExperiencia: '' })
+    setForm({ puestoId: '', institucionId: '', inicioMesAnio: '', finMesAnio: '', nivelExperiencia: '' })
     setPanelOpen(true)
   }
 
@@ -93,7 +74,6 @@ const ExperienciaLaboralSection = ({ items, cuenta, onReload }) => {
     setForm({
       puestoId: item.puesto?.id || item.puestoId || '',
       institucionId: item.institucion?.id || item.institucionId || '',
-      experienciaLaboralTipo: item.tipoExperiencia?.id || item.experienciaLaboralTipo || '',
       inicioMesAnio: item.inicioMesAnio || '',
       finMesAnio: item.finMesAnio || '',
       nivelExperiencia: item.nivelExperiencia || ''
@@ -131,10 +111,6 @@ const ExperienciaLaboralSection = ({ items, cuenta, onReload }) => {
       Swal.fire({ icon: 'warning', title: 'Campos requeridos', text: 'Selecciona la institución.', confirmButtonColor: '#C41E3A' })
       return
     }
-    if (form.experienciaLaboralTipo === '' || form.experienciaLaboralTipo === null || form.experienciaLaboralTipo === undefined) {
-      Swal.fire({ icon: 'warning', title: 'Campos requeridos', text: 'Selecciona el tipo de experiencia.', confirmButtonColor: '#C41E3A' })
-      return
-    }
     if (!form.inicioMesAnio) {
       Swal.fire({ icon: 'warning', title: 'Campos requeridos', text: 'Ingresa la fecha de inicio.', confirmButtonColor: '#C41E3A' })
       return
@@ -146,7 +122,7 @@ const ExperienciaLaboralSection = ({ items, cuenta, onReload }) => {
         puestoId: form.puestoId ? parseInt(form.puestoId) : null,
         actividadPuesto: form.puestoId ? parseInt(form.puestoId) : null,
         InstitucionId: form.institucionId ? parseInt(form.institucionId) : null,
-        ExperienciaLaboralTipo: (form.experienciaLaboralTipo !== '' && form.experienciaLaboralTipo != null) ? parseInt(form.experienciaLaboralTipo) : null,
+        ExperienciaLaboralTipo: 0,
         inicioMesAnio: form.inicioMesAnio || null,
         finMesAnio: form.finMesAnio || null,
         nivelExperiencia: form.nivelExperiencia || null
@@ -191,7 +167,7 @@ const ExperienciaLaboralSection = ({ items, cuenta, onReload }) => {
             <SummaryCard
               key={item.id || idx}
               title={item.puesto?.descripcion || item.puesto?.nombre || 'Sin puesto'}
-              subtitle={item.tipoExperiencia?.nombre || item.nivelExperiencia || ''}
+              subtitle={item.nivelExperiencia || ''}
               details={[
                 item.institucion?.nombre,
                 `${item.inicioMesAnio || '?'} – ${item.finMesAnio || 'Actual'}`,
@@ -235,19 +211,6 @@ const ExperienciaLaboralSection = ({ items, cuenta, onReload }) => {
             disabled={false}
             onCreateNew={handleCreateInstitucion}
           />
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">¿Corresponde a experiencia ingenieril?<span className="text-red-500 ml-0.5">*</span></label>
-            <select
-              value={form.experienciaLaboralTipo}
-              onChange={(e) => setForm(f => ({ ...f, experienciaLaboralTipo: e.target.value }))}
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
-            >
-              <option value="">Seleccionar...</option>
-              {tiposExperiencia.map(t => (
-                <option key={t.idTipoExperiencia} value={t.idTipoExperiencia}>{t.descTipoExperiencia}</option>
-              ))}
-            </select>
-          </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Nivel de experiencia</label>
             <input

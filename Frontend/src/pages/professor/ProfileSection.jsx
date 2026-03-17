@@ -78,11 +78,11 @@ const ProfileSection = () => {
     'datos-generales': 'Administra tu información personal e institucional.',
     'informacion-academica': 'Registra tus estudios académicos y formación.',
     'experiencia-laboral': 'Detalla tu trayectoria profesional y laboral.',
-    'capacitacion-actualizacion': 'Agrega cursos, talleres, diplomados, certificaciones y actualizaciones.',
-    'logros-profesionales': 'Documenta tus logros y reconocimientos profesionales.',
+    'capacitacion-actualizacion': 'Agrega cursos, talleres, diplomados, certificaciones y actualizaciones tomados en los últimos 5 años.',
+    'logros-profesionales': 'Documenta tus logros y reconocimientos profesionales obtenidos en los últimos 5 años.',
     'organismos': 'Membresías y participación en organismos.',
     'premios-distinciones': 'Registra tus premios, distinciones y reconocimientos.',
-    'productos-academicos': 'Registra tus publicaciones, investigaciones y proyectos.'
+    'productos-academicos': 'Registra tus publicaciones, investigaciones y proyectos realizados en los últimos 5 años.'
   }
 
   const renderSection = () => {

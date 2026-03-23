@@ -9,6 +9,7 @@ import Reports from './pages/Reports'
 import ValidacionesPendientes from './pages/ValidacionesPendientes'
 import UserManagement from './pages/UserManagement'
 import ProfileSection from './pages/professor/ProfileSection'
+import NotFound from './pages/NotFound'
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, loading } = useAuth()
@@ -79,6 +80,11 @@ function App() {
           }>
             <Route index element={<ProfileSection />} />
           </Route>
+
+          {/* Catch-all: authenticated → 404; unauthenticated → login */}
+          <Route path="*" element={
+            <ProtectedRoute><NotFound /></ProtectedRoute>
+          } />
         </Routes>
       </AuthProvider>
     </BrowserRouter>

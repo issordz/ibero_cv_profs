@@ -70,9 +70,11 @@ const Login = () => {
                 <label className="block text-sm text-gray-600 mb-1.5">No. Cuenta</label>
                 <input
                   type="text"
+                  inputMode="numeric"
                   value={account}
-                  onChange={(e) => setAccount(e.target.value)}
+                  onChange={(e) => setAccount(e.target.value.replace(/\D/g, '').slice(0, 10))}
                   placeholder=""
+                  maxLength={10}
                   className="w-full px-4 py-2.5 bg-blue-50/60 border border-blue-100 rounded text-gray-900 text-sm focus:outline-none focus:border-red-400 focus:ring-1 focus:ring-red-400"
                 />
               </div>

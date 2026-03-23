@@ -3,7 +3,6 @@ import { findAllowedAccount } from '../data/allowedAccounts'
 const API_AUTH_URL = import.meta.env.VITE_API_AUTH_URL
 
 export const loginService = async (account, password) => {
-  // Validar que la cuenta esté en la lista de cuentas permitidas
   const allowedAccount = findAllowedAccount(account)
   if (!allowedAccount) {
     throw new Error('La cuenta ingresada no tiene acceso a este sistema.')

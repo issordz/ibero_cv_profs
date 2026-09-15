@@ -1,4 +1,6 @@
 // Cliente HTTP base con manejo de tokens
+import { homologarCatalogoPayload } from '../utils/textNormalize'
+
 const API_ACREDITACION_URL = import.meta.env.VITE_API_ACREDITACION_URL
 const API_CATALOGO_URL = import.meta.env.VITE_API_CATALOGO_URL
 
@@ -21,11 +23,30 @@ const handleResponse = async (response) => {
     window.location.href = '/'
     throw new Error('Sesión expirada. Por favor, inicie sesión nuevamente.')
   }
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}))
-    throw new Error(errorData.message || `Error ${response.status}: ${response.statusText}`)
+
+  const contentType = response.headers.get('content-type') || ''
+  const raw = await response.text()
+  const looksLikeHtml = raw.trimStart().startsWith('<') || contentType.includes('text/html')
+
+  let json = null
+  if (!looksLikeHtml && raw) {
+    try {
+      json = JSON.parse(raw)
+    } catch {
+      json = null
+    }
   }
-  const json = await response.json()
+
+  if (looksLikeHtml || (response.ok && json === null && raw)) {
+    throw new Error(
+      'La API devolvió HTML en lugar de JSON. En local verifica el proxy de Vite hacia /back (reinicia npm run dev).'
+    )
+  }
+
+  if (!response.ok) {
+    throw new Error(json?.message || `Error ${response.status}: ${response.statusText}`)
+  }
+
   // La API envuelve las respuestas en { success, code, message, data }
   if (json && typeof json.success !== 'undefined') {
     if (!json.success) {
@@ -90,10 +111,11 @@ export const catalogoGet = async (endpoint) => {
 }
 
 export const catalogoPost = async (endpoint, data) => {
+  const payload = homologarCatalogoPayload(data)
   const response = await fetch(`${API_CATALOGO_URL}${endpoint}`, {
     method: 'POST',
     headers: getWriteHeaders(),
-    body: JSON.stringify(data)
+    body: JSON.stringify(payload)
   })
   return handleResponse(response)
 }

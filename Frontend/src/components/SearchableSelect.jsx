@@ -1,11 +1,18 @@
 import { useState, useEffect, useRef } from 'react'
 import { Search, Info } from 'lucide-react'
+import { homologarCatalogoTexto } from '../utils/textNormalize'
 
 const SearchableSelect = ({ items = [], idKey = 'id', nameKey = 'nombre', value, onChange, label, placeholder = 'Buscar...', disabled = false, onCreateNew, required = false }) => {
   const [search, setSearch] = useState('')
   const [showDropdown, setShowDropdown] = useState(false)
   const [showTooltip, setShowTooltip] = useState(false)
   const dropdownRef = useRef(null)
+
+  const handleCreate = () => {
+    if (!onCreateNew || !search.trim()) return
+    onCreateNew(homologarCatalogoTexto(search.trim()))
+    setShowDropdown(false)
+  }
 
   useEffect(() => {
     if (items.length === 0) return
@@ -67,7 +74,7 @@ const SearchableSelect = ({ items = [], idKey = 'id', nameKey = 'nombre', value,
             onCreateNew && search.trim() ? (
               <button
                 type="button"
-                onClick={() => { onCreateNew(search.trim()); setShowDropdown(false) }}
+                onClick={handleCreate}
                 className="block w-full text-left px-3 py-2 text-sm text-red-700 hover:bg-red-50 font-medium"
               >
                 + Crear: "{search.trim()}"
@@ -92,7 +99,7 @@ const SearchableSelect = ({ items = [], idKey = 'id', nameKey = 'nombre', value,
               {onCreateNew && search.trim() && !filtered.some(i => i[nameKey]?.toLowerCase() === search.trim().toLowerCase()) && (
                 <button
                   type="button"
-                  onClick={() => { onCreateNew(search.trim()); setShowDropdown(false) }}
+                  onClick={handleCreate}
                   className="block w-full text-left px-3 py-2 text-sm text-red-700 hover:bg-red-50 font-medium border-t border-gray-100"
                 >
                   + Crear: "{search.trim()}"

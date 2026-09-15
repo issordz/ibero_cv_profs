@@ -1,4 +1,5 @@
 import { catalogoGet, catalogoPost } from './api'
+import { homologarCatalogoPayload } from '../utils/textNormalize'
 
 // Cache en memoria para catálogos (evita llamadas repetidas durante la sesión)
 const catalogCache = {}
@@ -94,7 +95,7 @@ export const addCatalogItem = async (catalogName, newItem) => {
   }
 
   try {
-    const result = await catalogoPost(config.endpoint, newItem)
+    const result = await catalogoPost(config.endpoint, homologarCatalogoPayload(newItem))
     // Invalidar cache para que se recargue con el nuevo item
     delete catalogCache[catalogName]
     return result

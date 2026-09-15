@@ -1,16 +1,25 @@
 import { useState, useEffect } from 'react'
 import { Briefcase, Plus } from 'lucide-react'
 import SummaryCard from '../../../components/SummaryCard'
+import SectionEmptyState from '../../../components/SectionEmptyState'
 import SlideOverPanel from '../../../components/SlideOverPanel'
 import SearchableSelect from '../../../components/SearchableSelect'
 import { apiPost, apiPut, apiDelete, catalogoPost } from '../../../services/api'
 import { fetchCatalog } from '../../../services/catalogService'
+import { homologarCatalogoTexto } from '../../../utils/textNormalize'
+import { SECTOR_OPTIONS } from '../../../config/acreditacionUi'
 import Swal from 'sweetalert2'
 
 const ExperienciaLaboralSection = ({ items, cuenta, onReload }) => {
   const [panelOpen, setPanelOpen] = useState(false)
   const [editingItem, setEditingItem] = useState(null)
-  const [form, setForm] = useState({ puestoId: '', institucionId: '', inicioMesAnio: '', finMesAnio: '', nivelExperiencia: '' })
+  const emptyForm = {
+    puestoId: '',
+    institucionId: '',
+    nivelExperiencia: '',
+    aniosExperiencia: ''
+  }
+  const [form, setForm] = useState(emptyForm)
   const [saving, setSaving] = useState(false)
   const [instituciones, setInstituciones] = useState([])
   const [puestosGenerales, setPuestosGenerales] = useState([])
@@ -22,16 +31,17 @@ const ExperienciaLaboralSection = ({ items, cuenta, onReload }) => {
 
   const handleCreatePuesto = async (nombre) => {
     try {
-      await catalogoPost('puesto-general', { descripcion: nombre })
+      const nombreNorm = homologarCatalogoTexto(nombre)
+      await catalogoPost('puesto-general', { descripcion: nombreNorm })
       const updatedList = await fetchCatalog('puestoGeneral', true)
       setPuestosGenerales(updatedList)
       const found = updatedList.find(i =>
-        (i.descripcion || '').toLowerCase() === nombre.toLowerCase()
+        homologarCatalogoTexto(i.descripcion || '') === nombreNorm
       )
       if (found) {
         setForm(f => ({ ...f, puestoId: found.idPuestoGeneral }))
       }
-      Swal.fire({ icon: 'success', title: 'Puesto creado', text: `"${nombre}" fue agregado al catálogo.`, timer: 1800, showConfirmButton: false })
+      Swal.fire({ icon: 'success', title: 'Puesto creado', text: `"${nombreNorm}" fue agregado al catálogo.`, timer: 1800, showConfirmButton: false })
     } catch (error) {
       Swal.fire({ icon: 'error', title: 'Error', text: error.message || 'No se pudo crear el puesto.', confirmButtonColor: '#C41E3A' })
     }
@@ -39,33 +49,25 @@ const ExperienciaLaboralSection = ({ items, cuenta, onReload }) => {
 
   const handleCreateInstitucion = async (nombre) => {
     try {
-      await catalogoPost('institucione', { descripcion: nombre })
+      const nombreNorm = homologarCatalogoTexto(nombre)
+      await catalogoPost('institucione', { descripcion: nombreNorm })
       const updatedList = await fetchCatalog('instituciones', true)
       setInstituciones(updatedList)
       const found = updatedList.find(i =>
-        (i.nombreInstitucion || '').toLowerCase() === nombre.toLowerCase()
+        homologarCatalogoTexto(i.nombreInstitucion || '') === nombreNorm
       )
       if (found) {
         setForm(f => ({ ...f, institucionId: found.idInstitucion }))
       }
-      Swal.fire({ icon: 'success', title: 'Institución creada', text: `"${nombre}" fue agregada al catálogo.`, timer: 1800, showConfirmButton: false })
+      Swal.fire({ icon: 'success', title: 'Institución creada', text: `"${nombreNorm}" fue agregada al catálogo.`, timer: 1800, showConfirmButton: false })
     } catch (error) {
       Swal.fire({ icon: 'error', title: 'Error', text: error.message || 'No se pudo crear la institución.', confirmButtonColor: '#C41E3A' })
     }
   }
 
-  const handleDateInput = (rawValue, field) => {
-    const digits = rawValue.replace(/\D/g, '').substring(0, 6)
-    if (digits.length === 0) { setForm(f => ({ ...f, [field]: '' })); return }
-    if (parseInt(digits[0]) > 1) return
-    if (digits.length >= 2 && (parseInt(digits.substring(0, 2)) < 1 || parseInt(digits.substring(0, 2)) > 12)) return
-    const formatted = digits.length > 2 ? `${digits.substring(0, 2)}/${digits.substring(2)}` : digits
-    setForm(f => ({ ...f, [field]: formatted }))
-  }
-
   const openCreate = () => {
     setEditingItem(null)
-    setForm({ puestoId: '', institucionId: '', inicioMesAnio: '', finMesAnio: '', nivelExperiencia: '' })
+    setForm({ ...emptyForm })
     setPanelOpen(true)
   }
 
@@ -74,9 +76,11 @@ const ExperienciaLaboralSection = ({ items, cuenta, onReload }) => {
     setForm({
       puestoId: item.puesto?.id || item.puestoId || '',
       institucionId: item.institucion?.id || item.institucionId || '',
-      inicioMesAnio: item.inicioMesAnio || '',
-      finMesAnio: item.finMesAnio || '',
-      nivelExperiencia: item.nivelExperiencia || ''
+      nivelExperiencia: item.nivelExperiencia || '',
+      aniosExperiencia:
+        item.aniosExperiencia === null || item.aniosExperiencia === undefined
+          ? ''
+          : item.aniosExperiencia
     })
     setPanelOpen(true)
   }
@@ -111,8 +115,14 @@ const ExperienciaLaboralSection = ({ items, cuenta, onReload }) => {
       Swal.fire({ icon: 'warning', title: 'Campos requeridos', text: 'Selecciona la institución.', confirmButtonColor: '#C41E3A' })
       return
     }
-    if (!form.inicioMesAnio) {
-      Swal.fire({ icon: 'warning', title: 'Campos requeridos', text: 'Ingresa la fecha de inicio.', confirmButtonColor: '#C41E3A' })
+    const n = Number(form.aniosExperiencia)
+    if (form.aniosExperiencia === '' || !Number.isFinite(n) || n < 0 || !Number.isInteger(n)) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Campos requeridos',
+        text: 'Ingresa los años de experiencia (entero mayor o igual a 0).',
+        confirmButtonColor: '#C41E3A'
+      })
       return
     }
     setSaving(true)
@@ -123,9 +133,10 @@ const ExperienciaLaboralSection = ({ items, cuenta, onReload }) => {
         actividadPuesto: form.puestoId ? parseInt(form.puestoId) : null,
         InstitucionId: form.institucionId ? parseInt(form.institucionId) : null,
         ExperienciaLaboralTipo: 0,
-        inicioMesAnio: form.inicioMesAnio || null,
-        finMesAnio: form.finMesAnio || null,
-        nivelExperiencia: form.nivelExperiencia || null
+        inicioMesAnio: '',
+        finMesAnio: '',
+        nivelExperiencia: form.nivelExperiencia || null,
+        aniosExperiencia: n
       }
       if (editingItem) {
         await apiPut(`api/ExperienciaLaboral/${editingItem.id}`, body)
@@ -145,33 +156,45 @@ const ExperienciaLaboralSection = ({ items, cuenta, onReload }) => {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-3">
-          <Briefcase className="text-slate-400" size={24} />
-          <p className="text-slate-500">Trayectoria profesional y laboral.</p>
+      {items.length > 0 && (
+        <div className="flex items-center justify-between gap-3 mb-2">
+          <div className="flex items-center gap-3 min-w-0">
+            <Briefcase className="text-ink-soft shrink-0" size={22} />
+            <p className="text-sm text-ink-muted truncate">
+              {items.length} {items.length === 1 ? 'experiencia registrada' : 'experiencias registradas'}
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={openCreate}
+            className="btn-primary flex items-center gap-2 px-4 py-2 text-sm shrink-0"
+          >
+            <Plus size={16} />
+            Agregar
+          </button>
         </div>
-        <button
-          onClick={openCreate}
-          className="flex items-center gap-2 px-4 py-2 bg-red-700 hover:bg-red-800 text-white text-sm font-medium rounded-lg transition-colors"
-        >
-          <Plus size={16} />
-          Agregar experiencia
-        </button>
-      </div>
+      )}
 
       {items.length === 0 ? (
-        <p className="text-gray-400 italic">No hay experiencia laboral registrada.</p>
+        <SectionEmptyState
+          icon={Briefcase}
+          title="Sin experiencia laboral"
+          description="Agrega puestos, instituciones, sector y años de experiencia para armar tu trayectoria."
+          actionLabel="Agregar experiencia"
+          onAction={openCreate}
+        />
       ) : (
-        <div className="space-y-3">
+        <div className="space-y-3 stagger-children">
           {items.map((item, idx) => (
             <SummaryCard
               key={item.id || idx}
               title={item.puesto?.descripcion || item.puesto?.nombre || 'Sin puesto'}
-              subtitle={item.nivelExperiencia || ''}
+              subtitle={item.nivelExperiencia ? `Sector: ${item.nivelExperiencia}` : ''}
               details={[
                 item.institucion?.nombre,
-                `${item.inicioMesAnio || '?'} – ${item.finMesAnio || 'Actual'}`,
-                item.nivelExperiencia
+                item.aniosExperiencia != null && item.aniosExperiencia !== ''
+                  ? `${item.aniosExperiencia} año(s) de experiencia`
+                  : null
               ].filter(Boolean)}
               onEdit={() => openEdit(item)}
               onDelete={() => handleDelete(item)}
@@ -212,44 +235,38 @@ const ExperienciaLaboralSection = ({ items, cuenta, onReload }) => {
             onCreateNew={handleCreateInstitucion}
           />
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Nivel de experiencia</label>
-            <input
-              type="text"
+            <label className="block text-sm font-medium text-ink-muted mb-1.5">Sector</label>
+            <select
               value={form.nivelExperiencia}
               onChange={(e) => setForm(f => ({ ...f, nivelExperiencia: e.target.value }))}
-              placeholder="Junior, Mid, Senior"
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
+              className="field-input"
+            >
+              <option value="">Seleccionar...</option>
+              {SECTOR_OPTIONS.map((opt) => (
+                <option key={opt} value={opt}>{opt}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-ink-muted mb-1.5">
+              Años de experiencia<span className="text-primary ml-0.5">*</span>
+            </label>
+            <input
+              type="number"
+              min={0}
+              step={1}
+              inputMode="numeric"
+              value={form.aniosExperiencia}
+              onChange={(e) => setForm(f => ({ ...f, aniosExperiencia: e.target.value }))}
+              placeholder="Ej: 5"
+              className="field-input tabular-nums"
             />
           </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Inicio<span className="text-red-500 ml-0.5">*</span></label>
-              <input
-                type="text"
-                value={form.inicioMesAnio}
-                onChange={(e) => handleDateInput(e.target.value, 'inicioMesAnio')}
-                placeholder="MM/AAAA"
-                maxLength={7}
-                className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Fin</label>
-              <input
-                type="text"
-                value={form.finMesAnio}
-                onChange={(e) => handleDateInput(e.target.value, 'finMesAnio')}
-                placeholder="MM/AAAA"
-                maxLength={7}
-                className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
-              />
-              <p className="mt-1 text-xs text-gray-400">Deja vacío si es tu trabajo actual.</p>
-            </div>
-          </div>
           <button
+            type="button"
             onClick={handleSave}
             disabled={saving}
-            className="w-full py-2.5 bg-red-700 hover:bg-red-800 text-white font-medium rounded-lg disabled:opacity-50 transition-colors"
+            className="btn-primary w-full py-2.5 disabled:opacity-50"
           >
             {saving ? 'Guardando...' : (editingItem ? 'Actualizar' : 'Crear')}
           </button>

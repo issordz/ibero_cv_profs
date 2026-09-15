@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import Login from "./components/Login";
 import Layout from "./components/Layout";
+import SeoHead from "./components/SeoHead";
 import Dashboard from "./pages/Dashboard";
 import FacultyDirectory from "./pages/FacultyDirectory";
 import FacultyProfile from "./pages/FacultyProfile";
@@ -88,6 +89,7 @@ function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
+        <SeoHead />
         <RecaptchaBadgeController />
         <Routes>
           <Route path="/" element={<LoginRoute />} />
@@ -175,10 +177,8 @@ function App() {
             <Route index element={<ProfileSection />} />
           </Route>
 
-          {/* Catch-all: authenticated → 404; unauthenticated → login */}
-          <Route path="*" element={
-            <ProtectedRoute><NotFound /></ProtectedRoute>
-          } />
+          {/* 404 público (autenticados y anónimos) */}
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>

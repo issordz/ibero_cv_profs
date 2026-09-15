@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+Disallow: /dashboard
+Disallow: /faculty
+Disallow: /reports
+Disallow: /validaciones-pendientes
+Disallow: /user-management
+Disallow: /profile
+Disallow: /home
+
+Sitemap: https://gestionacreditacionespru.ibero.mx/sitemap.xml

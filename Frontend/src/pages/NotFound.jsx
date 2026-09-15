@@ -3,9 +3,13 @@ import { useAuth } from '../context/AuthContext'
 
 const NotFound = () => {
   const navigate = useNavigate()
-  const { user } = useAuth()
+  const { user, isAuthenticated } = useAuth()
 
   const handleBack = () => {
+    if (!isAuthenticated) {
+      navigate('/', { replace: true })
+      return
+    }
     if (user?.role === 'admin') {
       navigate('/dashboard')
     } else {
@@ -14,19 +18,28 @@ const NotFound = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="text-center">
-        <p className="text-8xl font-bold text-red-700 mb-4">404</p>
-        <h1 className="text-2xl font-semibold text-gray-800 mb-2">Página no encontrada</h1>
-        <p className="text-gray-500 mb-8">La ruta que buscas no existe o no tienes acceso a ella.</p>
-        <button
-          onClick={handleBack}
-          className="px-6 py-2.5 bg-red-700 hover:bg-red-800 text-white font-medium rounded-lg transition-colors"
+    <main className="min-h-dvh flex items-center justify-center bg-background-light px-4">
+      <section
+        className="text-center max-w-lg surface-card px-8 py-12 animate-fade-up"
+        aria-labelledby="not-found-title"
+      >
+        <p
+          className="font-display text-7xl font-semibold text-primary mb-3 tabular-nums"
+          aria-hidden="true"
         >
-          Volver al inicio
+          404
+        </p>
+        <h1 id="not-found-title" className="font-display text-2xl font-semibold text-ink mb-2">
+          Página no encontrada
+        </h1>
+        <p className="text-ink-muted mb-8 leading-relaxed">
+          La ruta no existe o no tienes acceso en el Portal de gestión para acreditaciones IBERO.
+        </p>
+        <button type="button" onClick={handleBack} className="btn-primary px-6 py-2.5">
+          {isAuthenticated ? 'Volver al inicio' : 'Ir al inicio de sesión'}
         </button>
-      </div>
-    </div>
+      </section>
+    </main>
   )
 }
 

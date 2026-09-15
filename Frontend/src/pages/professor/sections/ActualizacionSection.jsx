@@ -55,8 +55,8 @@ const ActualizacionSection = ({ items: initialItems, onSave }) => {
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-3 mb-6">
-        <RefreshCw className="text-slate-400" size={24} />
-        <p className="text-slate-500">Registra tus cursos de actualización profesional.</p>
+        <RefreshCw className="text-ink-soft" size={24} />
+        <p className="text-ink-muted">Registra tus cursos de actualización profesional.</p>
       </div>
 
       <div className="space-y-3">

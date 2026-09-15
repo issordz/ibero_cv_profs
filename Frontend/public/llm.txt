@@ -1,0 +1,19 @@
+# llm.txt — orientación para agentes / LLM sobre este sitio
+# https://llmstxt.org/
+
+# Portal IBERO PGA (gestión para acreditaciones)
+> Aplicación web autenticada para captura del currículum docente
+> orientado a procesos de acreditación institucional.
+
+## Uso
+- El acceso público se limita a la pantalla de inicio de sesión.
+- El resto de rutas requieren autenticación institucional.
+- No indexar ni almacenar datos personales de docentes.
+
+## Contacto institucional
+- Universidad Iberoamericana
+- Portal: gestión para acreditaciones (PGA)
+
+## Archivos
+- /robots.txt
+- /sitemap.xml

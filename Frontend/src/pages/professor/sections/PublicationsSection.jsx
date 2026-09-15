@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { FileText, Plus } from 'lucide-react'
 import SummaryCard from '../../../components/SummaryCard'
+import SectionEmptyState from '../../../components/SectionEmptyState'
 import SlideOverPanel from '../../../components/SlideOverPanel'
 import SearchableSelect from '../../../components/SearchableSelect'
 import { apiPost, apiPut, apiDelete } from '../../../services/api'
@@ -100,24 +101,35 @@ const ProductosAcademicosSection = ({ items, cuenta, onReload }) => {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-3">
-          <FileText className="text-slate-400" size={24} />
-          <p className="text-slate-500">Publicaciones, investigaciones y productos académicos.</p>
+      {items.length > 0 && (
+        <div className="flex items-center justify-between gap-3 mb-2">
+          <div className="flex items-center gap-3 min-w-0">
+            <FileText className="text-ink-soft shrink-0" size={22} />
+            <p className="text-sm text-ink-muted truncate">
+              {items.length} {items.length === 1 ? 'producto registrado' : 'productos registrados'}
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={openCreate}
+            className="btn-primary flex items-center gap-2 px-4 py-2 text-sm shrink-0"
+          >
+            <Plus size={16} />
+            Agregar
+          </button>
         </div>
-        <button
-          onClick={openCreate}
-          className="flex items-center gap-2 px-4 py-2 bg-red-700 hover:bg-red-800 text-white text-sm font-medium rounded-lg transition-colors"
-        >
-          <Plus size={16} />
-          Agregar producto
-        </button>
-      </div>
+      )}
 
       {items.length === 0 ? (
-        <p className="text-gray-400 italic">No hay productos académicos registrados.</p>
+        <SectionEmptyState
+          icon={FileText}
+          title="Sin productos académicos"
+          description="Registra publicaciones, investigaciones y proyectos de los últimos 5 años."
+          actionLabel="Agregar producto"
+          onAction={openCreate}
+        />
       ) : (
-        <div className="space-y-3">
+        <div className="space-y-3 stagger-children">
           {items.map((item, idx) => (
             <SummaryCard
               key={item.id || idx}
@@ -139,11 +151,11 @@ const ProductosAcademicosSection = ({ items, cuenta, onReload }) => {
       >
         <div className="space-y-5">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Tipo<span className="text-red-500 ml-0.5">*</span></label>
+            <label className="block text-sm font-medium text-ink-muted mb-1.5">Tipo<span className="text-primary ml-0.5">*</span></label>
             <select
               value={form.tipo}
               onChange={(e) => setForm(f => ({ ...f, tipo: e.target.value }))}
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
+              className="field-input"
             >
               <option value="">Seleccionar...</option>
               <option value="Libro">Libro</option>
@@ -152,33 +164,33 @@ const ProductosAcademicosSection = ({ items, cuenta, onReload }) => {
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Título<span className="text-red-500 ml-0.5">*</span></label>
+            <label className="block text-sm font-medium text-ink-muted mb-1.5">Título<span className="text-primary ml-0.5">*</span></label>
             <input
               type="text"
               value={form.titulo}
               onChange={(e) => setForm(f => ({ ...f, titulo: e.target.value }))}
               placeholder="Título del libro, capítulo o artículo"
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
+              className="field-input"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Publicación</label>
+            <label className="block text-sm font-medium text-ink-muted mb-1.5">Publicación</label>
             <input
               type="text"
               value={form.publicacion}
               onChange={(e) => setForm(f => ({ ...f, publicacion: e.target.value }))}
               placeholder="Nombre de la revista o publicación académica (si aplica)"
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
+              className="field-input"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Editorial</label>
+            <label className="block text-sm font-medium text-ink-muted mb-1.5">Editorial</label>
             <input
               type="text"
               value={form.editorial}
               onChange={(e) => setForm(f => ({ ...f, editorial: e.target.value }))}
               placeholder="Nombre de la editorial (si aplica)"
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
+              className="field-input"
             />
           </div>
           <SearchableSelect
@@ -192,7 +204,7 @@ const ProductosAcademicosSection = ({ items, cuenta, onReload }) => {
             disabled={educativas.length === 0}
           />
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Año</label>
+            <label className="block text-sm font-medium text-ink-muted mb-1.5">Año</label>
             <input
               type="number"
               value={form.anioProducto}
@@ -200,13 +212,13 @@ const ProductosAcademicosSection = ({ items, cuenta, onReload }) => {
               placeholder="Ej: 2024"
               min="1950"
               max={new Date().getFullYear()}
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
+              className="field-input"
             />
           </div>
           <button
             onClick={handleSave}
             disabled={saving}
-            className="w-full py-2.5 bg-red-700 hover:bg-red-800 text-white font-medium rounded-lg disabled:opacity-50 transition-colors"
+            className="btn-primary w-full py-2.5 disabled:opacity-50"
           >
             {saving ? 'Guardando...' : (editingItem ? 'Actualizar' : 'Crear')}
           </button>

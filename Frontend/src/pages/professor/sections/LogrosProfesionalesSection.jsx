@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Award, Plus } from 'lucide-react'
 import SummaryCard from '../../../components/SummaryCard'
+import SectionEmptyState from '../../../components/SectionEmptyState'
 import SlideOverPanel from '../../../components/SlideOverPanel'
 import SearchableSelect from '../../../components/SearchableSelect'
 import { apiPost, apiPut, apiDelete, catalogoPost } from '../../../services/api'
@@ -107,24 +108,35 @@ const LogrosProfesionalesSection = ({ items, cuenta, onReload }) => {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-3">
-          <Award className="text-slate-400" size={24} />
-          <p className="text-slate-500">Logros y reconocimientos profesionales que no se encuentren dentro del ámbito académico.</p>
+      {items.length > 0 && (
+        <div className="flex items-center justify-between gap-3 mb-2">
+          <div className="flex items-center gap-3 min-w-0">
+            <Award className="text-ink-soft shrink-0" size={22} />
+            <p className="text-sm text-ink-muted truncate">
+              {items.length} {items.length === 1 ? 'logro registrado' : 'logros registrados'}
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={openCreate}
+            className="btn-primary flex items-center gap-2 px-4 py-2 text-sm shrink-0"
+          >
+            <Plus size={16} />
+            Agregar
+          </button>
         </div>
-        <button
-          onClick={openCreate}
-          className="flex items-center gap-2 px-4 py-2 bg-red-700 hover:bg-red-800 text-white text-sm font-medium rounded-lg transition-colors"
-        >
-          <Plus size={16} />
-          Agregar logro
-        </button>
-      </div>
+      )}
 
       {items.length === 0 ? (
-        <p className="text-gray-400 italic">No hay logros profesionales registrados.</p>
+        <SectionEmptyState
+          icon={Award}
+          title="Sin logros profesionales"
+          description="Incluye reconocimientos no académicos de los últimos 5 años (institución y año)."
+          actionLabel="Agregar logro"
+          onAction={openCreate}
+        />
       ) : (
-        <div className="space-y-3">
+        <div className="space-y-3 stagger-children">
           {items.map((item, idx) => (
             <SummaryCard
               key={item.id || idx}
@@ -146,13 +158,13 @@ const LogrosProfesionalesSection = ({ items, cuenta, onReload }) => {
       >
         <div className="space-y-5">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Descripción del logro<span className="text-red-500 ml-0.5">*</span></label>
+            <label className="block text-sm font-medium text-ink-muted mb-1.5">Descripción del logro<span className="text-primary ml-0.5">*</span></label>
             <textarea
               value={form.descLogro}
               onChange={(e) => setForm(f => ({ ...f, descLogro: e.target.value }))}
               rows={3}
               placeholder="Describe el logro profesional..."
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500 resize-y"
+              className="field-input resize-y"
             />
           </div>
 
@@ -169,7 +181,7 @@ const LogrosProfesionalesSection = ({ items, cuenta, onReload }) => {
           />
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Año de obtención del logro</label>
+            <label className="block text-sm font-medium text-ink-muted mb-1.5">Año de obtención del logro</label>
             <input
               type="number"
               value={form.anioObtencion}
@@ -177,14 +189,14 @@ const LogrosProfesionalesSection = ({ items, cuenta, onReload }) => {
               placeholder="Ej: 2023"
               min="1950"
               max={new Date().getFullYear()}
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
+              className="field-input"
             />
           </div>
 
           <button
             onClick={handleSave}
             disabled={saving}
-            className="w-full py-2.5 bg-red-700 hover:bg-red-800 text-white font-medium rounded-lg disabled:opacity-50 transition-colors"
+            className="btn-primary w-full py-2.5 disabled:opacity-50"
           >
             {saving ? 'Guardando...' : (editingItem ? 'Actualizar logro' : 'Crear logro')}
           </button>

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { BookOpen, Plus } from 'lucide-react'
 import SummaryCard from '../../../components/SummaryCard'
+import SectionEmptyState from '../../../components/SectionEmptyState'
 import SlideOverPanel from '../../../components/SlideOverPanel'
 import SearchableSelect from '../../../components/SearchableSelect'
 import { apiPost, apiPut, apiDelete, catalogoPost } from '../../../services/api'
@@ -151,24 +152,42 @@ const CapacitacionSection = ({ items, cuenta, onReload }) => {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-3">
-          <BookOpen className="text-slate-400" size={24} />
-          <p className="text-slate-500">Capacitaciones, actualizaciones, diplomados, certificaciones y talleres.</p>
+      {items.length > 0 && (
+        <div className="flex items-center justify-between gap-3 mb-2">
+          <div className="flex items-center gap-3 min-w-0">
+            <BookOpen className="text-ink-soft shrink-0" size={22} />
+            <p className="text-sm text-ink-muted truncate">
+              {items.length} {items.length === 1 ? 'registro' : 'registros'}
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={openCreate}
+            className="btn-primary flex items-center gap-2 px-4 py-2 text-sm shrink-0"
+          >
+            <Plus size={16} />
+            Agregar
+          </button>
         </div>
-        <button
-          onClick={openCreate}
-          className="flex items-center gap-2 px-4 py-2 bg-red-700 hover:bg-red-800 text-white text-sm font-medium rounded-lg transition-colors"
-        >
-          <Plus size={16} />
-          Agregar capacitación
-        </button>
-      </div>
+      )}
 
       {items.length === 0 ? (
-        <p className="text-gray-400 italic">No hay capacitaciones registradas.</p>
+        <SectionEmptyState
+          icon={BookOpen}
+          title="Sin capacitación ni actualización"
+          description={
+            <>
+              Documenta cursos y actividades de los últimos 5 años.
+              <br />
+              <strong className="text-ink">Actualización</strong>: conocimientos disciplinarios (ciencias políticas).{' '}
+              <strong className="text-ink">Capacitación</strong>: competencias pedagógicas y expresión frente al aula.
+            </>
+          }
+          actionLabel="Agregar registro"
+          onAction={openCreate}
+        />
       ) : (
-        <div className="space-y-3">
+        <div className="space-y-3 stagger-children">
           {items.map((item, idx) => (
             <SummaryCard
               key={item.id || idx}
@@ -193,38 +212,43 @@ const CapacitacionSection = ({ items, cuenta, onReload }) => {
       <SlideOverPanel
         isOpen={panelOpen}
         onClose={() => setPanelOpen(false)}
-        title={editingItem ? 'Editar capacitación' : 'Nueva capacitación'}
+        title={editingItem ? 'Editar capacitación / actualización' : 'Nueva capacitación / actualización'}
       >
         <div className="space-y-5">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Nombre de la capacitación disciplinar<span className="text-red-500 ml-0.5">*</span></label>
+            <label className="block text-sm font-medium text-ink-muted mb-1.5">Nombre<span className="text-primary ml-0.5">*</span></label>
             <input
               type="text"
               value={form.nombreCapacitacion}
               onChange={(e) => setForm(f => ({ ...f, nombreCapacitacion: e.target.value }))}
               placeholder="Ej: Diplomado en Inteligencia Artificial"
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
+              className="field-input"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Tipo de capacitación<span className="text-red-500 ml-0.5">*</span></label>
+            <label className="block text-sm font-medium text-ink-muted mb-1.5">Tipo<span className="text-primary ml-0.5">*</span></label>
             <select
               value={form.idTipoCapacitacion}
               onChange={(e) => setForm(f => ({ ...f, idTipoCapacitacion: e.target.value }))}
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
+              className="field-input"
             >
               <option value="">Seleccionar...</option>
               {tiposCapacitacion.filter(t => t.idTipoCapacitacion !== 0).map(t => (
                 <option key={t.idTipoCapacitacion} value={t.idTipoCapacitacion}>{t.descTipoCapacitacion}</option>
               ))}
             </select>
+            <p className="mt-1 text-xs text-ink-muted leading-relaxed">
+              <strong className="text-ink">Actualización</strong> se refiere a conocimientos disciplinarios. En campo de ciencias políticas.
+              <br />
+              <strong className="text-ink">Capacitación</strong> se refiere a competencias pedagógicas. Expresión frente al aula.
+            </p>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Tipo de curso<span className="text-red-500 ml-0.5">*</span></label>
+            <label className="block text-sm font-medium text-ink-muted mb-1.5">Tipo de curso<span className="text-primary ml-0.5">*</span></label>
             <select
               value={form.idTipoCurso}
               onChange={(e) => setForm(f => ({ ...f, idTipoCurso: e.target.value }))}
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
+              className="field-input"
             >
               <option value="">Seleccionar...</option>
               {tiposCurso.filter(t => t.idTipoCurso !== 0).map(t => (
@@ -244,11 +268,11 @@ const CapacitacionSection = ({ items, cuenta, onReload }) => {
             onCreateNew={handleCreateInstitucion}
           />
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">País<span className="text-red-500 ml-0.5">*</span></label>
+            <label className="block text-sm font-medium text-ink-muted mb-1.5">País<span className="text-primary ml-0.5">*</span></label>
             <select
               value={form.pais}
               onChange={(e) => setForm(f => ({ ...f, pais: e.target.value }))}
-              className={`w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500 ${parseInt(form.pais) === 0 ? 'border-yellow-400 bg-yellow-50' : 'border-gray-200'}`}
+              className={`field-input ${parseInt(form.pais) === 0 ? 'border-amber-400 bg-amber-50' : ''}`}
             >
               <option value="">Seleccionar...</option>
               {paises.map(p => (
@@ -261,7 +285,7 @@ const CapacitacionSection = ({ items, cuenta, onReload }) => {
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Año de obtención<span className="text-red-500 ml-0.5">*</span></label>
+              <label className="block text-sm font-medium text-ink-muted mb-1.5">Año de obtención<span className="text-primary ml-0.5">*</span></label>
               <input
                 type="number"
                 value={form.anioObtencion}
@@ -269,25 +293,25 @@ const CapacitacionSection = ({ items, cuenta, onReload }) => {
                 placeholder="Ej: 2023"
                 min="1950"
                 max={new Date().getFullYear()}
-                className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                className="field-input"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Horas</label>
+              <label className="block text-sm font-medium text-ink-muted mb-1.5">Horas</label>
               <input
                 type="number"
                 value={form.horas}
                 onChange={(e) => setForm(f => ({ ...f, horas: e.target.value }))}
                 placeholder="Ej: 120"
                 min="1"
-                className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                className="field-input"
               />
             </div>
           </div>
           <button
             onClick={handleSave}
             disabled={saving}
-            className="w-full py-2.5 bg-red-700 hover:bg-red-800 text-white font-medium rounded-lg disabled:opacity-50 transition-colors"
+            className="btn-primary w-full py-2.5 disabled:opacity-50"
           >
             {saving ? 'Guardando...' : (editingItem ? 'Actualizar' : 'Crear')}
           </button>

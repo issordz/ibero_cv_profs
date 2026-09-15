@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { GraduationCap, Plus } from 'lucide-react'
 import SummaryCard from '../../../components/SummaryCard'
+import SectionEmptyState from '../../../components/SectionEmptyState'
 import SlideOverPanel from '../../../components/SlideOverPanel'
 import SearchableSelect from '../../../components/SearchableSelect'
 import { apiPost, apiPut, apiDelete, catalogoPost } from '../../../services/api'
@@ -149,24 +150,35 @@ const AcademicDegreesSection = ({ degrees, cuenta, onReload }) => {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-3">
-          <GraduationCap className="text-slate-400" size={24} />
-          <p className="text-slate-500">Lista de estudios académicos registrados.</p>
+      {degrees.length > 0 && (
+        <div className="flex items-center justify-between gap-3 mb-2">
+          <div className="flex items-center gap-3 min-w-0">
+            <GraduationCap className="text-ink-soft shrink-0" size={22} />
+            <p className="text-sm text-ink-muted truncate">
+              {degrees.length} {degrees.length === 1 ? 'estudio registrado' : 'estudios registrados'}
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={openCreate}
+            className="btn-primary flex items-center gap-2 px-4 py-2 text-sm shrink-0"
+          >
+            <Plus size={16} />
+            Agregar
+          </button>
         </div>
-        <button
-          onClick={openCreate}
-          className="flex items-center gap-2 px-4 py-2 bg-red-700 hover:bg-red-800 text-white text-sm font-medium rounded-lg transition-colors"
-        >
-          <Plus size={16} />
-          Agregar estudio
-        </button>
-      </div>
+      )}
 
       {degrees.length === 0 ? (
-        <p className="text-gray-400 italic">No hay estudios académicos registrados.</p>
+        <SectionEmptyState
+          icon={GraduationCap}
+          title="Sin estudios académicos"
+          description="Registra nivel, carrera, institución, país y año de obtención del título."
+          actionLabel="Agregar estudio"
+          onAction={openCreate}
+        />
       ) : (
-        <div className="space-y-3">
+        <div className="space-y-3 stagger-children">
           {degrees.map((d, idx) => {
             const hasWarning = d.carrera?.id === 0 || d.carrera?.idCarrera === 0
               || d.nivelEstudio?.id === 0
@@ -199,11 +211,11 @@ const AcademicDegreesSection = ({ degrees, cuenta, onReload }) => {
       >
         <div className="space-y-5">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Nivel de estudio<span className="text-red-500 ml-0.5">*</span></label>
+            <label className="block text-sm font-medium text-ink-muted mb-1.5">Nivel de estudio<span className="text-primary ml-0.5">*</span></label>
             <select
               value={form.idNivelEstudio}
               onChange={(e) => setForm(f => ({ ...f, idNivelEstudio: e.target.value }))}
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
+              className="field-input"
             >
               <option value="">Seleccionar...</option>
               {nivelesEstudio.filter(n => n.idNivelEstudio >= 4).map(n => (
@@ -236,11 +248,11 @@ const AcademicDegreesSection = ({ degrees, cuenta, onReload }) => {
             onCreateNew={handleCreateInstitucionEducativa}
           />
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">País<span className="text-red-500 ml-0.5">*</span></label>
+            <label className="block text-sm font-medium text-ink-muted mb-1.5">País<span className="text-primary ml-0.5">*</span></label>
             <select
               value={form.pais}
               onChange={(e) => setForm(f => ({ ...f, pais: e.target.value }))}
-              className={`w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500 ${parseInt(form.pais) === 0 ? 'border-yellow-400 bg-yellow-50' : 'border-gray-200'}`}
+              className={`field-input ${parseInt(form.pais) === 0 ? 'border-amber-400 bg-amber-50' : ''}`}
             >
               <option value="">Seleccionar...</option>
               {paises.map(p => (
@@ -253,7 +265,7 @@ const AcademicDegreesSection = ({ degrees, cuenta, onReload }) => {
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Año de obtención del título<span className="text-red-500 ml-0.5">*</span></label>
+              <label className="block text-sm font-medium text-ink-muted mb-1.5">Año de obtención del título<span className="text-primary ml-0.5">*</span></label>
               <input
                 type="number"
                 value={form.anioObtencion}
@@ -261,24 +273,24 @@ const AcademicDegreesSection = ({ degrees, cuenta, onReload }) => {
                 placeholder="Ej: 2015"
                 min="1950"
                 max={new Date().getFullYear()}
-                className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                className="field-input"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Cédula profesional</label>
+              <label className="block text-sm font-medium text-ink-muted mb-1.5">Cédula profesional</label>
               <input
                 type="text"
                 value={form.cedula}
                 onChange={(e) => setForm(f => ({ ...f, cedula: e.target.value }))}
                 placeholder="Ej: 12345678"
-                className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                className="field-input"
               />
             </div>
           </div>
           <button
             onClick={handleSave}
             disabled={saving}
-            className="w-full py-2.5 bg-red-700 hover:bg-red-800 text-white font-medium rounded-lg disabled:opacity-50 transition-colors"
+            className="btn-primary w-full py-2.5 disabled:opacity-50"
           >
             {saving ? 'Guardando...' : (editingItem ? 'Actualizar' : 'Crear')}
           </button>

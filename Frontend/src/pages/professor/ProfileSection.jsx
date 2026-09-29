@@ -53,7 +53,7 @@ const SECTION_META = {
     title: 'Organismos',
     description: (
       <>
-        Registro como miembro SNI.
+        Registro como miembro SNII.
         <br />
         Participación en Organismos o Gremios, por ejemplo la Asociación Mexicana de Ciencias Políticas (AMECIP).
       </>

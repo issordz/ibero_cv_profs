@@ -40,11 +40,11 @@ export const SECTOR_OPTIONS = [
 ]
 
 export const SNII_NIVELES = [
-  { value: 'candidato', label: 'Candidato', stored: 'Sni candidato' },
-  { value: '1', label: '1', stored: 'Sni 1' },
-  { value: '2', label: '2', stored: 'Sni 2' },
-  { value: '3', label: '3', stored: 'Sni 3' },
-  { value: 'merito', label: 'Mérito', stored: 'Sni mérito' }
+  { value: 'candidato', label: 'Candidato', stored: 'Snii candidato' },
+  { value: '1', label: '1', stored: 'Snii 1' },
+  { value: '2', label: '2', stored: 'Snii 2' },
+  { value: '3', label: '3', stored: 'Snii 3' },
+  { value: 'emerito', label: 'Emérito', stored: 'Snii emérito' }
 ]
 
 export function organismoEsSnii(nombre) {
@@ -58,10 +58,17 @@ export function organismoEsSnii(nombre) {
 
 export function parseSniiNivel(nivelExperiencia) {
   const raw = String(nivelExperiencia || '').trim().toLowerCase()
-  // Acepta históricos "Snii …" y el formato actual "Sni …"
+  // Acepta "Snii …" y históricos "Sni …" / "mérito"
   if (!raw.startsWith('sni')) return ''
   if (raw.includes('candidato')) return 'candidato'
-  if (raw.includes('mérito') || raw.includes('merito')) return 'merito'
+  if (
+    raw.includes('emérito') ||
+    raw.includes('emerito') ||
+    raw.includes('mérito') ||
+    raw.includes('merito')
+  ) {
+    return 'emerito'
+  }
   if (raw.includes('3')) return '3'
   if (raw.includes('2')) return '2'
   if (raw.includes('1')) return '1'

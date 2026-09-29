@@ -96,8 +96,8 @@ const OrganismosSection = ({ items, cuenta, onReload }) => {
     if (showSnii && !form.sniiNivel) {
       Swal.fire({
         icon: 'warning',
-        title: 'Nivel SNI requerido',
-        text: 'Selecciona el nivel SNI (Candidato, 1, 2, 3 o Mérito).',
+        title: 'Nivel SNII requerido',
+        text: 'Selecciona el nivel SNII (Candidato, 1, 2, 3 o Emérito).',
         confirmButtonColor: '#C41E3A'
       })
       return
@@ -154,7 +154,7 @@ const OrganismosSection = ({ items, cuenta, onReload }) => {
           title="Sin organismos"
           description={
             <>
-              Registro como miembro SNI.
+              Registro como miembro SNII.
               <br />
               Participación en Organismos o Gremios, por ejemplo la Asociación Mexicana de Ciencias Políticas (AMECIP).
             </>
@@ -202,7 +202,7 @@ const OrganismosSection = ({ items, cuenta, onReload }) => {
           {showSnii && (
             <div>
               <label className="block text-sm font-medium text-ink-muted mb-1.5">
-                Nivel SNI<span className="text-primary ml-0.5">*</span>
+                Nivel SNII<span className="text-primary ml-0.5">*</span>
               </label>
               <select
                 value={form.sniiNivel}
@@ -215,7 +215,7 @@ const OrganismosSection = ({ items, cuenta, onReload }) => {
                 ))}
               </select>
               <p className="mt-1 text-xs text-gray-400">
-                Se guardará como Sni candidato, Sni 1, Sni 2, Sni 3 o Sni mérito.
+                Se guardará como Snii candidato, Snii 1, Snii 2, Snii 3 o Snii emérito.
               </p>
             </div>
           )}

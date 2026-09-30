@@ -54,7 +54,7 @@ const PAGE_META = {
   '/profile/organismos': {
     title: 'Organismos',
     description:
-      'Registro como miembro SNI. Participación en organismos o gremios, por ejemplo AMECIP.'
+      'Registro como miembro SNII. Participación en organismos o gremios, por ejemplo AMECIP.'
   },
   '/profile/premios-distinciones': {
     title: 'Premios y distinciones',
